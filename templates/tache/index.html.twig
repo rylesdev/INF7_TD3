@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+{% block title %}Gestion des tâches{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold mb-0"><i class="bi bi-check2-circle text-primary"></i> Tâches & Semainier</h1>
+        <a href="{{ path('app_tache_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg"></i> Nouvelle tâche
+        </a>
+    </div>
+
+    {% if semainier is defined and semainier|length > 0 %}
+    <div class="card p-4 mb-4">
+        <h2 class="h5 fw-bold mb-3"><i class="bi bi-calendar-week text-info"></i> Semainier de la semaine</h2>
+        <div class="row g-2">
+            {% set jours = {1: 'Lun', 2: 'Mar', 3: 'Mer', 4: 'Jeu', 5: 'Ven', 6: 'Sam', 7: 'Dim'} %}
+            {% for jourNum, jourNom in jours %}
+            <div class="col">
+                <div class="card p-2 text-center h-100 {{ 'now'|date('N') == jourNum ? 'border-primary' : '' }}">
+                    <div class="fw-bold small mb-2 {{ 'now'|date('N') == jourNum ? 'text-primary' : 'text-muted' }}">{{ jourNom }}</div>
+                    {% set tachesJour = semainier|filter(s => s.jourSemaine == jourNum) %}
+                    {% for s in tachesJour %}
+                    <div class="badge bg-{{ s.tache.statut == 'terminée' ? 'success' : (s.tache.statut == 'en_cours' ? 'warning' : 'secondary') }} mb-1 text-wrap" style="font-size:.7rem;">
+                        {{ s.tache.titre }}
+                    </div>
+                    {% else %}
+                    <div class="text-muted" style="font-size:.75rem;">—</div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if taches|length == 0 %}
+        <div class="alert alert-info">Aucune tâche enregistrée.</div>
+    {% else %}
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Titre</th>
+                        <th>Type</th>
+                        <th>Assigné à</th>
+                        <th>Colocation</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tache in taches %}
+                    <tr class="{{ tache.statut == 'terminée' ? 'table-success opacity-75' : '' }}">
+                        <td>{{ tache.titre }}</td>
+                        <td>{{ tache.type }}</td>
+                        <td>{{ tache.assigne ? tache.assigne.nomComplet : '—' }}</td>
+                        <td>{{ tache.colocation.nom }}</td>
+                        <td>
+                            <span class="badge bg-{{ tache.statut == 'terminée' ? 'success' : (tache.statut == 'en_cours' ? 'warning' : 'secondary') }}">
+                                {{ tache.statut }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                {% if tache.statut != 'terminée' %}
+                                <form method="post" action="{{ path('app_tache_done', {id: tache.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('mark_done_' ~ tache.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-success" title="Marquer terminée">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                                <form method="post" action="{{ path('app_tache_delete', {id: tache.id}) }}" onsubmit="return confirm('Supprimer ?')">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_tache_' ~ tache.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

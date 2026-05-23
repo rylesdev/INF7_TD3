@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mes tantièmes{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="fw-bold mb-4"><i class="bi bi-pie-chart text-primary"></i> Mes tantièmes</h1>
+
+    {% if chambre %}
+    <div class="alert alert-info mb-4">
+        <i class="bi bi-info-circle"></i>
+        Votre chambre <strong>{{ chambre.nom }}</strong> représente
+        <strong>{{ chambre.pourcentageSurface|number_format(2) }}%</strong>
+        de la surface totale ({{ chambre.surface }} m² / {{ chambre.colocation.surfaceTotale }} m²).
+    </div>
+    {% endif %}
+
+    {% if tantiemes|length == 0 %}
+        <div class="alert alert-info">Aucun tantième calculé pour l'instant.</div>
+    {% else %}
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Charge</th>
+                        <th>Type</th>
+                        <th>Montant total</th>
+                        <th>Votre part (%)</th>
+                        <th>Votre montant</th>
+                        <th>Calculé le</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tantieme in tantiemes %}
+                    <tr>
+                        <td>{{ tantieme.charge.libelle }}</td>
+                        <td>{{ tantieme.charge.libelleType }}</td>
+                        <td>{{ tantieme.charge.montant }}€</td>
+                        <td>{{ tantieme.pourcentage|number_format(2) }}%</td>
+                        <td class="fw-bold text-primary">{{ tantieme.montantDu|number_format(2) }}€</td>
+                        <td>{{ tantieme.calculeLe|date('d/m/Y') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

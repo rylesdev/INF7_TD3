@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card p-4">
+                <h1 class="h3 mb-4 text-center"><i class="bi bi-box-arrow-in-right text-primary"></i> Connexion</h1>
+
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                <form method="post" action="{{ path('app_login') }}">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Email</label>
+                        <input type="email" id="username" name="_username" value="{{ last_username }}"
+                               class="form-control" autocomplete="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <input type="password" id="password" name="_password" class="form-control"
+                               autocomplete="current-password" required>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="remember" name="_remember_me">
+                        <label class="form-check-label" for="remember">Se souvenir de moi</label>
+                    </div>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                </form>
+
+                <hr>
+                <div class="text-center">
+                    <a href="{{ path('app_forgot_password') }}" class="text-muted small">Mot de passe oublié ?</a>
+                </div>
+                <div class="text-center mt-2">
+                    <span class="text-muted small">Pas encore de compte ?</span>
+                    <a href="{{ path('app_register') }}" class="small">S'inscrire</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

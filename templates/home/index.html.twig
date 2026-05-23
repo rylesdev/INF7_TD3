@@ -1,0 +1,192 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+{% block meta_description %}Colocation.com – Gérez votre colocation facilement. Loyers, charges, tantièmes, messagerie, planning ménager.{% endblock %}
+
+{% block body %}
+
+{# Hero Section #}
+<section class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3"><i class="bi bi-house-heart-fill"></i> Colocation.com</h1>
+        <p class="lead mb-4">La plateforme qui simplifie la gestion de votre colocation.<br>Loyers, charges, messagerie et planning en un seul endroit.</p>
+        <a href="{{ path('app_annonces') }}" class="btn btn-light btn-lg me-3">
+            <i class="bi bi-search"></i> Voir les annonces
+        </a>
+        {% if not is_granted('ROLE_USER') %}
+            <a href="{{ path('app_register') }}" class="btn btn-outline-light btn-lg">
+                <i class="bi bi-person-plus"></i> S'inscrire gratuitement
+            </a>
+        {% endif %}
+    </div>
+</section>
+
+{# Stats #}
+<section class="py-4 bg-white border-bottom">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-6 col-md-3">
+                <div class="fw-bold display-6 text-primary">3 200+</div>
+                <div class="text-muted small">colocataires inscrits</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="fw-bold display-6 text-primary">850+</div>
+                <div class="text-muted small">propriétaires</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="fw-bold display-6 text-primary">12 000+</div>
+                <div class="text-muted small">loyers gérés</div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="fw-bold display-6 text-primary">4,8 / 5</div>
+                <div class="text-muted small">satisfaction moyenne</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Propriétaires / Locataires #}
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">Une plateforme pour tout le monde</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="card h-100 p-4 border-primary" style="border-width:2px !important;">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-building text-primary display-5 me-3"></i>
+                        <h3 class="fw-bold mb-0 h4">Vous êtes propriétaire</h3>
+                    </div>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Gérez toutes vos colocations depuis un seul tableau de bord</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Suivez les loyers et relancez les impayés en un clic</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Répartissez les charges automatiquement selon la surface</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Générez les quittances PDF sans effort</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Communiquez directement avec vos locataires</li>
+                    </ul>
+                    <a href="{{ path('app_register') }}" class="btn btn-primary mt-auto">Créer mon espace propriétaire</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100 p-4 border-success" style="border-width:2px !important;">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-house-door text-success display-5 me-3"></i>
+                        <h3 class="fw-bold mb-0 h4">Vous êtes locataire</h3>
+                    </div>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Consultez vos loyers et leur statut à tout moment</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Téléchargez vos quittances en PDF pour vos démarches</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Visualisez votre part des charges mensuelles</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Organisez les tâches ménagères avec vos colocataires</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Contactez votre propriétaire via la messagerie intégrée</li>
+                    </ul>
+                    <a href="{{ path('app_annonces') }}" class="btn btn-outline-primary mt-auto">Trouver une colocation</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Témoignages #}
+<section class="py-5 bg-white">
+    <div class="container">
+        <h2 class="text-center fw-bold mb-5">Ce qu'ils en disent</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card p-4 h-100">
+                    <div class="d-flex mb-3">
+                        <i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning"></i>
+                    </div>
+                    <p class="text-muted fst-italic mb-3">"Fini les tableurs Excel pour gérer mes loyers. Je génère les quittances en deux clics, mes locataires reçoivent tout automatiquement."</p>
+                    <div class="fw-bold">Sophie M. <span class="text-muted fw-normal small">— Propriétaire, Lyon</span></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 h-100">
+                    <div class="d-flex mb-3">
+                        <i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning"></i>
+                    </div>
+                    <p class="text-muted fst-italic mb-3">"Je sais exactement combien je dois payer chaque mois, ma quittance est toujours disponible. Pratique pour mon dossier APL."</p>
+                    <div class="fw-bold">Karim B. <span class="text-muted fw-normal small">— Locataire, Paris</span></div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4 h-100">
+                    <div class="d-flex mb-3">
+                        <i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-half text-warning"></i>
+                    </div>
+                    <p class="text-muted fst-italic mb-3">"La répartition automatique des charges nous a évité beaucoup de conflits entre colocataires. On voit tout, c'est transparent."</p>
+                    <div class="fw-bold">Léa & Tom <span class="text-muted fw-normal small">— Colocataires, Bordeaux</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{# Annonces récentes #}
+{% if annonces_recentes|length > 0 %}
+<section class="py-5 bg-white">
+    <div class="container">
+        <h2 class="fw-bold mb-4">Annonces récentes</h2>
+        <div class="row g-4">
+            {% for annonce in annonces_recentes %}
+            <div class="col-md-4">
+                <div class="card h-100">
+                    {% if annonce.premierPhoto %}
+                        <img src="{{ asset('uploads/annonces/' ~ annonce.premierPhoto.filename) }}"
+                             class="card-img-top" alt="{{ annonce.premierPhoto.alt }}"
+                             style="height:200px;object-fit:cover;" loading="lazy">
+                    {% else %}
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height:200px;">
+                            <i class="bi bi-house text-white display-4"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ annonce.titre }}</h5>
+                        <p class="text-muted small"><i class="bi bi-geo-alt"></i> {{ annonce.localisation }}</p>
+                        <p class="fw-bold text-primary fs-5">{{ annonce.prix }}€ / mois</p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <a href="{{ path('app_annonce_show', {id: annonce.id}) }}" class="btn btn-primary w-100">
+                            Voir le détail
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="text-center mt-4">
+            <a href="{{ path('app_annonces') }}" class="btn btn-outline-primary">Toutes les annonces</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{# FAQ #}
+<section class="py-5" id="faq">
+    <div class="container">
+        <h2 class="fw-bold text-center mb-5">Questions fréquentes</h2>
+        <div class="accordion" id="faqAccordion">
+            {% for i, qa in [
+                {q: 'Comment créer un compte ?', a: 'Cliquez sur "S\'inscrire" en haut de la page. Choisissez votre rôle (locataire ou propriétaire) et remplissez le formulaire.'},
+                {q: 'Comment fonctionne le calcul des tantièmes ?', a: 'Les tantièmes sont calculés automatiquement en fonction de la surface de chaque chambre par rapport à la surface totale de la colocation.'},
+                {q: 'Comment télécharger une quittance de loyer ?', a: 'Dans votre espace locataire, accédez à "Quittances" et cliquez sur le bouton PDF pour chaque mois payé.'},
+                {q: 'L\'API est-elle disponible pour nos applications ?', a: 'Oui, une API REST complète est disponible à /api. L\'authentification se fait par JWT. Consultez /api pour la documentation.'},
+                {q: 'Comment fonctionne le semainier ?', a: 'Le planning hebdomadaire se reconduit automatiquement chaque semaine. Quand une tâche est terminée, une nouvelle est créée pour la semaine suivante.'}
+            ] %}
+            <div class="accordion-item">
+                <h3 class="accordion-header">
+                    <button class="accordion-button {{ i > 0 ? 'collapsed' : '' }}" type="button"
+                            data-bs-toggle="collapse" data-bs-target="#faq{{ i }}">
+                        {{ qa.q }}
+                    </button>
+                </h3>
+                <div id="faq{{ i }}" class="accordion-collapse collapse {{ i == 0 ? 'show' : '' }}" data-bs-parent="#faqAccordion">
+                    <div class="accordion-body">{{ qa.a }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

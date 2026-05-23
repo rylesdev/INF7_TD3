@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+{% block title %}Nouvelle annonce{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="fw-bold mb-4">Créer une annonce</h1>
+    <div class="card p-4">
+        {{ form_start(form, {attr: {enctype: 'multipart/form-data'}}) }}
+            <div class="row g-3">
+                <div class="col-md-8">{{ form_label(form.titre) }}{{ form_widget(form.titre) }}{{ form_errors(form.titre) }}</div>
+                <div class="col-md-4">{{ form_label(form.prix) }}{{ form_widget(form.prix) }}{{ form_errors(form.prix) }}</div>
+                <div class="col-12">{{ form_label(form.description) }}{{ form_widget(form.description) }}{{ form_errors(form.description) }}</div>
+                <div class="col-md-6">{{ form_label(form.localisation) }}{{ form_widget(form.localisation) }}{{ form_errors(form.localisation) }}</div>
+                <div class="col-md-3">{{ form_label(form.statut) }}{{ form_widget(form.statut) }}</div>
+                <div class="col-md-3">{{ form_label(form.colocation) }}{{ form_widget(form.colocation) }}</div>
+                <div class="col-12">{{ form_label(form.metaDescription) }}{{ form_widget(form.metaDescription) }}{{ form_errors(form.metaDescription) }}</div>
+                <div class="col-12">{{ form_label(form.photoFiles) }}{{ form_widget(form.photoFiles) }}{{ form_errors(form.photoFiles) }}</div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary me-2">Publier l'annonce</button>
+                <a href="{{ path('app_proprietaire_annonces') }}" class="btn btn-outline-secondary">Annuler</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

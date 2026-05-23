@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+{% block title %}Tableau de bord propriétaire{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="fw-bold mb-4"><i class="bi bi-speedometer2 text-primary"></i> Tableau de bord</h1>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-center p-3 border-primary">
+                <div class="display-6 fw-bold text-primary">{{ stats.nbColocations }}</div>
+                <div class="text-muted small">Colocations</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3 border-success">
+                <div class="display-6 fw-bold text-success">{{ stats.loyersPercus }}€</div>
+                <div class="text-muted small">Loyers perçus ({{ 'now'|date('Y') }})</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3 border-danger">
+                <div class="display-6 fw-bold text-danger">{{ stats.loyersImpayes }}</div>
+                <div class="text-muted small">Loyers impayés</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3 border-info">
+                <div class="display-6 fw-bold text-info">{{ stats.nbAnnonces }}</div>
+                <div class="text-muted small">Annonces actives</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="card p-4">
+                <h2 class="h5 fw-bold mb-3"><i class="bi bi-bar-chart text-primary"></i> Revenus mensuels ({{ 'now'|date('Y') }})</h2>
+                <canvas id="revenusChart" height="80"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card p-4 h-100">
+                <h2 class="h5 fw-bold mb-3"><i class="bi bi-exclamation-triangle text-warning"></i> Alertes</h2>
+                {% if alertes|length > 0 %}
+                <div class="list-group list-group-flush">
+                    {% for alerte in alertes %}
+                    <div class="list-group-item px-0 py-2 d-flex gap-2">
+                        <i class="bi bi-exclamation-circle-fill text-{{ alerte.type == 'danger' ? 'danger' : 'warning' }} mt-1"></i>
+                        <span class="small">{{ alerte.message }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted small">Aucune alerte.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-2">
+            <a href="{{ path('app_proprietaire_colocations') }}" class="card p-3 text-decoration-none text-dark text-center d-block h-100">
+                <i class="bi bi-building display-5 text-primary mb-1 d-block"></i>
+                <small class="fw-bold">Colocations</small>
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a href="{{ path('app_proprietaire_loyers') }}" class="card p-3 text-decoration-none text-dark text-center d-block h-100">
+                <i class="bi bi-cash-stack display-5 text-success mb-1 d-block"></i>
+                <small class="fw-bold">Loyers</small>
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a href="{{ path('app_proprietaire_charges') }}" class="card p-3 text-decoration-none text-dark text-center d-block h-100">
+                <i class="bi bi-lightning display-5 text-warning mb-1 d-block"></i>
+                <small class="fw-bold">Charges</small>
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a href="{{ path('app_proprietaire_annonces') }}" class="card p-3 text-decoration-none text-dark text-center d-block h-100">
+                <i class="bi bi-megaphone display-5 text-info mb-1 d-block"></i>
+                <small class="fw-bold">Annonces</small>
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a href="{{ path('app_proprietaire_messagerie') }}" class="card p-3 text-decoration-none text-dark text-center d-block h-100">
+                <i class="bi bi-chat-dots display-5 text-secondary mb-1 d-block"></i>
+                <small class="fw-bold">Messages</small>
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a href="{{ path('app_taches') }}" class="card p-3 text-decoration-none text-dark text-center d-block h-100">
+                <i class="bi bi-check2-circle display-5 text-danger mb-1 d-block"></i>
+                <small class="fw-bold">Tâches</small>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+<script defer>
+document.addEventListener('DOMContentLoaded', async () => {
+    const res = await fetch('{{ path('app_proprietaire_stats_api') }}');
+    const data = await res.json();
+    new Chart(document.getElementById('revenusChart'), {
+        type: 'bar',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: 'Revenus (€)',
+                data: data.revenus,
+                backgroundColor: 'rgba(13,110,253,0.7)',
+                borderColor: 'rgba(13,110,253,1)',
+                borderWidth: 1
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    });
+});
+</script>
+{% endblock %}

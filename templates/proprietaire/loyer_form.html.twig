@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ loyer is defined and loyer.id ? 'Modifier' : 'Nouveau' }} loyer{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="fw-bold mb-4">
+        <i class="bi bi-cash-stack text-success"></i>
+        {{ loyer is defined and loyer.id ? 'Modifier le loyer' : 'Nouveau loyer' }}
+    </h1>
+    <div class="card p-4" style="max-width:600px;">
+        {{ form_start(form) }}
+        <div class="row g-3">
+            <div class="col-md-6">{{ form_label(form.colocation) }}{{ form_widget(form.colocation) }}{{ form_errors(form.colocation) }}</div>
+            <div class="col-md-6">{{ form_label(form.chambre) }}{{ form_widget(form.chambre) }}{{ form_errors(form.chambre) }}</div>
+            <div class="col-md-6">{{ form_label(form.montant) }}{{ form_widget(form.montant) }}{{ form_errors(form.montant) }}</div>
+            <div class="col-md-3">{{ form_label(form.mois) }}{{ form_widget(form.mois) }}{{ form_errors(form.mois) }}</div>
+            <div class="col-md-3">{{ form_label(form.annee) }}{{ form_widget(form.annee) }}{{ form_errors(form.annee) }}</div>
+            <div class="col-md-6">{{ form_label(form.dateEcheance) }}{{ form_widget(form.dateEcheance) }}{{ form_errors(form.dateEcheance) }}</div>
+            <div class="col-md-6">{{ form_label(form.datePaiement) }}{{ form_widget(form.datePaiement) }}{{ form_errors(form.datePaiement) }}</div>
+            <div class="col-12">{{ form_label(form.statut) }}{{ form_widget(form.statut) }}{{ form_errors(form.statut) }}</div>
+        </div>
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <a href="{{ path('app_proprietaire_loyers') }}" class="btn btn-outline-secondary">Annuler</a>
+        </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

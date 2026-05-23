@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+{% block title %}Annonces de colocation{% endblock %}
+{% block meta_description %}Trouvez votre colocation idéale. {{ annonces|length }} annonces disponibles.{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="fw-bold mb-4"><i class="bi bi-house-door text-primary"></i> Colocations disponibles</h1>
+
+    {% if annonces|length == 0 %}
+        <div class="alert alert-info">Aucune annonce disponible pour le moment.</div>
+    {% else %}
+        <div class="row g-4">
+            {% for annonce in annonces %}
+            <div class="col-md-4">
+                <article class="card h-100">
+                    {% if annonce.premierPhoto %}
+                        <img src="{{ asset('uploads/annonces/' ~ annonce.premierPhoto.filename) }}"
+                             class="card-img-top" alt="{{ annonce.premierPhoto.alt|default(annonce.titre) }}"
+                             style="height:200px;object-fit:cover;" loading="lazy" width="400" height="200">
+                    {% else %}
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height:200px;">
+                            <i class="bi bi-house text-white display-3"></i>
+                        </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h2 class="h5 card-title">{{ annonce.titre }}</h2>
+                        <p class="text-muted small mb-1"><i class="bi bi-geo-alt-fill text-danger"></i> {{ annonce.localisation }}</p>
+                        <p class="fw-bold text-primary fs-5 mb-2">{{ annonce.prix }}€ <small class="fw-normal text-muted fs-6">/ mois</small></p>
+                        <p class="card-text small text-muted">{{ annonce.description|slice(0, 100) }}{% if annonce.description|length > 100 %}…{% endif %}</p>
+                    </div>
+                    <div class="card-footer bg-transparent d-flex justify-content-between align-items-center">
+                        <small class="text-muted"><i class="bi bi-eye"></i> {{ annonce.nbVisites }} vue(s)</small>
+                        <a href="{{ path('app_annonce_show', {id: annonce.id}) }}" class="btn btn-primary btn-sm">
+                            Voir le détail <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

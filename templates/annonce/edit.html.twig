@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+{% block title %}Modifier l'annonce{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="fw-bold mb-4">Modifier l'annonce</h1>
+    <div class="card p-4">
+        {{ form_start(form, {attr: {enctype: 'multipart/form-data'}}) }}
+            <div class="row g-3">
+                <div class="col-md-8">{{ form_label(form.titre) }}{{ form_widget(form.titre) }}{{ form_errors(form.titre) }}</div>
+                <div class="col-md-4">{{ form_label(form.prix) }}{{ form_widget(form.prix) }}{{ form_errors(form.prix) }}</div>
+                <div class="col-12">{{ form_label(form.description) }}{{ form_widget(form.description) }}</div>
+                <div class="col-md-6">{{ form_label(form.localisation) }}{{ form_widget(form.localisation) }}</div>
+                <div class="col-md-3">{{ form_label(form.statut) }}{{ form_widget(form.statut) }}</div>
+                <div class="col-md-3">{{ form_label(form.colocation) }}{{ form_widget(form.colocation) }}</div>
+                <div class="col-12">{{ form_label(form.metaDescription) }}{{ form_widget(form.metaDescription) }}</div>
+                <div class="col-12">
+                    {% if annonce.photos|length > 0 %}
+                        <p class="small text-muted mb-2">Photos actuelles :</p>
+                        <div class="d-flex gap-2 flex-wrap mb-2">
+                            {% for photo in annonce.photos %}
+                                <img src="{{ asset('uploads/annonces/' ~ photo.filename) }}" width="80" height="60" style="object-fit:cover;border-radius:4px;" loading="lazy">
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {{ form_label(form.photoFiles) }}{{ form_widget(form.photoFiles) }}{{ form_errors(form.photoFiles) }}
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary me-2">Enregistrer</button>
+                <a href="{{ path('app_proprietaire_annonces') }}" class="btn btn-outline-secondary">Annuler</a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

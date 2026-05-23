@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mon profil{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="fw-bold mb-4"><i class="bi bi-person-circle text-primary"></i> Mon profil</h1>
+
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card p-4">
+                <div class="text-center mb-4">
+                    {% if app.user.photoProfil %}
+                        <img src="{{ asset('uploads/profils/' ~ app.user.photoProfil) }}" width="100" height="100" class="rounded-circle mb-2" style="object-fit:cover;" loading="lazy">
+                    {% else %}
+                        <div class="rounded-circle bg-primary d-inline-flex align-items-center justify-content-center mb-2" style="width:100px;height:100px;">
+                            <span class="text-white fw-bold fs-3">{{ app.user.prenom|first|upper }}{{ app.user.nom|first|upper }}</span>
+                        </div>
+                    {% endif %}
+                    <div class="fw-bold">{{ app.user.nomComplet }}</div>
+                    <div class="text-muted small">{{ app.user.email }}</div>
+                </div>
+
+                {{ form_start(form, {attr: {enctype: 'multipart/form-data'}}) }}
+                <div class="row g-3">
+                    <div class="col-md-6">{{ form_label(form.prenom) }}{{ form_widget(form.prenom) }}{{ form_errors(form.prenom) }}</div>
+                    <div class="col-md-6">{{ form_label(form.nom) }}{{ form_widget(form.nom) }}{{ form_errors(form.nom) }}</div>
+                    <div class="col-12">{{ form_label(form.telephone) }}{{ form_widget(form.telephone) }}{{ form_errors(form.telephone) }}</div>
+                    <div class="col-12">{{ form_label(form.photoFile) }}{{ form_widget(form.photoFile) }}{{ form_errors(form.photoFile) }}</div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary me-2">Enregistrer</button>
+                    <a href="{{ path('app_home') }}" class="btn btn-outline-secondary">Annuler</a>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

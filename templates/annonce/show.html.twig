@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ annonce.titre }}{% endblock %}
+{% block meta_description %}{{ annonce.metaDescription ?? annonce.description|slice(0,160) }}{% endblock %}
+{% block og_title %}{{ annonce.titre }} – Colocation.com{% endblock %}
+{% block og_description %}{{ annonce.metaDescription ?? annonce.description|slice(0,160) }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="{{ path('app_annonces') }}">Annonces</a></li>
+            <li class="breadcrumb-item active">{{ annonce.titre }}</li>
+        </ol>
+    </nav>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            {# Galerie photos #}
+            {% if annonce.photos|length > 0 %}
+                <div id="photoCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                    <div class="carousel-inner rounded-3 overflow-hidden">
+                        {% for i, photo in annonce.photos %}
+                        <div class="carousel-item {{ i == 0 ? 'active' : '' }}">
+                            <img src="{{ asset('uploads/annonces/' ~ photo.filename) }}"
+                                 class="d-block w-100" alt="{{ photo.alt|default(annonce.titre) }}"
+                                 style="height:400px;object-fit:cover;" loading="{{ i == 0 ? 'eager' : 'lazy' }}">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if annonce.photos|length > 1 %}
+                        <button class="carousel-control-prev" type="button" data-bs-target="#photoCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#photoCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div class="bg-secondary rounded-3 d-flex align-items-center justify-content-center mb-4" style="height:300px;">
+                    <i class="bi bi-house text-white display-1"></i>
+                </div>
+            {% endif %}
+
+            <h1 class="fw-bold">{{ annonce.titre }}</h1>
+            <p class="text-muted"><i class="bi bi-geo-alt-fill text-danger"></i> {{ annonce.localisation }}</p>
+
+            <div class="card p-4 mb-4">
+                <h2 class="h5 fw-bold mb-3">Description</h2>
+                <p>{{ annonce.description|nl2br }}</p>
+            </div>
+
+            {# Carte Leaflet.js #}
+            {% if annonce.colocation.latitude and annonce.colocation.longitude %}
+            <div class="card p-3 mb-4">
+                <h2 class="h6 fw-bold mb-2"><i class="bi bi-map"></i> Localisation</h2>
+                <div style="height:300px;border-radius:8px;overflow:hidden;">
+                    <div id="map" style="height:100%;width:100%;"></div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card p-4 sticky-top" style="top:80px;">
+                <div class="text-center mb-3">
+                    <span class="display-6 fw-bold text-primary">{{ annonce.prix }}€</span>
+                    <span class="text-muted"> / mois</span>
+                </div>
+                <hr>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="bi bi-circle-fill text-{{ annonce.statut == 'disponible' ? 'success' : 'danger' }} me-2" style="font-size:.5rem;"></i>
+                        {{ annonce.statut == 'disponible' ? 'Disponible' : 'Indisponible' }}
+                    </li>
+                    <li class="mb-2"><i class="bi bi-building me-2 text-muted"></i> {{ annonce.colocation.nom }}</li>
+                    <li class="mb-2"><i class="bi bi-geo-alt me-2 text-muted"></i> {{ annonce.colocation.ville }} ({{ annonce.colocation.codePostal }})</li>
+                    <li class="mb-2"><i class="bi bi-eye me-2 text-muted"></i> {{ annonce.nbVisites }} vue(s)</li>
+                    <li class="mb-2"><i class="bi bi-calendar me-2 text-muted"></i> Publiée le {{ annonce.createdAt|date('d/m/Y') }}</li>
+                </ul>
+                <hr>
+                {% if is_granted('ROLE_USER') %}
+                    <a href="{{ path('app_locataire_messagerie') }}" class="btn btn-primary w-100 mb-2">
+                        <i class="bi bi-chat-dots"></i> Contacter le propriétaire
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn btn-primary w-100 mb-2">
+                        <i class="bi bi-box-arrow-in-right"></i> Se connecter pour contacter
+                    </a>
+                {% endif %}
+                <a href="{{ path('app_annonces') }}" class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-arrow-left"></i> Retour aux annonces
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+{% if annonce.colocation.latitude and annonce.colocation.longitude %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+{% endif %}
+{% endblock %}
+
+{% block javascripts %}
+{% if annonce.colocation.latitude and annonce.colocation.longitude %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script>
+window.addEventListener('load', () => {
+    const lat = {{ annonce.colocation.latitude }};
+    const lng = {{ annonce.colocation.longitude }};
+    const map = L.map('map').setView([lat, lng], 15);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
+    }).addTo(map);
+    L.marker([lat, lng])
+        .addTo(map)
+        .bindPopup('<b>{{ annonce.colocation.nom|escape('js') }}</b><br>{{ annonce.localisation|escape('js') }}')
+        .openPopup();
+    requestAnimationFrame(() => map.invalidateSize());
+});
+</script>
+{% endif %}
+{% endblock %}

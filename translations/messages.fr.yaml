@@ -1,0 +1,70 @@
+# Colocation.com – Traductions françaises
+app:
+    name: Colocation.com
+    tagline: La plateforme de gestion de colocation
+
+nav:
+    home: Accueil
+    annonces: Annonces
+    login: Connexion
+    register: Inscription
+    logout: Déconnexion
+    profil: Mon profil
+    dashboard: Tableau de bord
+
+security:
+    login:
+        title: Connexion
+        email: Adresse email
+        password: Mot de passe
+        submit: Se connecter
+        remember_me: Se souvenir de moi
+        forgot: Mot de passe oublié ?
+        no_account: Pas encore de compte ?
+    register:
+        title: Créer un compte
+        submit: S'inscrire
+        already_account: Déjà un compte ?
+
+annonce:
+    status:
+        disponible: Disponible
+        indisponible: Indisponible
+    per_month: " / mois"
+    views: "vue(s)"
+
+loyer:
+    status:
+        paye: Payé
+        impaye: Impayé
+        en_retard: En retard
+
+tache:
+    type:
+        vaisselle: Vaisselle
+        menage: Ménage
+        entretien: Entretien
+        autre: Autre
+    status:
+        a_faire: À faire
+        en_cours: En cours
+        terminee: Terminée
+
+charge:
+    type:
+        eau: Eau
+        electricite: Électricité
+        internet: Internet
+        taxes: Taxes
+        autre: Autre
+
+flash:
+    success:
+        saved: Enregistré avec succès.
+        deleted: Supprimé avec succès.
+        sent: Message envoyé.
+        quittance_generated: Quittance générée avec succès.
+    error:
+        not_found: Ressource introuvable.
+        access_denied: Accès refusé.
+        invalid_form: Formulaire invalide.
