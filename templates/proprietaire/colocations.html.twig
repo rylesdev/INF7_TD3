@@ -26,6 +26,23 @@
                     <p class="card-text small text-muted">{{ colocation.description|slice(0,100) }}{% if colocation.description|length > 100 %}…{% endif %}</p>
                     {% endif %}
                 </div>
+                {% set locataires = colocation.chambres|filter(ch => ch.locataire is not null)|map(ch => ch) %}
+                {% if locataires|length > 0 %}
+                <div class="card-body pt-0">
+                    <div class="border-top pt-3">
+                        <div class="small text-muted fw-bold mb-2"><i class="bi bi-person-check"></i> Locataires</div>
+                        {% for chambre in locataires %}
+                        <div class="d-flex align-items-center justify-content-between mb-1">
+                            <span class="small">{{ chambre.locataire.nomComplet }}</span>
+                            <a href="{{ path('app_proprietaire_evaluer_locataire', {colId: colocation.id, locId: chambre.locataire.id}) }}"
+                               class="btn btn-outline-warning btn-sm py-0 px-2">
+                                <i class="bi bi-star"></i> Évaluer
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
                 <div class="card-footer bg-transparent d-flex gap-2">
                     <a href="{{ path('app_proprietaire_colocation_edit', {id: colocation.id}) }}" class="btn btn-sm btn-outline-primary flex-grow-1">
                         <i class="bi bi-pencil"></i> Modifier

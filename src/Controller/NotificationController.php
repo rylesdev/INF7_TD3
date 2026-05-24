@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\MessageRepository;
 use App\Repository\NotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,6 +18,13 @@ class NotificationController extends AbstractController
     public function count(NotificationRepository $repo): JsonResponse
     {
         $count = count($repo->findNonLues($this->getUser()->getId()));
+        return $this->json(['count' => $count]);
+    }
+
+    #[Route('/messages/count', name: 'app_messages_count')]
+    public function messagesCount(MessageRepository $messageRepo): JsonResponse
+    {
+        $count = $messageRepo->countNonLus($this->getUser()->getId());
         return $this->json(['count' => $count]);
     }
 

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Charge;
 use App\Entity\Colocation;
+use App\Entity\EvaluationLocataire;
 use App\Entity\Loyer;
 use App\Entity\Message;
 use App\Entity\Notification;
@@ -11,14 +12,18 @@ use App\Entity\Quittance;
 use App\Entity\Tantieme;
 use App\Form\ChargeType;
 use App\Form\ColocationType;
+use App\Form\EvaluationLocataireType;
 use App\Form\LoyerType;
 use App\Form\MessageType;
 use App\Repository\AnnonceRepository;
 use App\Repository\ChargeRepository;
 use App\Repository\ColocationRepository;
+use App\Repository\EvaluationLocataireRepository;
 use App\Repository\LoyerRepository;
 use App\Repository\MessageRepository;
 use App\Repository\NotificationRepository;
+use App\Repository\UserRepository;
+use App\Repository\VisiteAnnonceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -242,6 +247,11 @@ class DashboardProprietaireController extends AbstractController
 
         if ($surfaceTotale <= 0) return;
 
+        // Supprimer les tantièmes existants pour éviter les doublons au recalcul
+        foreach ($charge->getTantiemes() as $existing) {
+            $em->remove($existing);
+        }
+
         foreach ($colocation->getChambres() as $chambre) {
             $pct     = ((float) $chambre->getSurface() / $surfaceTotale) * 100;
             $montant = ((float) $charge->getMontant() * $pct) / 100;
@@ -249,8 +259,8 @@ class DashboardProprietaireController extends AbstractController
             $tantieme = new Tantieme();
             $tantieme->setChambre($chambre);
             $tantieme->setCharge($charge);
-            $tantieme->setPourcentage(round($pct, 2));
-            $tantieme->setMontantDu(round($montant, 2));
+            $tantieme->setPourcentage((string) round($pct, 2));
+            $tantieme->setMontantDu((string) round($montant, 2));
             $em->persist($tantieme);
         }
     }
@@ -304,6 +314,9 @@ class DashboardProprietaireController extends AbstractController
         $colocation  = $colRepo->find($colocationId);
         $messages    = $messageRepo->findConversation($user->getId(), $locataireId, $colocationId);
 
+        // Marquer les messages reçus comme lus
+        $messageRepo->marquerLus($locataireId, $user->getId(), $colocationId);
+
         $message = new Message();
         $form    = $this->createForm(MessageType::class, $message);
         $form->handleRequest($request);
@@ -352,6 +365,95 @@ class DashboardProprietaireController extends AbstractController
         }
 
         return $this->json(['labels' => $moisLabels, 'revenus' => $chargesData, 'charges' => $chargesData, 'loyers' => $loyersData]);
+    }
+
+    // ── Visites annonce ──────────────────────────────────────────────────────
+
+    #[Route('/annonces/{id}/visites', name: 'app_proprietaire_visites_annonce', requirements: ['id' => '\d+'])]
+    public function visitesAnnonce(
+        \App\Entity\Annonce $annonce,
+        VisiteAnnonceRepository $visiteRepo
+    ): Response {
+        return $this->render('proprietaire/visites_annonce.html.twig', [
+            'annonce'    => $annonce,
+            'visites'    => $visiteRepo->findByAnnonce($annonce->getId()),
+            'parJour'    => $visiteRepo->countParJour($annonce->getId()),
+            'total'      => $visiteRepo->countByAnnonce($annonce->getId()),
+        ]);
+    }
+
+    // ── Évaluations locataires ───────────────────────────────────────────────
+
+    #[Route('/evaluations', name: 'app_proprietaire_evaluations')]
+    public function evaluations(EvaluationLocataireRepository $evalRepo): Response
+    {
+        return $this->render('proprietaire/evaluations.html.twig', [
+            'evaluations' => $evalRepo->findByProprietaire($this->getUser()->getId()),
+        ]);
+    }
+
+    #[Route(
+        '/colocations/{colId}/locataires/{locId}/evaluer',
+        name: 'app_proprietaire_evaluer_locataire',
+        requirements: ['colId' => '\d+', 'locId' => '\d+'],
+        methods: ['GET', 'POST']
+    )]
+    public function evaluerLocataire(
+        int $colId,
+        int $locId,
+        Request $request,
+        EntityManagerInterface $em,
+        UserRepository $userRepo,
+        ColocationRepository $colRepo,
+        EvaluationLocataireRepository $evalRepo
+    ): Response {
+        $locataire  = $userRepo->find($locId);
+        $colocation = $colRepo->find($colId);
+
+        if (!$locataire || !$colocation) {
+            throw $this->createNotFoundException();
+        }
+
+        $evaluation = $evalRepo->findOneByParties($locId, $this->getUser()->getId(), $colId)
+            ?? new EvaluationLocataire();
+
+        $isNew = $evaluation->getId() === null;
+
+        if ($isNew) {
+            $evaluation->setLocataire($locataire);
+            $evaluation->setProprietaire($this->getUser());
+            $evaluation->setColocation($colocation);
+        }
+
+        $form = $this->createForm(EvaluationLocataireType::class, $evaluation);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($isNew) {
+                $em->persist($evaluation);
+            }
+            $em->flush();
+            $this->addFlash('success', 'Évaluation enregistrée.');
+            return $this->redirectToRoute('app_proprietaire_evaluations');
+        }
+
+        return $this->render('proprietaire/evaluation_form.html.twig', [
+            'form'       => $form->createView(),
+            'locataire'  => $locataire,
+            'colocation' => $colocation,
+            'evaluation' => $evaluation,
+        ]);
+    }
+
+    #[Route('/evaluations/{id}/delete', name: 'app_proprietaire_evaluation_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function deleteEvaluation(EvaluationLocataire $evaluation, Request $request, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('delete_eval_' . $evaluation->getId(), $request->request->get('_token'))) {
+            $em->remove($evaluation);
+            $em->flush();
+            $this->addFlash('success', 'Évaluation supprimée.');
+        }
+        return $this->redirectToRoute('app_proprietaire_evaluations');
     }
 
     #[Route('/colocations/{id}/delete', name: 'app_proprietaire_colocation_delete', requirements: ['id' => '\d+'], methods: ['POST'])]

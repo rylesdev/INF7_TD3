@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+{% block title %}Visites — {{ annonce.titre }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <a href="{{ path('app_proprietaire_annonces') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-arrow-left"></i> Retour
+        </a>
+        <h1 class="h3 fw-bold mb-0"><i class="bi bi-eye text-primary"></i> Visites — {{ annonce.titre }}</h1>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card text-center p-4 border-primary">
+                <div class="display-4 fw-bold text-primary">{{ total }}</div>
+                <div class="text-muted">visite{{ total > 1 ? 's' : '' }} au total</div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card p-4">
+                <h2 class="h6 fw-bold mb-3"><i class="bi bi-bar-chart text-primary"></i> Visites (30 derniers jours)</h2>
+                {% if parJour|length > 0 %}
+                <canvas id="visitesChart" height="80"></canvas>
+                {% else %}
+                <p class="text-muted mb-0">Aucune visite ces 30 derniers jours.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header fw-bold"><i class="bi bi-list-ul"></i> Historique des visites</div>
+        {% if visites|length > 0 %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Date et heure</th>
+                        <th>Adresse IP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for visite in visites %}
+                <tr>
+                    <td class="text-muted small">{{ loop.index }}</td>
+                    <td>{{ visite.visiteLe ? visite.visiteLe|date('d/m/Y H:i') : '—' }}</td>
+                    <td><code>{{ visite.ipAddress ?? '—' }}</code></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="card-body text-center text-muted py-5">
+            <i class="bi bi-eye-slash display-4 mb-3 d-block"></i>
+            Aucune visite enregistrée pour cette annonce.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{% if parJour|length > 0 %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
+<script defer>
+document.addEventListener('DOMContentLoaded', () => {
+    const labels = {{ parJour|keys|json_encode|raw }};
+    const data   = {{ parJour|values|json_encode|raw }};
+    new Chart(document.getElementById('visitesChart'), {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [{ label: 'Visites', data, backgroundColor: 'rgba(13,110,253,0.6)', borderRadius: 4 }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+    });
+});
+</script>
+{% endif %}
+{% endblock %}

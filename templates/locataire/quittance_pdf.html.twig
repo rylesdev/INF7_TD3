@@ -4,101 +4,122 @@
     <meta charset="UTF-8">
     <title>Quittance de loyer</title>
     <style>
-        body { font-family: DejaVu Sans, Arial, sans-serif; font-size: 12px; color: #333; margin: 40px; }
-        .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 25px; }
-        .header h1 { font-size: 22px; margin: 0 0 5px; }
-        .header p { margin: 0; color: #666; }
-        .section { margin-bottom: 20px; }
-        .section h2 { font-size: 14px; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px; }
-        .row { display: flex; justify-content: space-between; margin-bottom: 5px; }
-        .label { color: #666; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: DejaVu Sans, Arial, sans-serif; font-size: 12px; color: #333; padding: 30px 40px; }
+        h1 { font-size: 20px; text-align: center; margin-bottom: 4px; }
+        .subtitle { text-align: center; color: #666; font-size: 11px; margin-bottom: 24px; border-bottom: 2px solid #333; padding-bottom: 14px; }
+        h2 { font-size: 13px; border-bottom: 1px solid #ccc; padding-bottom: 4px; margin-bottom: 10px; margin-top: 20px; color: #222; }
+        h3 { font-size: 11px; color: #555; margin-bottom: 6px; }
+        table { width: 100%; border-collapse: collapse; }
+        .label-col { color: #666; width: 45%; padding: 3px 0; }
+        .value-col { padding: 3px 0; }
         .amount { font-weight: bold; }
-        .total { font-size: 16px; font-weight: bold; border-top: 2px solid #333; padding-top: 10px; margin-top: 10px; }
-        .footer { margin-top: 40px; font-size: 10px; color: #999; text-align: center; border-top: 1px solid #eee; padding-top: 15px; }
-        .badge { background: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 3px; font-size: 11px; }
-        .parties { display: flex; justify-content: space-between; gap: 20px; }
-        .partie { flex: 1; background: #f9f9f9; padding: 12px; border-radius: 4px; }
-        .partie h3 { font-size: 12px; margin: 0 0 8px; color: #555; }
+        .total-row td { font-weight: bold; font-size: 14px; border-top: 2px solid #333; padding-top: 8px; padding-bottom: 4px; }
+        .partie { background: #f5f5f5; padding: 12px 14px; }
+        .partie-cell { width: 48%; vertical-align: top; }
+        .spacer-cell { width: 4%; }
+        .attestation { margin-top: 20px; line-height: 1.6; }
+        .signature-table { width: 100%; margin-top: 40px; }
+        .signature-box { border-top: 1px solid #999; padding-top: 6px; text-align: center; font-size: 11px; width: 220px; }
+        .footer { margin-top: 40px; font-size: 10px; color: #999; text-align: center; border-top: 1px solid #eee; padding-top: 12px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>QUITTANCE DE LOYER</h1>
-        <p>Colocation.com – Gestion locative</p>
-    </div>
 
-    <div class="section">
-        <div class="parties">
-            <div class="partie">
-                <h3>BAILLEUR</h3>
-                {% if quittance.loyer.colocation.proprietaire is defined %}
-                <strong>{{ quittance.loyer.colocation.proprietaire.nomComplet }}</strong><br>
-                {{ quittance.loyer.colocation.adresse }}<br>
-                {{ quittance.loyer.colocation.codePostal }} {{ quittance.loyer.colocation.ville }}
-                {% endif %}
-            </div>
-            <div class="partie">
-                <h3>LOCATAIRE</h3>
-                {% if quittance.loyer.chambre.locataire is defined %}
-                <strong>{{ quittance.loyer.chambre.locataire.nomComplet }}</strong><br>
-                {{ quittance.loyer.colocation.adresse }}<br>
-                {{ quittance.loyer.colocation.codePostal }} {{ quittance.loyer.colocation.ville }}
-                {% endif %}
-            </div>
-        </div>
-    </div>
+    <h1>QUITTANCE DE LOYER</h1>
+    <div class="subtitle">Colocation.com – Gestion locative</div>
 
-    <div class="section">
-        <h2>BIEN LOUÉ</h2>
-        <div class="row">
-            <span class="label">Colocation :</span>
-            <span>{{ quittance.loyer.colocation.nom }}</span>
-        </div>
-        <div class="row">
-            <span class="label">Chambre :</span>
-            <span>{{ quittance.loyer.chambre.nom }} ({{ quittance.loyer.chambre.surface }} m²)</span>
-        </div>
-        <div class="row">
-            <span class="label">Période :</span>
-            <span>{{ quittance.periodeDebut|date('d/m/Y') }} au {{ quittance.periodeFin|date('d/m/Y') }}</span>
-        </div>
-    </div>
+    {# Bailleur / Locataire #}
+    <table>
+        <tr>
+            <td class="partie-cell">
+                <div class="partie">
+                    <h3>BAILLEUR</h3>
+                    {% set proprio = quittance.loyer.colocation.proprietaire %}
+                    {% if proprio %}
+                        <strong>{{ proprio.nomComplet }}</strong><br>
+                        {{ quittance.loyer.colocation.adresse }}<br>
+                        {{ quittance.loyer.colocation.codePostal }} {{ quittance.loyer.colocation.ville }}
+                    {% endif %}
+                </div>
+            </td>
+            <td class="spacer-cell"></td>
+            <td class="partie-cell">
+                <div class="partie">
+                    <h3>LOCATAIRE</h3>
+                    {% set chambre = quittance.loyer.chambre %}
+                    {% if chambre and chambre.locataire %}
+                        <strong>{{ chambre.locataire.nomComplet }}</strong><br>
+                        {{ quittance.loyer.colocation.adresse }}<br>
+                        {{ quittance.loyer.colocation.codePostal }} {{ quittance.loyer.colocation.ville }}
+                    {% endif %}
+                </div>
+            </td>
+        </tr>
+    </table>
 
-    <div class="section">
-        <h2>DÉTAIL DU PAIEMENT</h2>
-        <div class="row">
-            <span class="label">Loyer nu :</span>
-            <span class="amount">{{ quittance.montantLoyer }}€</span>
-        </div>
-        <div class="row">
-            <span class="label">Charges :</span>
-            <span class="amount">{{ quittance.montantCharges }}€</span>
-        </div>
-        <div class="row total">
-            <span>TOTAL RÉGLÉ :</span>
-            <span>{{ quittance.montantTotal }}€</span>
-        </div>
-    </div>
+    <h2>BIEN LOUÉ</h2>
+    <table>
+        <tr>
+            <td class="label-col">Colocation :</td>
+            <td class="value-col">{{ quittance.loyer.colocation.nom }}</td>
+        </tr>
+        {% if quittance.loyer.chambre %}
+        <tr>
+            <td class="label-col">Chambre :</td>
+            <td class="value-col">{{ quittance.loyer.chambre.nom }} ({{ quittance.loyer.chambre.surface }} m²)</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td class="label-col">Période :</td>
+            <td class="value-col">{{ quittance.periodeDebut|date('d/m/Y') }} au {{ quittance.periodeFin|date('d/m/Y') }}</td>
+        </tr>
+    </table>
 
-    <div class="section">
+    <h2>DÉTAIL DU PAIEMENT</h2>
+    <table>
+        <tr>
+            <td class="label-col">Loyer nu :</td>
+            <td class="value-col amount">{{ quittance.montantLoyer }}€</td>
+        </tr>
+        <tr>
+            <td class="label-col">Charges :</td>
+            <td class="value-col amount">{{ quittance.montantCharges }}€</td>
+        </tr>
+        <tr class="total-row">
+            <td>TOTAL RÉGLÉ :</td>
+            <td class="amount">{{ quittance.montantTotal }}€</td>
+        </tr>
+    </table>
+
+    <div class="attestation">
+        {% set locataireNom %}{% if quittance.loyer.chambre and quittance.loyer.chambre.locataire %}{{ quittance.loyer.chambre.locataire.nomComplet }}{% endif %}{% endset %}
         <p>
             Je soussigné(e), bailleur du logement désigné ci-dessus, déclare avoir reçu de
-            <strong>{% if quittance.loyer.chambre.locataire is defined %}{{ quittance.loyer.chambre.locataire.nomComplet }}{% endif %}</strong>
-            la somme de <strong>{{ quittance.montantTotal }}€</strong> ({{ quittance.montantTotal|number_format(2) }} euros)
+            <strong>{{ locataireNom }}</strong>
+            la somme de <strong>{{ quittance.montantTotal }}€</strong>
             au titre du loyer et des charges du mois de <strong>{{ quittance.periodeDebut|date('F Y') }}</strong>,
             et lui en donne quittance, sous réserve de tous mes droits.
         </p>
     </div>
 
-    <div style="margin-top: 40px; text-align: right;">
-        <p>Fait le {{ quittance.genereeAt|date('d/m/Y') }}</p>
-        <p style="margin-top: 30px; border-top: 1px solid #999; padding-top: 5px; display: inline-block; min-width: 200px;">
-            Signature du bailleur
-        </p>
-    </div>
+    <table class="signature-table">
+        <tr>
+            <td style="text-align:right; padding-right: 10px; font-size:11px; vertical-align:bottom;">
+                Fait le {{ quittance.genereeAt ? quittance.genereeAt|date('d/m/Y') : 'N/A' }}
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:right; padding-top: 30px;">
+                <div class="signature-box" style="display:inline-block;">Signature du bailleur</div>
+            </td>
+        </tr>
+    </table>
 
     <div class="footer">
-        Document généré automatiquement par Colocation.com – {{ quittance.genereeAt|date('d/m/Y à H:i') }}
+        Document généré automatiquement par Colocation.com
+        {% if quittance.genereeAt %} – {{ quittance.genereeAt|date('d/m/Y à H:i') }}{% endif %}
     </div>
+
 </body>
 </html>

@@ -5,7 +5,7 @@
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="fw-bold mb-0"><i class="bi bi-check2-circle text-primary"></i> Tâches & Semainier</h1>
-        <a href="{{ path('app_tache_new') }}" class="btn btn-primary">
+        <a href="{{ path('app_tache_new', {colocationId: colocation.id}) }}" class="btn btn-primary">
             <i class="bi bi-plus-lg"></i> Nouvelle tâche
         </a>
     </div>
@@ -14,15 +14,15 @@
     <div class="card p-4 mb-4">
         <h2 class="h5 fw-bold mb-3"><i class="bi bi-calendar-week text-info"></i> Semainier de la semaine</h2>
         <div class="row g-2">
-            {% set jours = {1: 'Lun', 2: 'Mar', 3: 'Mer', 4: 'Jeu', 5: 'Ven', 6: 'Sam', 7: 'Dim'} %}
-            {% for jourNum, jourNom in jours %}
+            {% set jours = {'Lundi': 'Lun', 'Mardi': 'Mar', 'Mercredi': 'Mer', 'Jeudi': 'Jeu', 'Vendredi': 'Ven', 'Samedi': 'Sam', 'Dimanche': 'Dim'} %}
+            {% for jourNomComplet, jourNom in jours %}
             <div class="col">
-                <div class="card p-2 text-center h-100 {{ 'now'|date('N') == jourNum ? 'border-primary' : '' }}">
-                    <div class="fw-bold small mb-2 {{ 'now'|date('N') == jourNum ? 'text-primary' : 'text-muted' }}">{{ jourNom }}</div>
-                    {% set tachesJour = semainier|filter(s => s.jourSemaine == jourNum) %}
-                    {% for s in tachesJour %}
-                    <div class="badge bg-{{ s.tache.statut == 'terminée' ? 'success' : (s.tache.statut == 'en_cours' ? 'warning' : 'secondary') }} mb-1 text-wrap" style="font-size:.7rem;">
-                        {{ s.tache.titre }}
+                <div class="card p-2 text-center h-100 {{ 'now'|date('N') == loop.index ? 'border-primary' : '' }}">
+                    <div class="fw-bold small mb-2 {{ 'now'|date('N') == loop.index ? 'text-primary' : 'text-muted' }}">{{ jourNom }}</div>
+                    {% set tachesJour = semainier[jourNomComplet] ?? [] %}
+                    {% for tache in tachesJour %}
+                    <div class="badge bg-{{ tache.statut == 'terminee' ? 'success' : (tache.statut == 'en_cours' ? 'warning' : 'secondary') }} mb-1 text-wrap" style="font-size:.7rem;">
+                        {{ tache.titre }}
                     </div>
                     {% else %}
                     <div class="text-muted" style="font-size:.75rem;">—</div>
@@ -52,19 +52,19 @@
                 </thead>
                 <tbody>
                     {% for tache in taches %}
-                    <tr class="{{ tache.statut == 'terminée' ? 'table-success opacity-75' : '' }}">
+                    <tr class="{{ tache.statut == 'terminee' ? 'table-success opacity-75' : '' }}">
                         <td>{{ tache.titre }}</td>
                         <td>{{ tache.type }}</td>
                         <td>{{ tache.assigne ? tache.assigne.nomComplet : '—' }}</td>
                         <td>{{ tache.colocation.nom }}</td>
                         <td>
-                            <span class="badge bg-{{ tache.statut == 'terminée' ? 'success' : (tache.statut == 'en_cours' ? 'warning' : 'secondary') }}">
+                            <span class="badge bg-{{ tache.statut == 'terminee' ? 'success' : (tache.statut == 'en_cours' ? 'warning' : 'secondary') }}">
                                 {{ tache.statut }}
                             </span>
                         </td>
                         <td>
                             <div class="d-flex gap-1">
-                                {% if tache.statut != 'terminée' %}
+                                {% if tache.statut != 'terminee' %}
                                 <form method="post" action="{{ path('app_tache_done', {id: tache.id}) }}">
                                     <input type="hidden" name="_token" value="{{ csrf_token('mark_done_' ~ tache.id) }}">
                                     <button type="submit" class="btn btn-sm btn-outline-success" title="Marquer terminée">

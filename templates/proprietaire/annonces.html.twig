@@ -32,9 +32,14 @@
                     <p class="fw-bold text-primary mb-1">{{ annonce.prix }}€/mois</p>
                     <span class="badge bg-{{ annonce.statut == 'disponible' ? 'success' : 'secondary' }}">{{ annonce.statut }}</span>
                 </div>
-                <div class="card-footer bg-transparent d-flex gap-2">
+                <div class="card-footer bg-transparent d-flex gap-2 flex-wrap">
+                    <a href="{{ path('app_proprietaire_visites_annonce', {id: annonce.id}) }}"
+                       class="btn btn-sm btn-outline-secondary"
+                       title="Voir les visites">
+                        <i class="bi bi-eye"></i> {{ annonce.nbVisites }}
+                    </a>
                     <a href="{{ path('app_annonce_show', {id: annonce.id}) }}" class="btn btn-sm btn-outline-info flex-grow-1">
-                        <i class="bi bi-eye"></i>
+                        <i class="bi bi-box-arrow-up-right"></i>
                     </a>
                     <a href="{{ path('app_annonce_edit', {id: annonce.id}) }}" class="btn btn-sm btn-outline-primary flex-grow-1">
                         <i class="bi bi-pencil"></i>

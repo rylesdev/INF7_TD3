@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mes évaluations{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="h3 fw-bold mb-4"><i class="bi bi-star-fill text-warning"></i> Mes évaluations</h1>
+
+    {% if evaluations|length > 0 %}
+    <div class="card mb-4 border-warning">
+        <div class="card-body text-center">
+            <div class="display-4 fw-bold text-warning">{{ moyenne }}</div>
+            <div class="text-muted">Note moyenne sur {{ evaluations|length }} évaluation{{ evaluations|length > 1 ? 's' : '' }}</div>
+            <div class="mt-2">
+                {% for i in 1..5 %}
+                    <i class="bi bi-star{{ i <= moyenne|round ? '-fill text-warning' : ' text-muted' }} fs-4"></i>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for eval in evaluations %}
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white fw-bold"
+                             style="width:44px;height:44px">
+                            {{ eval.proprietaire.prenom[0]|upper }}{{ eval.proprietaire.nom[0]|upper }}
+                        </div>
+                        <div>
+                            <div class="fw-semibold">{{ eval.proprietaire.nomComplet }}</div>
+                            <div class="text-muted small"><i class="bi bi-building"></i> {{ eval.colocation.nom }}</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        {% for i in 1..5 %}
+                            <i class="bi bi-star{{ i <= eval.note ? '-fill text-warning' : ' text-muted' }}"></i>
+                        {% endfor %}
+                        <span class="ms-1 badge bg-warning text-dark">{{ eval.note }}/5</span>
+                    </div>
+
+                    {% if eval.commentaire %}
+                    <blockquote class="blockquote small border-start border-warning ps-3 mt-3 text-muted">
+                        {{ eval.commentaire }}
+                    </blockquote>
+                    {% else %}
+                    <p class="text-muted small mt-2">Aucun commentaire.</p>
+                    {% endif %}
+
+                    <div class="text-muted small mt-2">
+                        <i class="bi bi-calendar3"></i>
+                        {{ eval.creeLe ? eval.creeLe|date('d/m/Y') : '—' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-body text-center text-muted py-5">
+            <i class="bi bi-star display-4 mb-3 d-block"></i>
+            <p>Vous n'avez pas encore reçu d'évaluation.</p>
+            <p class="small">Les évaluations sont rédigées par votre propriétaire à l'issue de votre période de colocation.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

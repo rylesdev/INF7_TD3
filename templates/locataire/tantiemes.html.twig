@@ -33,7 +33,7 @@
                 <tbody>
                     {% for tantieme in tantiemes %}
                     <tr>
-                        <td>{{ tantieme.charge.libelle }}</td>
+                        <td>{{ tantieme.charge.description ?? ('Charge ' ~ tantieme.charge.libelleType) }}</td>
                         <td>{{ tantieme.charge.libelleType }}</td>
                         <td>{{ tantieme.charge.montant }}€</td>
                         <td>{{ tantieme.pourcentage|number_format(2) }}%</td>

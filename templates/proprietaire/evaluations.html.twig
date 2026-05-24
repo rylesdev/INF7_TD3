@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mes évaluations locataires{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="h3 fw-bold mb-4"><i class="bi bi-star-fill text-warning"></i> Évaluations locataires</h1>
+
+    {% if evaluations|length > 0 %}
+    <div class="row g-4">
+        {% for eval in evaluations %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold"
+                             style="width:48px;height:48px;font-size:1.2rem">
+                            {{ eval.locataire.prenom[0]|upper }}{{ eval.locataire.nom[0]|upper }}
+                        </div>
+                        <div>
+                            <div class="fw-bold">{{ eval.locataire.nomComplet }}</div>
+                            <div class="text-muted small">{{ eval.colocation.nom }}</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        {% for i in 1..5 %}
+                            <i class="bi bi-star{{ i <= eval.note ? '-fill text-warning' : ' text-muted' }}"></i>
+                        {% endfor %}
+                        <span class="ms-1 text-muted small">({{ eval.note }}/5)</span>
+                    </div>
+
+                    {% if eval.commentaire %}
+                    <p class="text-muted small mb-3">{{ eval.commentaire }}</p>
+                    {% endif %}
+
+                    <div class="text-muted small mb-3">
+                        <i class="bi bi-calendar3"></i>
+                        {{ eval.creeLe ? eval.creeLe|date('d/m/Y') : '—' }}
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="{{ path('app_proprietaire_evaluer_locataire', {colId: eval.colocation.id, locId: eval.locataire.id}) }}"
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-pencil"></i> Modifier
+                        </a>
+                        <form method="post"
+                              action="{{ path('app_proprietaire_evaluation_delete', {id: eval.id}) }}"
+                              onsubmit="return confirm('Supprimer cette évaluation ?')">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_eval_' ~ eval.id) }}">
+                            <button class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-body text-center text-muted py-5">
+            <i class="bi bi-star display-4 mb-3 d-block"></i>
+            <p>Vous n'avez encore évalué aucun locataire.</p>
+            <p class="small">Pour évaluer un locataire, accédez à sa colocation et cliquez sur <strong>Évaluer</strong>.</p>
+            <a href="{{ path('app_proprietaire_colocations') }}" class="btn btn-primary mt-2">
+                <i class="bi bi-building"></i> Voir mes colocations
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

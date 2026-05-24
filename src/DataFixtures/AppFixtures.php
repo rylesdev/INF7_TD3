@@ -9,6 +9,7 @@ use App\Entity\Colocation;
 use App\Entity\Loyer;
 use App\Entity\Message;
 use App\Entity\Notification;
+use App\Entity\Quittance;
 use App\Entity\Tache;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -152,6 +153,18 @@ class AppFixtures extends Fixture
         $loyer2->setColocation($colocation);
         $loyer2->setChambre($chambre2);
         $manager->persist($loyer2);
+
+        // Quittance pour loyer1 (payé)
+        $debut = \DateTimeImmutable::createFromFormat('Y-m-d', date('Y') . '-' . date('m') . '-01');
+        $fin   = $debut->modify('last day of this month');
+        $quittance1 = new Quittance();
+        $quittance1->setLoyer($loyer1);
+        $quittance1->setMontantLoyer('650.00');
+        $quittance1->setMontantCharges('0.00');
+        $quittance1->setMontantTotal('650.00');
+        $quittance1->setPeriodeDebut($debut);
+        $quittance1->setPeriodeFin($fin);
+        $manager->persist($quittance1);
 
         // Charges
         $charge1 = new Charge();

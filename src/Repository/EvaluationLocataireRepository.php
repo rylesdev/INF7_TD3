@@ -12,4 +12,49 @@ class EvaluationLocataireRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, EvaluationLocataire::class);
     }
+
+    public function findByLocataire(int $locataireId): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.locataire = :id')
+            ->setParameter('id', $locataireId)
+            ->orderBy('e.creeLe', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByProprietaire(int $proprietaireId): array
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.proprietaire = :id')
+            ->setParameter('id', $proprietaireId)
+            ->orderBy('e.creeLe', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findOneByParties(int $locataireId, int $proprietaireId, int $colocationId): ?EvaluationLocataire
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.locataire = :loc')
+            ->andWhere('e.proprietaire = :prop')
+            ->andWhere('e.colocation = :col')
+            ->setParameter('loc', $locataireId)
+            ->setParameter('prop', $proprietaireId)
+            ->setParameter('col', $colocationId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function moyenneNoteLocataire(int $locataireId): float
+    {
+        $result = $this->createQueryBuilder('e')
+            ->select('AVG(e.note)')
+            ->andWhere('e.locataire = :id')
+            ->setParameter('id', $locataireId)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $result ? round((float) $result, 1) : 0.0;
+    }
 }

@@ -144,6 +144,12 @@
             "./src/Kernel.php"
         ]
     },
+    "symfony/mailer": {
+        "version": "6.4",
+        "recipe": {
+            "version": "4.3"
+        }
+    },
     "symfony/maker-bundle": {
         "version": "1.67",
         "recipe": {

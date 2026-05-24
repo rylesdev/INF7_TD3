@@ -6,6 +6,7 @@ use App\Entity\Loyer;
 use App\Entity\Message;
 use App\Entity\Tache;
 use App\Form\MessageType;
+use App\Repository\EvaluationLocataireRepository;
 use App\Repository\LoyerRepository;
 use App\Repository\MessageRepository;
 use App\Repository\NotificationRepository;
@@ -29,7 +30,8 @@ class DashboardLocataireController extends AbstractController
     public function dashboard(
         LoyerRepository $loyerRepo,
         TacheRepository $tacheRepo,
-        NotificationRepository $notifRepo
+        NotificationRepository $notifRepo,
+        MessageRepository $messageRepo
     ): Response {
         $user    = $this->getUser();
         $chambre = $user->getChambres()->first();
@@ -48,7 +50,7 @@ class DashboardLocataireController extends AbstractController
 
         $tachesAFaire = count(array_filter($taches, fn($t) => in_array($t->getStatut(), [Tache::STATUT_A_FAIRE, Tache::STATUT_EN_COURS])));
 
-        $messagesNonLus = 0;
+        $messagesNonLus = $messageRepo->countNonLus($user->getId());
 
         return $this->render('locataire/dashboard.html.twig', [
             'derniersLoyers'  => array_slice($loyers, 0, 5),
@@ -142,6 +144,9 @@ class DashboardLocataireController extends AbstractController
         $proprietaire  = $colocation->getProprietaire();
         $messages      = $messageRepo->findConversation($user->getId(), $proprietaire->getId(), $colocation->getId());
 
+        // Marquer les messages reçus comme lus
+        $messageRepo->marquerLus($proprietaire->getId(), $user->getId(), $colocation->getId());
+
         $message = new Message();
         $form    = $this->createForm(MessageType::class, $message);
         $form->handleRequest($request);
@@ -168,6 +173,18 @@ class DashboardLocataireController extends AbstractController
             'proprietaire'  => $proprietaire,
             'conversations' => $conversations,
             'form'          => $form->createView(),
+        ]);
+    }
+
+    #[Route('/evaluations', name: 'app_locataire_evaluations')]
+    public function evaluations(EvaluationLocataireRepository $evalRepo): Response
+    {
+        $evaluations = $evalRepo->findByLocataire($this->getUser()->getId());
+        $moyenne     = $evalRepo->moyenneNoteLocataire($this->getUser()->getId());
+
+        return $this->render('locataire/evaluations.html.twig', [
+            'evaluations' => $evaluations,
+            'moyenne'     => $moyenne,
         ]);
     }
 

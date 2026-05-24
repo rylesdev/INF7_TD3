@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20260523211105 extends AbstractMigration
+final class Version20260524180321 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -33,7 +33,7 @@ final class Version20260523211105 extends AbstractMigration
         $this->addSql('CREATE TABLE semainier (id INT AUTO_INCREMENT NOT NULL, jour_semaine INT NOT NULL, date_debut DATE NOT NULL, date_fin DATE NOT NULL, created_at DATETIME NOT NULL, tache_id INT NOT NULL, UNIQUE INDEX UNIQ_30B95EEAD2235D39 (tache_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE tache (id INT AUTO_INCREMENT NOT NULL, titre VARCHAR(255) NOT NULL, type VARCHAR(50) NOT NULL, statut VARCHAR(20) NOT NULL, date_echeance DATE DEFAULT NULL, created_at DATETIME NOT NULL, colocation_id INT NOT NULL, assigne_id INT DEFAULT NULL, INDEX IDX_938720758B419309 (colocation_id), INDEX IDX_938720758E7B8AB0 (assigne_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE tantieme (id INT AUTO_INCREMENT NOT NULL, pourcentage NUMERIC(5, 2) NOT NULL, montant_du NUMERIC(10, 2) NOT NULL, calcule_le DATETIME NOT NULL, chambre_id INT NOT NULL, charge_id INT NOT NULL, INDEX IDX_BBEC1E089B177F54 (chambre_id), INDEX IDX_BBEC1E0855284914 (charge_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
-        $this->addSql('CREATE TABLE `user` (id INT AUTO_INCREMENT NOT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, prenom VARCHAR(100) NOT NULL, nom VARCHAR(100) NOT NULL, telephone VARCHAR(20) DEFAULT NULL, photo_profil VARCHAR(255) DEFAULT NULL, created_at DATETIME NOT NULL, UNIQUE INDEX UNIQ_8D93D649E7927C74 (email), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
+        $this->addSql('CREATE TABLE `user` (id INT AUTO_INCREMENT NOT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, prenom VARCHAR(100) NOT NULL, nom VARCHAR(100) NOT NULL, telephone VARCHAR(20) DEFAULT NULL, photo_profil VARCHAR(255) DEFAULT NULL, created_at DATETIME NOT NULL, reset_token VARCHAR(100) DEFAULT NULL, reset_token_expires_at DATETIME DEFAULT NULL, UNIQUE INDEX UNIQ_8D93D649E7927C74 (email), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('CREATE TABLE visite_annonce (id INT AUTO_INCREMENT NOT NULL, ip_address VARCHAR(45) DEFAULT NULL, visite_le DATETIME NOT NULL, annonce_id INT NOT NULL, INDEX IDX_3C54E6C38805AB2F (annonce_id), PRIMARY KEY (id)) DEFAULT CHARACTER SET utf8mb4');
         $this->addSql('ALTER TABLE annonce ADD CONSTRAINT FK_F65593E58B419309 FOREIGN KEY (colocation_id) REFERENCES colocation (id)');
         $this->addSql('ALTER TABLE chambre ADD CONSTRAINT FK_C509E4FF8B419309 FOREIGN KEY (colocation_id) REFERENCES colocation (id)');

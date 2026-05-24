@@ -9,8 +9,7 @@
         <div class="row g-3">
             <div class="col-12">{{ form_label(form.titre) }}{{ form_widget(form.titre) }}{{ form_errors(form.titre) }}</div>
             <div class="col-md-6">{{ form_label(form.type) }}{{ form_widget(form.type) }}{{ form_errors(form.type) }}</div>
-            <div class="col-md-6">{{ form_label(form.statut) }}{{ form_widget(form.statut) }}{{ form_errors(form.statut) }}</div>
-            <div class="col-12">{{ form_label(form.colocation) }}{{ form_widget(form.colocation) }}{{ form_errors(form.colocation) }}</div>
+            <div class="col-md-6">{{ form_label(form.dateEcheance) }}{{ form_widget(form.dateEcheance) }}{{ form_errors(form.dateEcheance) }}</div>
             <div class="col-12">{{ form_label(form.assigne) }}{{ form_widget(form.assigne) }}{{ form_errors(form.assigne) }}</div>
             {% if form.jourSemaine is defined %}
             <div class="col-12">{{ form_label(form.jourSemaine) }}{{ form_widget(form.jourSemaine) }}{{ form_errors(form.jourSemaine) }}</div>
@@ -18,7 +17,7 @@
         </div>
         <div class="mt-4 d-flex gap-2">
             <button type="submit" class="btn btn-primary">Créer la tâche</button>
-            <a href="{{ path('app_taches') }}" class="btn btn-outline-secondary">Annuler</a>
+            <a href="{{ path('app_taches', {colocationId: colocation.id}) }}" class="btn btn-outline-secondary">Annuler</a>
         </div>
         {{ form_end(form) }}
     </div>

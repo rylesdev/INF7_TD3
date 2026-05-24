@@ -13,6 +13,44 @@ class MessageRepository extends ServiceEntityRepository
         parent::__construct($registry, Message::class);
     }
 
+    public function findNonLus(int $userId): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.destinataire = :userId')
+            ->andWhere('m.lu = false')
+            ->setParameter('userId', $userId)
+            ->orderBy('m.envoyeLe', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countNonLus(int $userId): int
+    {
+        return (int) $this->createQueryBuilder('m')
+            ->select('COUNT(m.id)')
+            ->andWhere('m.destinataire = :userId')
+            ->andWhere('m.lu = false')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function marquerLus(int $expediteurId, int $destinataireId, int $colocationId): void
+    {
+        $this->createQueryBuilder('m')
+            ->update()
+            ->set('m.lu', 'true')
+            ->andWhere('m.expediteur = :exp')
+            ->andWhere('m.destinataire = :dest')
+            ->andWhere('m.colocation = :col')
+            ->andWhere('m.lu = false')
+            ->setParameter('exp', $expediteurId)
+            ->setParameter('dest', $destinataireId)
+            ->setParameter('col', $colocationId)
+            ->getQuery()
+            ->execute();
+    }
+
     public function findConversation(int $user1Id, int $user2Id, int $colocationId): array
     {
         return $this->createQueryBuilder('m')
