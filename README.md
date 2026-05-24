@@ -14,13 +14,14 @@ Application web de gestion de colocation — loyers, charges, messagerie et plan
 
 ### Lancer l'application
 
-Double-cliquez sur **`install.bat`** à la racine du projet.
+Faites un clic droit sur **`install.bat`** → **"Exécuter en tant qu'administrateur"**.
 
 Le script fait tout automatiquement :
 - installe les dépendances
 - crée la base de données
 - génère les données de test
 - configure l'authentification
+- télécharge et démarre Mailpit (serveur mail de test) en arrière-plan
 
 Une fois terminé, ouvrez votre navigateur à l'adresse :
 
@@ -43,17 +44,21 @@ Une fois terminé, ouvrez votre navigateur à l'adresse :
 ### Côté propriétaire
 - Gérer ses colocations et les chambres
 - Suivre les loyers (payé / en retard)
-- Répartir les charges selon la surface de chaque chambre
+- Répartir les charges selon la surface de chaque chambre (tantièmes)
 - Générer des quittances PDF
 - Publier des annonces avec photos et carte interactive
+- Suivre les visites des annonces (histogramme)
 - Communiquer avec les locataires via la messagerie
+- Évaluer les locataires (note + commentaire)
 
 ### Côté locataire
 - Consulter ses loyers et leur statut
 - Télécharger ses quittances en PDF
-- Voir sa part des charges mensuelles
+- Voir sa part des charges mensuelles (tantièmes)
 - Gérer le planning ménager avec ses colocataires
 - Envoyer des messages au propriétaire
+- Consulter ses évaluations
+- Réinitialiser son mot de passe par email
 
 ---
 
