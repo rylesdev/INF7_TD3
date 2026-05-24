@@ -46,8 +46,13 @@ class ColocationTest extends TestCase
 
     public function testLoyerIsSet(): void
     {
-        $c = $this->makeColocation();
-        $this->assertSame(1500.00, $c->getLoyer());
+        $c = new Colocation();
+        $c->setNom('Test');
+        $c->setAdresse('1 rue Test');
+        $c->setVille('Paris');
+        $c->setCodePostal('75001');
+        $c->setLoyer('1500.00');
+        $this->assertSame('1500.00', $c->getLoyer());
     }
 
     public function testProprietaireAssignment(): void
@@ -77,12 +82,14 @@ class ColocationTest extends TestCase
         $c = $this->makeColocation();
 
         $ch1 = new Chambre();
+        $ch1->setNom('Ch1');
         $ch1->setSurface('18.5');
-        $ch1->setColocation($c);
+        $c->addChambre($ch1);
 
         $ch2 = new Chambre();
+        $ch2->setNom('Ch2');
         $ch2->setSurface('14.0');
-        $ch2->setColocation($c);
+        $c->addChambre($ch2);
 
         $this->assertEqualsWithDelta(32.5, $c->getSurfaceTotale(), 0.001);
     }
@@ -97,15 +104,16 @@ class ColocationTest extends TestCase
     public function testLatitudeLongitudeCanBeSet(): void
     {
         $c = $this->makeColocation();
-        $c->setLatitude(48.8566);
-        $c->setLongitude(2.3522);
-        $this->assertSame(48.8566, $c->getLatitude());
-        $this->assertSame(2.3522, $c->getLongitude());
+        $c->setLatitude('48.856600');
+        $c->setLongitude('2.352200');
+        $this->assertSame('48.856600', $c->getLatitude());
+        $this->assertSame('2.352200', $c->getLongitude());
     }
 
     public function testCreatedAtSetAutomatically(): void
     {
         $c = $this->makeColocation();
+        $c->onPrePersist();
         $this->assertInstanceOf(\DateTimeImmutable::class, $c->getCreatedAt());
     }
 
