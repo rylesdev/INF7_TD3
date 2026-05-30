@@ -20,10 +20,10 @@ class RegistrationFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('prenom', TextType::class, ['label' => 'Prénom', 'attr' => ['class' => 'form-control']])
-            ->add('nom', TextType::class, ['label' => 'Nom', 'attr' => ['class' => 'form-control']])
-            ->add('email', EmailType::class, ['label' => 'Email', 'attr' => ['class' => 'form-control']])
-            ->add('telephone', TextType::class, ['label' => 'Téléphone', 'required' => false, 'attr' => ['class' => 'form-control']])
+            ->add('prenom', TextType::class, ['label' => 'Prénom', 'attr' => ['class' => 'form-control', 'autocomplete' => 'given-name']])
+            ->add('nom', TextType::class, ['label' => 'Nom', 'attr' => ['class' => 'form-control', 'autocomplete' => 'family-name']])
+            ->add('email', EmailType::class, ['label' => 'Email', 'attr' => ['class' => 'form-control', 'autocomplete' => 'email', 'inputmode' => 'email']])
+            ->add('telephone', TextType::class, ['label' => 'Téléphone', 'required' => false, 'attr' => ['class' => 'form-control', 'autocomplete' => 'tel', 'type' => 'tel', 'placeholder' => 'ex : +33 6 12 34 56 78']])
             ->add('role', ChoiceType::class, [
                 'label'    => 'Je suis',
                 'mapped'   => false,
@@ -34,8 +34,8 @@ class RegistrationFormType extends AbstractType
             ->add('plainPassword', RepeatedType::class, [
                 'type'            => PasswordType::class,
                 'mapped'          => false,
-                'first_options'   => ['label' => 'Mot de passe', 'attr' => ['class' => 'form-control']],
-                'second_options'  => ['label' => 'Confirmer le mot de passe', 'attr' => ['class' => 'form-control']],
+                'first_options'   => ['label' => 'Mot de passe', 'attr' => ['class' => 'form-control', 'autocomplete' => 'new-password']],
+                'second_options'  => ['label' => 'Confirmer le mot de passe', 'attr' => ['class' => 'form-control', 'autocomplete' => 'new-password']],
                 'constraints'     => [
                     new NotBlank(['message' => 'Veuillez saisir un mot de passe.']),
                     new Length(['min' => 8, 'minMessage' => 'Le mot de passe doit contenir au moins {{ limit }} caractères.']),

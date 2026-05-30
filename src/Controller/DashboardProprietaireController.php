@@ -174,7 +174,7 @@ class DashboardProprietaireController extends AbstractController
     public function payerLoyer(Loyer $loyer, EntityManagerInterface $em): Response
     {
         $loyer->setStatut(Loyer::STATUT_PAYE);
-        $loyer->setDatePaiement(new \DateTime());
+        $loyer->setDatePaiement(new \DateTimeImmutable());
         $em->flush();
 
         if (!$loyer->getQuittance()) {
@@ -187,8 +187,8 @@ class DashboardProprietaireController extends AbstractController
 
     private function genererQuittance(Loyer $loyer, EntityManagerInterface $em): void
     {
-        $debut = \DateTime::createFromFormat('Y-m-d', $loyer->getAnnee() . '-' . $loyer->getMois() . '-01');
-        $fin   = (clone $debut)->modify('last day of this month');
+        $debut = \DateTimeImmutable::createFromFormat('Y-m-d', $loyer->getAnnee() . '-' . $loyer->getMois() . '-01');
+        $fin   = $debut->modify('last day of this month');
 
         $quittance = new Quittance();
         $quittance->setLoyer($loyer);
@@ -374,11 +374,13 @@ class DashboardProprietaireController extends AbstractController
         \App\Entity\Annonce $annonce,
         VisiteAnnonceRepository $visiteRepo
     ): Response {
+        $parJour = $visiteRepo->countParJour($annonce->getId());
         return $this->render('proprietaire/visites_annonce.html.twig', [
-            'annonce'    => $annonce,
-            'visites'    => $visiteRepo->findByAnnonce($annonce->getId()),
-            'parJour'    => $visiteRepo->countParJour($annonce->getId()),
-            'total'      => $visiteRepo->countByAnnonce($annonce->getId()),
+            'annonce'      => $annonce,
+            'visites'      => $visiteRepo->findByAnnonce($annonce->getId()),
+            'parJour'      => $parJour,
+            'parJourValues'=> array_values($parJour),
+            'total'        => $visiteRepo->countByAnnonce($annonce->getId()),
         ]);
     }
 

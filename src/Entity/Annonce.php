@@ -89,10 +89,14 @@ class Annonce
     #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: VisiteAnnonce::class, cascade: ['remove'])]
     private Collection $visites;
 
+    #[ORM\OneToMany(mappedBy: 'annonce', targetEntity: AvisAnnonce::class, cascade: ['remove'])]
+    private Collection $avis;
+
     public function __construct()
     {
         $this->photos = new ArrayCollection();
         $this->visites = new ArrayCollection();
+        $this->avis = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -128,5 +132,14 @@ class Annonce
     public function getPremierPhoto(): ?PhotoAnnonce
     {
         return $this->photos->first() ?: null;
+    }
+
+    public function getAvis(): Collection { return $this->avis; }
+    public function addAvi(AvisAnnonce $avis): static { if (!$this->avis->contains($avis)) { $this->avis->add($avis); $avis->setAnnonce($this); } return $this; }
+    public function getMoyenneNotes(): ?float
+    {
+        if ($this->avis->isEmpty()) return null;
+        $total = array_sum(array_map(fn($a) => $a->getNote(), $this->avis->toArray()));
+        return round($total / $this->avis->count(), 1);
     }
 }

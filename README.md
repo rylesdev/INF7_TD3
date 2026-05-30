@@ -27,6 +27,12 @@ Une fois terminé, ouvrez votre navigateur à l'adresse :
 
 **http://localhost/htdocs/INF7_TD3/public/**
 
+Pour consulter les emails envoyés par l'application (ex : réinitialisation de mot de passe) :
+
+**http://localhost:8025** (interface Mailpit)
+
+> Si Mailpit n'est pas démarré, double-cliquez sur **`demarrer_mailpit.bat`** à la racine du projet. Il démarre aussi automatiquement à chaque ouverture de session Windows (via le Planificateur de tâches, configuré par `install.bat`).
+
 ---
 
 ## Comptes de test

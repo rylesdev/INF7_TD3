@@ -3,10 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Annonce;
+use App\Entity\AvisAnnonce;
 use App\Entity\PhotoAnnonce;
 use App\Entity\VisiteAnnonce;
 use App\Form\AnnonceType;
+use App\Form\AvisAnnonceType;
 use App\Repository\AnnonceRepository;
+use App\Repository\AvisAnnonceRepository;
+use App\Repository\VisiteAnnonceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -29,19 +33,46 @@ class AnnonceController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_annonce_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(Annonce $annonce, EntityManagerInterface $em, Request $request): Response
+    #[Route('/{id}', name: 'app_annonce_show', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    public function show(Annonce $annonce, EntityManagerInterface $em, Request $request, VisiteAnnonceRepository $visiteRepo, AvisAnnonceRepository $avisRepo): Response
     {
-        // Compteur de visites (Green IT : on ne log pas en boucle la même IP)
-        $ip     = $request->getClientIp();
-        $visite = new VisiteAnnonce();
-        $visite->setAnnonce($annonce);
-        $visite->setIpAddress($ip);
-        $em->persist($visite);
-        $em->flush();
+        $ip = $request->getClientIp() ?? 'unknown';
+        $userId = $this->isGranted('ROLE_USER') ? $this->getUser()->getId() : null;
+        if (!$visiteRepo->hasVisited($annonce->getId(), $ip, $userId)) {
+            $visite = new VisiteAnnonce();
+            $visite->setAnnonce($annonce);
+            $visite->setIpAddress($ip);
+            if ($userId !== null) {
+                $visite->setUser($this->getUser());
+            }
+            $em->persist($visite);
+            $em->flush();
+        }
+
+        $avisForm = null;
+        $dejaAvis = false;
+        if ($this->isGranted('ROLE_USER') && !$this->isGranted('ROLE_PROPRIETAIRE')) {
+            $dejaAvis = $avisRepo->findByAuteurAndAnnonce($this->getUser()->getId(), $annonce->getId()) !== null;
+            if (!$dejaAvis) {
+                $avis = new AvisAnnonce();
+                $avisForm = $this->createForm(AvisAnnonceType::class, $avis);
+                $avisForm->handleRequest($request);
+                if ($avisForm->isSubmitted() && $avisForm->isValid()) {
+                    $avis->setAnnonce($annonce);
+                    $avis->setAuteur($this->getUser());
+                    $em->persist($avis);
+                    $em->flush();
+                    $this->addFlash('success', 'Votre avis a été publié. Merci !');
+                    return $this->redirectToRoute('app_annonce_show', ['id' => $annonce->getId()]);
+                }
+            }
+        }
 
         return $this->render('annonce/show.html.twig', [
-            'annonce' => $annonce,
+            'annonce'  => $annonce,
+            'avis'     => $avisRepo->findByAnnonce($annonce->getId()),
+            'avisForm' => $avisForm?->createView(),
+            'dejaAvis' => $dejaAvis,
         ]);
     }
 

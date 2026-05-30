@@ -13,6 +13,22 @@ class VisiteAnnonceRepository extends ServiceEntityRepository
         parent::__construct($registry, VisiteAnnonce::class);
     }
 
+    public function hasVisited(int $annonceId, string $ip, ?int $userId = null): bool
+    {
+        $qb = $this->createQueryBuilder('v')
+            ->select('COUNT(v.id)')
+            ->andWhere('v.annonce = :id')
+            ->setParameter('id', $annonceId);
+
+        if ($userId !== null) {
+            $qb->andWhere('v.user = :userId')->setParameter('userId', $userId);
+        } else {
+            $qb->andWhere('v.ipAddress = :ip')->setParameter('ip', $ip);
+        }
+
+        return (bool) $qb->getQuery()->getSingleScalarResult();
+    }
+
     public function findByAnnonce(int $annonceId): array
     {
         return $this->createQueryBuilder('v')
@@ -36,18 +52,16 @@ class VisiteAnnonceRepository extends ServiceEntityRepository
     /** @return array<string, int>  date => count */
     public function countParJour(int $annonceId, int $jours = 30): array
     {
-        $depuis = new \DateTimeImmutable("-$jours days");
+        $depuis = (new \DateTimeImmutable("-$jours days"))->format('Y-m-d H:i:s');
 
-        $rows = $this->createQueryBuilder('v')
-            ->select("DATE(v.visiteLe) AS jour, COUNT(v.id) AS nb")
-            ->andWhere('v.annonce = :id')
-            ->andWhere('v.visiteLe >= :depuis')
-            ->setParameter('id', $annonceId)
-            ->setParameter('depuis', $depuis)
-            ->groupBy('jour')
-            ->orderBy('jour', 'ASC')
-            ->getQuery()
-            ->getScalarResult();
+        $conn = $this->getEntityManager()->getConnection();
+        $sql  = 'SELECT DATE(visite_le) AS jour, COUNT(id) AS nb
+                 FROM visite_annonce
+                 WHERE annonce_id = :id AND visite_le >= :depuis
+                 GROUP BY DATE(visite_le)
+                 ORDER BY jour ASC';
+
+        $rows = $conn->executeQuery($sql, ['id' => $annonceId, 'depuis' => $depuis])->fetchAllAssociative();
 
         $result = [];
         foreach ($rows as $row) {

@@ -36,7 +36,15 @@ class LoyerType extends AbstractType
             ->add('dateEcheance', DateType::class, [
                 'label'  => 'Date d\'échéance',
                 'widget' => 'single_text',
+                'input'  => 'datetime_immutable',
                 'attr'   => ['class' => 'form-control'],
+            ])
+            ->add('datePaiement', DateType::class, [
+                'label'    => 'Date de paiement',
+                'widget'   => 'single_text',
+                'input'    => 'datetime_immutable',
+                'required' => false,
+                'attr'     => ['class' => 'form-control'],
             ])
             ->add('statut', ChoiceType::class, [
                 'label'   => 'Statut',

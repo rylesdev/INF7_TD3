@@ -30,7 +30,7 @@ class ChargeType extends AbstractType
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('montant', MoneyType::class, ['label' => 'Montant (€)', 'currency' => 'EUR', 'attr' => ['class' => 'form-control']])
-            ->add('date', DateType::class, ['label' => 'Date', 'widget' => 'single_text', 'attr' => ['class' => 'form-control']])
+            ->add('date', DateType::class, ['label' => 'Date', 'widget' => 'single_text', 'input' => 'datetime_immutable', 'attr' => ['class' => 'form-control']])
             ->add('description', TextareaType::class, ['label' => 'Description', 'required' => false, 'attr' => ['class' => 'form-control', 'rows' => 2]])
             ->add('colocation', EntityType::class, [
                 'class'        => Colocation::class,

@@ -192,10 +192,13 @@ class DashboardLocataireController extends AbstractController
     public function notifications(NotificationRepository $repo, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        $notifications = $repo->findNonLues($user->getId());
 
+        // Récupérer toutes les notifications et marquer les non-lues
+        $notifications = $repo->findAllByUser($user->getId());
         foreach ($notifications as $n) {
-            $n->setLue(true);
+            if (!$n->isLue()) {
+                $n->setLue(true);
+            }
         }
         $em->flush();
 

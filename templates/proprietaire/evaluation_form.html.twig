@@ -19,7 +19,7 @@
                 <div class="card-body d-flex align-items-center gap-3">
                     <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold"
                          style="width:52px;height:52px;font-size:1.3rem">
-                        {{ locataire.prenom[0]|upper }}{{ locataire.nom[0]|upper }}
+                        {{ locataire.prenom|slice(0,1)|upper }}{{ locataire.nom|slice(0,1)|upper }}
                     </div>
                     <div>
                         <div class="fw-bold fs-5">{{ locataire.nomComplet }}</div>
@@ -35,12 +35,10 @@
 
                 <div class="mb-4">
                     <label class="form-label fw-bold">Note</label>
-                    <div>
+                    <div class="star-rating-widget" id="evalStarWidget">
                         {% for choice in form.note %}
-                        <div class="form-check form-check-inline">
-                            {{ form_widget(choice) }}
-                            {{ form_label(choice) }}
-                        </div>
+                            {{ form_widget(choice, {attr: {class: 'star-radio'}}) }}
+                            <label for="{{ choice.vars.id }}" class="star-label" title="{{ choice.vars.value }} étoile(s)">★</label>
                         {% endfor %}
                     </div>
                     {{ form_errors(form.note) }}
@@ -63,4 +61,37 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+.star-rating-widget { display: flex; gap: 4px; }
+.star-rating-widget .star-radio { display: none; }
+.star-rating-widget .star-label { font-size: 2rem; color: #ddd; cursor: pointer; transition: color .1s; line-height: 1; }
+.star-rating-widget .star-label.active { color: #ffc107; }
+.star-rating-widget .star-label:hover { color: #ffc107; }
+</style>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const widget = document.getElementById('evalStarWidget');
+    if (!widget) return;
+    const inputs = widget.querySelectorAll('.star-radio');
+    const labels = widget.querySelectorAll('.star-label');
+    function highlight(n) { labels.forEach((l, i) => l.classList.toggle('active', i < n)); }
+    inputs.forEach((inp, i) => {
+        if (inp.checked) highlight(i + 1);
+        inp.addEventListener('change', () => highlight(i + 1));
+    });
+    labels.forEach((lbl, i) => {
+        lbl.addEventListener('mouseover', () => highlight(i + 1));
+        lbl.addEventListener('mouseout', () => {
+            const checked = [...inputs].findIndex(inp => inp.checked);
+            highlight(checked >= 0 ? checked + 1 : 0);
+        });
+    });
+});
+</script>
 {% endblock %}

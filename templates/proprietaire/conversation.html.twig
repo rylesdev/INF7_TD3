@@ -18,7 +18,7 @@
             <div class="d-flex mb-3 {{ message.expediteur.id == app.user.id ? 'justify-content-end' : '' }}">
                 <div class="card p-2 px-3 {{ message.expediteur.id == app.user.id ? 'bg-primary text-white' : 'bg-light' }}" style="max-width:70%;">
                     <p class="mb-1 small">{{ message.contenu }}</p>
-                    <small class="opacity-75">{{ message.createdAt|date('d/m H:i') }}</small>
+                    <small class="opacity-75">{{ message.envoyeLe|date('d/m H:i') }}</small>
                 </div>
             </div>
             {% else %}
@@ -38,6 +38,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const list = document.getElementById('messagesList');
     if (list) list.scrollTop = list.scrollHeight;
+
+    document.querySelectorAll('textarea').forEach(ta => {
+        ta.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                ta.closest('form').submit();
+            }
+        });
+    });
 });
 </script>
 {% endblock %}

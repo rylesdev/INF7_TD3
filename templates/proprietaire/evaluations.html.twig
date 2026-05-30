@@ -14,7 +14,7 @@
                     <div class="d-flex align-items-center gap-3 mb-3">
                         <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold"
                              style="width:48px;height:48px;font-size:1.2rem">
-                            {{ eval.locataire.prenom[0]|upper }}{{ eval.locataire.nom[0]|upper }}
+                            {{ eval.locataire.prenom|slice(0,1)|upper }}{{ eval.locataire.nom|slice(0,1)|upper }}
                         </div>
                         <div>
                             <div class="fw-bold">{{ eval.locataire.nomComplet }}</div>

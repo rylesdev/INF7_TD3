@@ -7,16 +7,53 @@
         <div class="col-md-6">
             <div class="card p-4">
                 <h1 class="h3 mb-4 text-center"><i class="bi bi-person-plus text-primary"></i> Créer un compte</h1>
-                {{ form_start(form, {attr: {class: 'needs-validation', novalidate: true}}) }}
+                {{ form_start(form, {attr: {id: 'registerForm', novalidate: true}}) }}
                     <div class="row">
                         <div class="col-md-6 mb-3">{{ form_label(form.prenom) }}{{ form_widget(form.prenom) }}{{ form_errors(form.prenom) }}</div>
                         <div class="col-md-6 mb-3">{{ form_label(form.nom) }}{{ form_widget(form.nom) }}{{ form_errors(form.nom) }}</div>
                     </div>
-                    <div class="mb-3">{{ form_label(form.email) }}{{ form_widget(form.email) }}{{ form_errors(form.email) }}</div>
-                    <div class="mb-3">{{ form_label(form.telephone) }}{{ form_widget(form.telephone) }}{{ form_errors(form.telephone) }}</div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.email) }}
+                        {{ form_widget(form.email, {attr: {id: 'emailField'}}) }}
+                        <div id="emailFeedback" class="text-danger small mt-1" style="display:none"></div>
+                        {{ form_errors(form.email) }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.telephone) }}
+                        <div class="input-group">
+                            <select id="phonePrefix" class="form-select" style="max-width:130px;">
+                                <option value="+33">🇫🇷 +33</option>
+                                <option value="+32">🇧🇪 +32</option>
+                                <option value="+41">🇨🇭 +41</option>
+                                <option value="+352">🇱🇺 +352</option>
+                                <option value="+1">🇺🇸 +1</option>
+                                <option value="+44">🇬🇧 +44</option>
+                                <option value="+49">🇩🇪 +49</option>
+                                <option value="+34">🇪🇸 +34</option>
+                                <option value="+39">🇮🇹 +39</option>
+                                <option value="+212">🇲🇦 +212</option>
+                                <option value="+213">🇩🇿 +213</option>
+                                <option value="+216">🇹🇳 +216</option>
+                                <option value="">Autre</option>
+                            </select>
+                            {{ form_widget(form.telephone, {attr: {id: 'phoneNumber', placeholder: '6 12 34 56 78', style: 'flex:1;'}}) }}
+                        </div>
+                        <div id="phoneFeedback" class="text-danger small mt-1" style="display:none"></div>
+                        {{ form_errors(form.telephone) }}
+                    </div>
+
                     <div class="mb-3">
                         {{ form_label(form.role) }}
-                        <div class="d-flex gap-4 mt-1">{{ form_widget(form.role) }}</div>
+                        <div class="d-flex gap-4 mt-1">
+                            {% for choice in form.role %}
+                                <div class="form-check">
+                                    {{ form_widget(choice) }}
+                                    {{ form_label(choice) }}
+                                </div>
+                            {% endfor %}
+                        </div>
                         {{ form_errors(form.role) }}
                     </div>
                     <div class="mb-3">{{ form_label(form.plainPassword.first) }}{{ form_widget(form.plainPassword.first) }}{{ form_errors(form.plainPassword.first) }}</div>
@@ -31,4 +68,77 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const emailField   = document.getElementById('emailField');
+    const emailFeedback = document.getElementById('emailFeedback');
+    const phoneNumber  = document.getElementById('phoneNumber');
+    const phonePrefix  = document.getElementById('phonePrefix');
+    const phoneFeedback = document.getElementById('phoneFeedback');
+    const form         = document.getElementById('registerForm');
+
+    function validateEmail(val) {
+        if (!val) return 'L\'adresse email est obligatoire.';
+        if (!val.includes('@')) return 'L\'adresse email doit contenir un @.';
+        const [local, domain] = val.split('@');
+        if (!local) return 'Veuillez saisir un nom avant le @.';
+        if (!domain) return 'Veuillez saisir un nom de domaine après le @.';
+        if (!domain.includes('.')) return 'Le domaine doit contenir un point (ex : gmail.com).';
+        const ext = domain.split('.').pop();
+        if (!ext || ext.length < 2) return 'L\'extension de domaine est invalide (ex : .com, .fr).';
+        return '';
+    }
+
+    function validatePhone(val) {
+        if (!val) return '';
+        if (/[a-zA-Z]/.test(val)) return 'Le numéro de téléphone ne doit pas contenir de lettres.';
+        const digits = val.replace(/[\s\-().+]/g, '');
+        if (!/^\d+$/.test(digits)) return 'Caractères non autorisés dans le numéro.';
+        if (digits.length < 7 || digits.length > 15) return 'Le numéro doit contenir entre 7 et 15 chiffres.';
+        return '';
+    }
+
+    emailField?.addEventListener('input', () => {
+        const val = emailField.value.trim();
+        const err = val ? validateEmail(val) : '';
+        emailFeedback.textContent = err;
+        emailFeedback.style.display = err ? 'block' : 'none';
+        emailField.classList.toggle('is-invalid', !!err);
+        emailField.classList.toggle('is-valid', !err && val.length > 0);
+    });
+
+    phoneNumber?.addEventListener('input', () => {
+        const err = validatePhone(phoneNumber.value.trim());
+        phoneFeedback.textContent = err;
+        phoneFeedback.style.display = err ? '' : 'none';
+        phoneNumber.classList.toggle('is-invalid', !!err);
+    });
+
+    form?.addEventListener('submit', e => {
+        const emailErr = validateEmail(emailField?.value.trim() ?? '');
+        const phoneErr = validatePhone(phoneNumber?.value.trim() ?? '');
+        if (emailErr) {
+            e.preventDefault();
+            emailFeedback.textContent = emailErr;
+            emailFeedback.style.display = 'block';
+            emailField.classList.add('is-invalid');
+        }
+        if (phoneErr) {
+            e.preventDefault();
+            phoneFeedback.textContent = phoneErr;
+            phoneFeedback.style.display = '';
+            phoneNumber.classList.add('is-invalid');
+        }
+
+        // Combiner préfixe + numéro avant soumission
+        if (!emailErr && !phoneErr && phoneNumber && phonePrefix?.value) {
+            const digits = phoneNumber.value.trim().replace(/^0/, '');
+            phoneNumber.value = phonePrefix.value + ' ' + digits;
+        }
+    });
+});
+</script>
 {% endblock %}

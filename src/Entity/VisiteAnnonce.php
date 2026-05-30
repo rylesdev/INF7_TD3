@@ -24,6 +24,10 @@ class VisiteAnnonce
     #[ORM\JoinColumn(nullable: false)]
     private ?Annonce $annonce = null;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?User $user = null;
+
     #[ORM\PrePersist]
     public function onPrePersist(): void { $this->visiteLe = new \DateTimeImmutable(); }
 
@@ -33,4 +37,6 @@ class VisiteAnnonce
     public function getVisiteLe(): ?\DateTimeImmutable { return $this->visiteLe; }
     public function getAnnonce(): ?Annonce { return $this->annonce; }
     public function setAnnonce(?Annonce $annonce): static { $this->annonce = $annonce; return $this; }
+    public function getUser(): ?User { return $this->user; }
+    public function setUser(?User $user): static { $this->user = $user; return $this; }
 }

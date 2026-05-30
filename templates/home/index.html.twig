@@ -9,11 +9,27 @@
 <section class="hero-section text-center">
     <div class="container">
         <h1 class="display-4 fw-bold mb-3"><i class="bi bi-house-heart-fill"></i> Colocation.com</h1>
-        <p class="lead mb-4">La plateforme qui simplifie la gestion de votre colocation.<br>Loyers, charges, messagerie et planning en un seul endroit.</p>
-        <a href="{{ path('app_annonces') }}" class="btn btn-light btn-lg me-3">
-            <i class="bi bi-search"></i> Voir les annonces
-        </a>
-        {% if not is_granted('ROLE_USER') %}
+        {% if is_granted('ROLE_PROPRIETAIRE') %}
+            <p class="lead mb-4">Bienvenue, {{ app.user.prenom }}. Gérez vos colocations, suivez vos loyers et communiquez avec vos locataires.</p>
+            <a href="{{ path('app_proprietaire_dashboard') }}" class="btn btn-light btn-lg me-3">
+                <i class="bi bi-speedometer2"></i> Mon tableau de bord
+            </a>
+            <a href="{{ path('app_annonce_new') }}" class="btn btn-outline-light btn-lg">
+                <i class="bi bi-plus-circle"></i> Publier une annonce
+            </a>
+        {% elseif is_granted('ROLE_USER') %}
+            <p class="lead mb-4">Bienvenue, {{ app.user.prenom }}. Consultez vos loyers, téléchargez vos quittances et contactez votre propriétaire.</p>
+            <a href="{{ path('app_locataire_dashboard') }}" class="btn btn-light btn-lg me-3">
+                <i class="bi bi-speedometer2"></i> Mon espace locataire
+            </a>
+            <a href="{{ path('app_annonces') }}" class="btn btn-outline-light btn-lg">
+                <i class="bi bi-search"></i> Voir les annonces
+            </a>
+        {% else %}
+            <p class="lead mb-4">La plateforme qui simplifie la gestion de votre colocation.<br>Loyers, charges, messagerie et planning en un seul endroit.</p>
+            <a href="{{ path('app_annonces') }}" class="btn btn-light btn-lg me-3">
+                <i class="bi bi-search"></i> Voir les annonces
+            </a>
             <a href="{{ path('app_register') }}" class="btn btn-outline-light btn-lg">
                 <i class="bi bi-person-plus"></i> S'inscrire gratuitement
             </a>
@@ -48,6 +64,53 @@
 {# Propriétaires / Locataires #}
 <section class="py-5">
     <div class="container">
+        {% if is_granted('ROLE_PROPRIETAIRE') %}
+        <h2 class="text-center fw-bold mb-5">Votre espace propriétaire</h2>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-8">
+                <div class="card h-100 p-4 border-primary" style="border-width:2px !important;">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-building text-primary display-5 me-3"></i>
+                        <h3 class="fw-bold mb-0 h4">Ce que vous pouvez faire</h3>
+                    </div>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Gérez toutes vos colocations depuis un seul tableau de bord</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Suivez les loyers et relancez les impayés en un clic</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Répartissez les charges automatiquement selon la surface</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Générez les quittances PDF sans effort</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Publiez des annonces et suivez les visites</li>
+                    </ul>
+                    <div class="d-flex gap-2 mt-auto">
+                        <a href="{{ path('app_proprietaire_dashboard') }}" class="btn btn-primary">Mon tableau de bord</a>
+                        <a href="{{ path('app_proprietaire_colocations') }}" class="btn btn-outline-primary">Mes colocations</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% elseif is_granted('ROLE_USER') %}
+        <h2 class="text-center fw-bold mb-5">Votre espace locataire</h2>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-8">
+                <div class="card h-100 p-4 border-success" style="border-width:2px !important;">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-house-door text-success display-5 me-3"></i>
+                        <h3 class="fw-bold mb-0 h4">Ce que vous pouvez faire</h3>
+                    </div>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Consultez vos loyers et leur statut à tout moment</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Téléchargez vos quittances en PDF pour vos démarches</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Visualisez votre part des charges mensuelles</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Organisez les tâches ménagères avec vos colocataires</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Contactez votre propriétaire via la messagerie intégrée</li>
+                    </ul>
+                    <div class="d-flex gap-2 mt-auto">
+                        <a href="{{ path('app_locataire_dashboard') }}" class="btn btn-success">Mon espace</a>
+                        <a href="{{ path('app_annonces') }}" class="btn btn-outline-success">Voir les annonces</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
         <h2 class="text-center fw-bold mb-5">Une plateforme pour tout le monde</h2>
         <div class="row g-4">
             <div class="col-md-6">
@@ -83,6 +146,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
     </div>
 </section>
 
@@ -167,11 +231,12 @@
         <h2 class="fw-bold text-center mb-5">Questions fréquentes</h2>
         <div class="accordion" id="faqAccordion">
             {% for i, qa in [
-                {q: 'Comment créer un compte ?', a: 'Cliquez sur "S\'inscrire" en haut de la page. Choisissez votre rôle (locataire ou propriétaire) et remplissez le formulaire.'},
-                {q: 'Comment fonctionne le calcul des tantièmes ?', a: 'Les tantièmes sont calculés automatiquement en fonction de la surface de chaque chambre par rapport à la surface totale de la colocation.'},
-                {q: 'Comment télécharger une quittance de loyer ?', a: 'Dans votre espace locataire, accédez à "Quittances" et cliquez sur le bouton PDF pour chaque mois payé.'},
-                {q: 'L\'API est-elle disponible pour nos applications ?', a: 'Oui, une API REST complète est disponible à /api. L\'authentification se fait par JWT. Consultez /api pour la documentation.'},
-                {q: 'Comment fonctionne le semainier ?', a: 'Le planning hebdomadaire se reconduit automatiquement chaque semaine. Quand une tâche est terminée, une nouvelle est créée pour la semaine suivante.'}
+                {q: 'Est-ce gratuit de s\'inscrire ?', a: 'Oui, l\'inscription est entièrement gratuite pour les locataires comme pour les propriétaires. Créez votre compte en quelques minutes et accédez à toutes les fonctionnalités sans engagement.'},
+                {q: 'Comment contacter mon propriétaire via la plateforme ?', a: 'Une fois connecté à votre espace locataire, rendez-vous dans la rubrique "Messagerie". Vous pouvez y envoyer des messages directement à votre propriétaire et recevoir ses réponses en temps réel.'},
+                {q: 'Comment obtenir ma quittance de loyer ?', a: 'Connectez-vous à votre espace locataire, puis cliquez sur "Quittances". Vous trouverez la liste de toutes vos quittances disponibles. Cliquez sur "Télécharger PDF" pour obtenir votre justificatif (utile pour vos demandes d\'APL ou de logement social).'},
+                {q: 'Mon loyer a été payé mais il apparaît encore comme impayé, que faire ?', a: 'Si votre paiement n\'est pas encore reflété, contactez votre propriétaire via la messagerie intégrée pour qu\'il mette à jour votre statut de paiement. Votre propriétaire gère les statuts de loyers depuis son tableau de bord.'},
+                {q: 'Puis-je avoir plusieurs colocataires dans le même logement ?', a: 'Oui, la plateforme est conçue pour la colocation. Chaque locataire a son propre espace personnel, et les charges sont automatiquement réparties entre les chambres selon leur surface.'},
+                {q: 'Comment signaler un problème dans le logement ?', a: 'Utilisez la messagerie intégrée pour informer votre propriétaire de tout problème (fuite, panne, etc.). Vos messages sont horodatés, ce qui constitue une trace écrite utile en cas de litige.'}
             ] %}
             <div class="accordion-item">
                 <h3 class="accordion-header">

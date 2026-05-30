@@ -79,6 +79,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const list = document.getElementById('messagesList');
     if (list) list.scrollTop = list.scrollHeight;
+
+    document.querySelectorAll('textarea').forEach(ta => {
+        ta.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                ta.closest('form').submit();
+            }
+        });
+    });
 });
 </script>
 {% endblock %}

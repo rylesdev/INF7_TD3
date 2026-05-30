@@ -23,4 +23,14 @@ class NotificationRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findAllByUser(int $userId): array
+    {
+        return $this->createQueryBuilder('n')
+            ->andWhere('n.user = :userId')
+            ->setParameter('userId', $userId)
+            ->orderBy('n.creeLe', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

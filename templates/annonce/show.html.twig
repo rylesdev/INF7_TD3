@@ -51,6 +51,58 @@
                 <p>{{ annonce.description|nl2br }}</p>
             </div>
 
+            {# Avis #}
+            <div class="card p-4 mb-4">
+                <h2 class="h5 fw-bold mb-3">
+                    <i class="bi bi-star-fill text-warning"></i> Avis
+                    {% if annonce.moyenneNotes %}
+                        <span class="fs-6 text-muted fw-normal ms-2">{{ annonce.moyenneNotes }}/5 ({{ avis|length }} avis)</span>
+                    {% endif %}
+                </h2>
+
+                {% if avis|length == 0 %}
+                    <p class="text-muted small">Aucun avis pour cette annonce.</p>
+                {% else %}
+                    {% for a in avis %}
+                    <div class="border-bottom pb-3 mb-3">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <strong class="small">{{ a.auteur.prenom }} {{ a.auteur.nom|slice(0,1) }}.</strong>
+                            <span class="text-warning small">
+                                {% for i in 1..5 %}{{ i <= a.note ? '⭐' : '☆' }}{% endfor %}
+                            </span>
+                            <span class="text-muted small ms-auto">{{ a.creeLe|date('d/m/Y') }}</span>
+                        </div>
+                        {% if a.commentaire %}
+                            <p class="small mb-0">{{ a.commentaire }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% if avisForm is not null %}
+                <div class="mt-3">
+                    <h3 class="h6 fw-bold mb-3">Laisser un avis</h3>
+                    {{ form_start(avisForm) }}
+                    <div class="mb-3">
+                        {{ form_label(avisForm.note) }}
+                        <div class="star-rating-widget mt-1" id="avisStarWidget">
+                            {% for choice in avisForm.note %}
+                                {{ form_widget(choice, {attr: {class: 'star-radio'}}) }}
+                                <label for="{{ choice.vars.id }}" class="star-label" title="{{ choice.vars.value }} étoile(s)">★</label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="mb-3">{{ form_row(avisForm.commentaire) }}</div>
+                    <button type="submit" class="btn btn-primary btn-sm">Publier mon avis</button>
+                    {{ form_end(avisForm) }}
+                </div>
+                {% elseif dejaAvis %}
+                    <p class="text-muted small mt-2"><i class="bi bi-check-circle text-success"></i> Vous avez déjà laissé un avis pour cette annonce.</p>
+                {% elseif not is_granted('ROLE_USER') %}
+                    <a href="{{ path('app_login') }}" class="btn btn-outline-primary btn-sm mt-2">Se connecter pour laisser un avis</a>
+                {% endif %}
+            </div>
+
             {# Carte Leaflet.js #}
             {% if annonce.colocation.latitude and annonce.colocation.longitude %}
             <div class="card p-3 mb-4">
@@ -102,9 +154,36 @@
 {% if annonce.colocation.latitude and annonce.colocation.longitude %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 {% endif %}
+<style>
+.star-rating-widget { display: flex; gap: 4px; }
+.star-rating-widget .star-radio { display: none; }
+.star-rating-widget .star-label { font-size: 2rem; color: #ddd; cursor: pointer; transition: color .1s; line-height: 1; }
+.star-rating-widget .star-label.active { color: #ffc107; }
+.star-rating-widget .star-label:hover { color: #ffc107; }
+</style>
 {% endblock %}
 
 {% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const widget = document.getElementById('avisStarWidget');
+    if (!widget) return;
+    const inputs = widget.querySelectorAll('.star-radio');
+    const labels = widget.querySelectorAll('.star-label');
+    function highlight(n) { labels.forEach((l, i) => l.classList.toggle('active', i < n)); }
+    inputs.forEach((inp, i) => {
+        if (inp.checked) highlight(i + 1);
+        inp.addEventListener('change', () => highlight(i + 1));
+    });
+    labels.forEach((lbl, i) => {
+        lbl.addEventListener('mouseover', () => highlight(i + 1));
+        lbl.addEventListener('mouseout', () => {
+            const checked = [...inputs].findIndex(inp => inp.checked);
+            highlight(checked >= 0 ? checked + 1 : 0);
+        });
+    });
+});
+</script>
 {% if annonce.colocation.latitude and annonce.colocation.longitude %}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>

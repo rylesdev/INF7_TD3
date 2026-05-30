@@ -38,6 +38,7 @@
                     <tr>
                         <th>#</th>
                         <th>Date et heure</th>
+                        <th>Visiteur</th>
                         <th>Adresse IP</th>
                     </tr>
                 </thead>
@@ -46,7 +47,15 @@
                 <tr>
                     <td class="text-muted small">{{ loop.index }}</td>
                     <td>{{ visite.visiteLe ? visite.visiteLe|date('d/m/Y H:i') : '—' }}</td>
-                    <td><code>{{ visite.ipAddress ?? '—' }}</code></td>
+                    <td>
+                        {% if visite.user %}
+                            <i class="bi bi-person-fill text-primary"></i>
+                            {{ visite.user.prenom }} {{ visite.user.nom|slice(0,1) }}.
+                        {% else %}
+                            <span class="text-muted">Anonyme</span>
+                        {% endif %}
+                    </td>
+                    <td><code>{{ visite.ipAddress == '::1' ? '127.0.0.1' : (visite.ipAddress ?? '—') }}</code></td>
                 </tr>
                 {% endfor %}
                 </tbody>
@@ -68,7 +77,7 @@
 <script defer>
 document.addEventListener('DOMContentLoaded', () => {
     const labels = {{ parJour|keys|json_encode|raw }};
-    const data   = {{ parJour|values|json_encode|raw }};
+    const data   = {{ parJourValues|json_encode|raw }};
     new Chart(document.getElementById('visitesChart'), {
         type: 'bar',
         data: {

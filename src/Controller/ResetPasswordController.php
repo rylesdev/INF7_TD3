@@ -47,7 +47,11 @@ class ResetPasswordController extends AbstractController
                     ->htmlTemplate('emails/reset_password.html.twig')
                     ->context(['user' => $user, 'lien' => $lien]);
 
-                $mailer->send($email);
+                try {
+                    $mailer->send($email);
+                } catch (\Symfony\Component\Mailer\Exception\TransportExceptionInterface $e) {
+                    // Mailpit ou serveur SMTP non disponible — on ne bloque pas l'utilisateur
+                }
             }
 
             // Même message qu'un email soit trouvé ou non (sécurité)

@@ -9,12 +9,13 @@
         <div class="alert alert-info">Aucune quittance disponible.</div>
     {% else %}
     <div class="row g-3">
-        {% for quittance in quittances %}
+        {% set moisFr = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'] %}
+    {% for quittance in quittances %}
         <div class="col-md-4">
             <div class="card p-4 h-100">
                 <h2 class="h6 fw-bold mb-3">
                     <i class="bi bi-file-earmark-text text-danger"></i>
-                    Quittance {{ quittance.periodeDebut|date('M Y') }}
+                    Quittance {{ moisFr[quittance.periodeDebut|date('n') - 1]|capitalize }} {{ quittance.periodeDebut|date('Y') }}
                 </h2>
                 <ul class="list-unstyled small mb-3">
                     <li class="mb-1"><strong>Période :</strong> {{ quittance.periodeDebut|date('d/m/Y') }} – {{ quittance.periodeFin|date('d/m/Y') }}</li>

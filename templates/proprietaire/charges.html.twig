@@ -32,7 +32,7 @@
                     <tr>
                         <td>{{ charge.colocation.nom }}</td>
                         <td>{{ charge.libelleType }}</td>
-                        <td>{{ charge.libelle }}</td>
+                        <td>{{ charge.description ?? '' }}</td>
                         <td class="fw-bold">{{ charge.montant }}€</td>
                         <td>{{ charge.date|date('d/m/Y') }}</td>
                         <td>

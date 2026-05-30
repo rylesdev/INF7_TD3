@@ -24,6 +24,8 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+        $moisFr = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+
         // Users
         $proprio = new User();
         $proprio->setPrenom('Jean');
@@ -101,10 +103,47 @@ class AppFixtures extends Fixture
         $chambre3->setColocation($colocation);
         $manager->persist($chambre3);
 
+        // Colocations supplémentaires
+        $colocation3 = new Colocation();
+        $colocation3->setNom('Le Palais');
+        $colocation3->setAdresse('8 cours du Maréchal Foch');
+        $colocation3->setVille('Bordeaux');
+        $colocation3->setCodePostal('33000');
+        $colocation3->setLoyer(1350.00);
+        $colocation3->setDescription('Colocation dans un immeuble haussmannien rénové, proche gare Saint-Jean.');
+        $colocation3->setLatitude(44.8378);
+        $colocation3->setLongitude(-0.5792);
+        $colocation3->setProprietaire($proprio);
+        $manager->persist($colocation3);
+
+        $colocation4 = new Colocation();
+        $colocation4->setNom('La Calanque');
+        $colocation4->setAdresse('3 boulevard de la Corderie');
+        $colocation4->setVille('Marseille');
+        $colocation4->setCodePostal('13007');
+        $colocation4->setLoyer(1100.00);
+        $colocation4->setDescription('Colocation avec vue mer, à deux pas des calanques.');
+        $colocation4->setLatitude(43.2965);
+        $colocation4->setLongitude(5.3698);
+        $colocation4->setProprietaire($proprio);
+        $manager->persist($colocation4);
+
+        $colocation5 = new Colocation();
+        $colocation5->setNom('Les Capitouls');
+        $colocation5->setAdresse('22 rue du Taur');
+        $colocation5->setVille('Toulouse');
+        $colocation5->setCodePostal('31000');
+        $colocation5->setLoyer(1050.00);
+        $colocation5->setDescription('Grande colocation étudiante en plein centre de Toulouse, à 5 min du Capitole.');
+        $colocation5->setLatitude(43.6047);
+        $colocation5->setLongitude(1.4442);
+        $colocation5->setProprietaire($proprio);
+        $manager->persist($colocation5);
+
         // Annonces
         $annonce1 = new Annonce();
         $annonce1->setTitre('Chambre moderne Paris 11ème');
-        $annonce1->setDescription("Belle chambre de 18m² dans une colocation de 3 personnes. Cuisine équipée, salon commun, double vitrage. Proche métro Nation (ligne 1, 2, 9).");
+        $annonce1->setDescription("Belle chambre de 18m² dans une colocation de 3 personnes. Cuisine équipée, salon commun, double vitrage. Proche métro Nation (ligne 1, 2, 9). Charges comprises, idéal jeune actif.");
         $annonce1->setPrix(650.00);
         $annonce1->setLocalisation('Paris 11ème');
         $annonce1->setStatut(Annonce::STATUT_DISPONIBLE);
@@ -113,8 +152,8 @@ class AppFixtures extends Fixture
         $manager->persist($annonce1);
 
         $annonce2 = new Annonce();
-        $annonce2->setTitre('Grande chambre lumineuse Lyon');
-        $annonce2->setDescription("Chambre de 20m² très lumineuse, orientée sud. Colocation calme et conviviale. Parking disponible.");
+        $annonce2->setTitre('Grande chambre lumineuse Lyon 3ème');
+        $annonce2->setDescription("Chambre de 20m² très lumineuse, orientée sud dans une belle colocation de 4 personnes. Cuisine équipée, balcon partagé, fibre optique. Parking disponible en sous-sol.");
         $annonce2->setPrix(520.00);
         $annonce2->setLocalisation('Lyon 3ème');
         $annonce2->setStatut(Annonce::STATUT_DISPONIBLE);
@@ -123,14 +162,64 @@ class AppFixtures extends Fixture
         $manager->persist($annonce2);
 
         $annonce3 = new Annonce();
-        $annonce3->setTitre('Chambre cosy Paris - déjà louée');
-        $annonce3->setDescription("Chambre confortable dans une colocation de standing.");
+        $annonce3->setTitre('Chambre cosy Paris 11ème — non disponible');
+        $annonce3->setDescription("Chambre confortable dans une colocation de standing. Parquet ancien, hauteur sous plafond 3m.");
         $annonce3->setPrix(700.00);
         $annonce3->setLocalisation('Paris 11ème');
         $annonce3->setStatut(Annonce::STATUT_INDISPONIBLE);
         $annonce3->setColocation($colocation);
         $annonce3->setMetaDescription('Chambre 700€/mois Paris 11ème colocation.');
         $manager->persist($annonce3);
+
+        $annonce4 = new Annonce();
+        $annonce4->setTitre('Chambre calme Bordeaux centre');
+        $annonce4->setDescription("Chambre de 16m² dans un appartement haussmannien entièrement rénové. Colocation de 3 personnes, ambiance jeune professionnelle. À 10 min à pied de la gare Saint-Jean, tram à 2 minutes.");
+        $annonce4->setPrix(490.00);
+        $annonce4->setLocalisation('Bordeaux centre');
+        $annonce4->setStatut(Annonce::STATUT_DISPONIBLE);
+        $annonce4->setColocation($colocation3);
+        $annonce4->setMetaDescription('Chambre 16m² colocation Bordeaux centre, 490€/mois, proche gare.');
+        $manager->persist($annonce4);
+
+        $annonce5 = new Annonce();
+        $annonce5->setTitre('Chambre vue mer Marseille 7ème');
+        $annonce5->setDescription("Chambre de 14m² avec fenêtre donnant sur la Méditerranée. Colocation de 4 personnes, esprit bonne humeur garanti ! Proche plages du Prado et des calanques. Idéal pour un séjour estival ou une installation durable.");
+        $annonce5->setPrix(450.00);
+        $annonce5->setLocalisation('Marseille 7ème');
+        $annonce5->setStatut(Annonce::STATUT_DISPONIBLE);
+        $annonce5->setColocation($colocation4);
+        $annonce5->setMetaDescription('Chambre vue mer 14m² colocation Marseille, 450€/mois.');
+        $manager->persist($annonce5);
+
+        $annonce6 = new Annonce();
+        $annonce6->setTitre('Chambre étudiante Toulouse hyper-centre');
+        $annonce6->setDescription("Chambre de 12m² dans une grande colocation étudiante de 5 chambres. Situation idéale : à 5 minutes du Capitole, 10 minutes de l'université Paul Sabatier. Wifi haut débit, machine à laver, vélos partagés.");
+        $annonce6->setPrix(380.00);
+        $annonce6->setLocalisation('Toulouse centre');
+        $annonce6->setStatut(Annonce::STATUT_DISPONIBLE);
+        $annonce6->setColocation($colocation5);
+        $annonce6->setMetaDescription('Chambre étudiante 12m² colocation Toulouse centre, 380€/mois.');
+        $manager->persist($annonce6);
+
+        $annonce7 = new Annonce();
+        $annonce7->setTitre('Chambre spacieuse Lyon — proche Part-Dieu');
+        $annonce7->setDescription("Chambre de 22m² dans une colocation rénovée. Cuisine américaine ouverte sur le salon. Idéal jeune actif travaillant à la Part-Dieu ou au quartier d'affaires. Fibre, parking vélos, cave individuelle.");
+        $annonce7->setPrix(580.00);
+        $annonce7->setLocalisation('Lyon 3ème');
+        $annonce7->setStatut(Annonce::STATUT_DISPONIBLE);
+        $annonce7->setColocation($colocation2);
+        $annonce7->setMetaDescription('Chambre 22m² colocation Lyon Part-Dieu, 580€/mois.');
+        $manager->persist($annonce7);
+
+        $annonce8 = new Annonce();
+        $annonce8->setTitre('Grande chambre Paris – ambiance cosy');
+        $annonce8->setDescription("Chambre de 24m² avec dressing intégré dans un appartement de 90m². Colocation de 4 personnes, toutes jeunes actives. Cuisine entièrement équipée, terrasse commune de 15m². Métro Père Lachaise à 3 min.");
+        $annonce8->setPrix(780.00);
+        $annonce8->setLocalisation('Paris 20ème');
+        $annonce8->setStatut(Annonce::STATUT_DISPONIBLE);
+        $annonce8->setColocation($colocation);
+        $annonce8->setMetaDescription('Grande chambre 24m² avec terrasse, colocation Paris 20ème, 780€/mois.');
+        $manager->persist($annonce8);
 
         // Loyers
         $loyer1 = new Loyer();
@@ -169,7 +258,7 @@ class AppFixtures extends Fixture
         // Charges
         $charge1 = new Charge();
         $charge1->setType(Charge::TYPE_ELECTRICITE);
-        $charge1->setDescription('Facture EDF ' . date('M Y'));
+        $charge1->setDescription('Facture EDF ' . $moisFr[(int)date('n') - 1] . ' ' . date('Y'));
         $charge1->setMontant(120.00);
         $charge1->setDate(new \DateTimeImmutable('-10 days'));
         $charge1->setColocation($colocation);
@@ -201,7 +290,7 @@ class AppFixtures extends Fixture
         // Notifications
         $notif = new Notification();
         $notif->setTitre('Loyer enregistré');
-        $notif->setMessage('Votre loyer du mois de ' . date('F Y') . ' a bien été enregistré.');
+        $notif->setMessage('Votre loyer du mois de ' . $moisFr[(int)date('n') - 1] . ' ' . date('Y') . ' a bien été enregistré.');
         $notif->setType('loyer');
         $notif->setLue(false);
         $notif->setUser($locataire);
