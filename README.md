@@ -9,6 +9,7 @@ Application web de gestion de colocation : loyers, charges, messagerie et planni
 ### Prérequis
 
 - [WAMP](https://www.wampserver.com/), [XAMPP](https://www.apachefriends.org/) ou [MAMP](https://www.mamp.info/) (ou équivalent) installé et démarré avec Apache + MySQL actifs
+- **PHP 8.4** activé dans votre serveur local (PHP 8.2 et 8.3 sont incompatibles avec les dépendances du projet)
 - [Composer](https://getcomposer.org/) installé
 - [Git for Windows](https://git-scm.com/) installé (fournit `openssl`)
 
