@@ -154,7 +154,7 @@ class LocataireControllerTest extends WebTestCase
         // Récupère la première quittance disponible en BDD (générée par les fixtures via paiement loyer)
         $quittance = static::getContainer()->get(QuittanceRepository::class)->findAll();
         if (empty($quittance)) {
-            $this->markTestSkipped('Aucune quittance en BDD — passer le loyer en "payé" d\'abord.');
+            $this->markTestSkipped('Aucune quittance en BDD - passer le loyer en "payé" d\'abord.');
         }
 
         $id = $quittance[0]->getId();

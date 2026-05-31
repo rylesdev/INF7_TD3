@@ -27,7 +27,7 @@
                         <td>{{ loyer.mois }}/{{ loyer.annee }}</td>
                         <td class="fw-bold">{{ loyer.montant }}€</td>
                         <td>{{ loyer.dateEcheance|date('d/m/Y') }}</td>
-                        <td>{{ loyer.datePaiement ? loyer.datePaiement|date('d/m/Y') : '—' }}</td>
+                        <td>{{ loyer.datePaiement ? loyer.datePaiement|date('d/m/Y') : '-' }}</td>
                         <td>
                             <span class="badge bg-{{ loyer.statut == 'payé' ? 'success' : (loyer.statut == 'en_retard' ? 'danger' : 'warning') }}">
                                 {{ loyer.statut }}

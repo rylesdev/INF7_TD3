@@ -25,7 +25,7 @@
                         {{ tache.titre }}
                     </div>
                     {% else %}
-                    <div class="text-muted" style="font-size:.75rem;">—</div>
+                    <div class="text-muted" style="font-size:.75rem;">-</div>
                     {% endfor %}
                 </div>
             </div>
@@ -55,7 +55,7 @@
                     <tr class="{{ tache.statut == 'terminee' ? 'table-success opacity-75' : '' }}">
                         <td>{{ tache.titre }}</td>
                         <td>{{ tache.type }}</td>
-                        <td>{{ tache.assigne ? tache.assigne.nomComplet : '—' }}</td>
+                        <td>{{ tache.assigne ? tache.assigne.nomComplet : '-' }}</td>
                         <td>{{ tache.colocation.nom }}</td>
                         <td>
                             <span class="badge bg-{{ tache.statut == 'terminee' ? 'success' : (tache.statut == 'en_cours' ? 'warning' : 'secondary') }}">

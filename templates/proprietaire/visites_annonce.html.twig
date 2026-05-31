@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% block title %}Visites — {{ annonce.titre }}{% endblock %}
+{% block title %}Visites : {{ annonce.titre }}{% endblock %}
 
 {% block body %}
 <div class="container py-5">
@@ -7,7 +7,7 @@
         <a href="{{ path('app_proprietaire_annonces') }}" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-left"></i> Retour
         </a>
-        <h1 class="h3 fw-bold mb-0"><i class="bi bi-eye text-primary"></i> Visites — {{ annonce.titre }}</h1>
+        <h1 class="h3 fw-bold mb-0"><i class="bi bi-eye text-primary"></i> Visites : {{ annonce.titre }}</h1>
     </div>
 
     <div class="row g-4 mb-4">
@@ -46,7 +46,7 @@
                 {% for visite in visites %}
                 <tr>
                     <td class="text-muted small">{{ loop.index }}</td>
-                    <td>{{ visite.visiteLe ? visite.visiteLe|date('d/m/Y H:i') : '—' }}</td>
+                    <td>{{ visite.visiteLe ? visite.visiteLe|date('d/m/Y H:i') : '-' }}</td>
                     <td>
                         {% if visite.user %}
                             <i class="bi bi-person-fill text-primary"></i>
@@ -55,7 +55,7 @@
                             <span class="text-muted">Anonyme</span>
                         {% endif %}
                     </td>
-                    <td><code>{{ visite.ipAddress == '::1' ? '127.0.0.1' : (visite.ipAddress ?? '—') }}</code></td>
+                    <td><code>{{ visite.ipAddress == '::1' ? '127.0.0.1' : (visite.ipAddress ?? '-') }}</code></td>
                 </tr>
                 {% endfor %}
                 </tbody>

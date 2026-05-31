@@ -50,7 +50,7 @@ class ResetPasswordController extends AbstractController
                 try {
                     $mailer->send($email);
                 } catch (\Symfony\Component\Mailer\Exception\TransportExceptionInterface $e) {
-                    // Mailpit ou serveur SMTP non disponible — on ne bloque pas l'utilisateur
+                    // Mailpit ou serveur SMTP non disponible, on ne bloque pas l'utilisateur
                 }
             }
 

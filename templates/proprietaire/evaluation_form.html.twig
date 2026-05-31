@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% block title %}{{ evaluation.id ? 'Modifier' : 'Évaluer' }} — {{ locataire.nomComplet }}{% endblock %}
+{% block title %}{{ evaluation.id ? 'Modifier' : 'Évaluer' }} : {{ locataire.nomComplet }}{% endblock %}
 
 {% block body %}
 <div class="container py-5">
@@ -24,7 +24,7 @@
                     <div>
                         <div class="fw-bold fs-5">{{ locataire.nomComplet }}</div>
                         <div class="text-muted small">
-                            <i class="bi bi-building"></i> {{ colocation.nom }} — {{ colocation.ville }}
+                            <i class="bi bi-building"></i> {{ colocation.nom }}, {{ colocation.ville }}
                         </div>
                     </div>
                 </div>

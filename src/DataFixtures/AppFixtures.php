@@ -162,7 +162,7 @@ class AppFixtures extends Fixture
         $manager->persist($annonce2);
 
         $annonce3 = new Annonce();
-        $annonce3->setTitre('Chambre cosy Paris 11ème — non disponible');
+        $annonce3->setTitre('Chambre cosy Paris 11ème - non disponible');
         $annonce3->setDescription("Chambre confortable dans une colocation de standing. Parquet ancien, hauteur sous plafond 3m.");
         $annonce3->setPrix(700.00);
         $annonce3->setLocalisation('Paris 11ème');
@@ -202,7 +202,7 @@ class AppFixtures extends Fixture
         $manager->persist($annonce6);
 
         $annonce7 = new Annonce();
-        $annonce7->setTitre('Chambre spacieuse Lyon — proche Part-Dieu');
+        $annonce7->setTitre('Chambre spacieuse Lyon - proche Part-Dieu');
         $annonce7->setDescription("Chambre de 22m² dans une colocation rénovée. Cuisine américaine ouverte sur le salon. Idéal jeune actif travaillant à la Part-Dieu ou au quartier d'affaires. Fibre, parking vélos, cave individuelle.");
         $annonce7->setPrix(580.00);
         $annonce7->setLocalisation('Lyon 3ème');

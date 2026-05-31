@@ -31,7 +31,7 @@
                     {% for loyer in loyers %}
                     <tr>
                         <td>{{ loyer.colocation.nom }}</td>
-                        <td>{{ loyer.chambre ? loyer.chambre.nom : '—' }}</td>
+                        <td>{{ loyer.chambre ? loyer.chambre.nom : '-' }}</td>
                         <td>{{ loyer.mois }}/{{ loyer.annee }}</td>
                         <td class="fw-bold">{{ loyer.montant }}€</td>
                         <td>{{ loyer.dateEcheance|date('d/m/Y') }}</td>

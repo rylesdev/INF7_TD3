@@ -1,6 +1,6 @@
 # Colocation.com
 
-Application web de gestion de colocation — loyers, charges, messagerie et planning ménager en un seul endroit.
+Application web de gestion de colocation : loyers, charges, messagerie et planning ménager en un seul endroit.
 
 ---
 
