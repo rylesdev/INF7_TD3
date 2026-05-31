@@ -98,7 +98,9 @@
             Je soussigné(e), bailleur du logement désigné ci-dessus, déclare avoir reçu de
             <strong>{{ locataireNom }}</strong>
             la somme de <strong>{{ quittance.montantTotal }}€</strong>
-            au titre du loyer et des charges du mois de <strong>{{ quittance.periodeDebut|date('F Y') }}</strong>,
+            au titre du loyer et des charges du mois de
+            {% set moisFr = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'] %}
+            <strong>{{ moisFr[quittance.periodeDebut|date('n') - 1] }} {{ quittance.periodeDebut|date('Y') }}</strong>,
             et lui en donne quittance, sous réserve de tous mes droits.
         </p>
     </div>
@@ -117,8 +119,7 @@
     </table>
 
     <div class="footer">
-        Document généré automatiquement par Colocation.com
-        {% if quittance.genereeAt %} – {{ quittance.genereeAt|date('d/m/Y à H:i') }}{% endif %}
+        Document généré automatiquement par Colocation.com{% if quittance.genereeAt %}, le {{ quittance.genereeAt|date('d/m/Y à H:i') }}{% endif %}
     </div>
 
 </body>

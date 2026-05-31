@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+{% block title %}Mes candidatures{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="fw-bold mb-4"><i class="bi bi-send text-primary"></i> Mes candidatures</h1>
+
+    {% if candidatures|length == 0 %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Vous n'avez encore envoyé aucune candidature.
+            <a href="{{ path('app_annonces') }}" class="alert-link ms-2">Parcourir les annonces</a>
+        </div>
+    {% else %}
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Annonce</th>
+                        <th>Colocation</th>
+                        <th>Prix</th>
+                        <th>Date candidature</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in candidatures %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('app_annonce_show', {id: c.annonce.id}) }}" class="text-decoration-none fw-bold">
+                                {{ c.annonce.titre }}
+                            </a>
+                        </td>
+                        <td>{{ c.annonce.colocation.nom }}<br><small class="text-muted">{{ c.annonce.colocation.ville }}</small></td>
+                        <td class="fw-bold">{{ c.annonce.prix }}€/mois</td>
+                        <td>{{ c.creeLe|date('d/m/Y') }}</td>
+                        <td>
+                            {% if c.statut == 'en_attente' %}
+                                <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split"></i> En attente</span>
+                            {% elseif c.statut == 'accepte' %}
+                                <span class="badge bg-success"><i class="bi bi-check-circle"></i> Acceptée</span>
+                            {% else %}
+                                <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Refusée</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

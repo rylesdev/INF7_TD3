@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+{% block title %}Candidater — {{ annonce.titre }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4">
+                <h1 class="h4 fw-bold mb-1"><i class="bi bi-send text-primary"></i> Envoyer une candidature</h1>
+                <p class="text-muted small mb-4">{{ annonce.titre }} &mdash; {{ annonce.localisation }} &mdash; {{ annonce.prix }}€/mois</p>
+
+                {% if dejaCandidat %}
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle-fill"></i> Vous avez déjà envoyé une candidature pour cette annonce.
+                </div>
+                <a href="{{ path('app_annonce_show', {id: annonce.id}) }}" class="btn btn-outline-secondary">Retour à l'annonce</a>
+                {% else %}
+                <form method="POST" action="{{ path('app_locataire_candidater', {id: annonce.id}) }}"
+                      enctype="multipart/form-data">
+                    <input type="hidden" name="_token" value="{{ csrf_token('candidater_' ~ annonce.id) }}">
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-card-heading text-primary"></i> Pièce d'identité
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="file" name="piece_identite" class="form-control" required
+                               accept=".pdf,.jpg,.jpeg,.png">
+                        <div class="form-text">Carte d'identité, passeport ou titre de séjour (PDF ou image)</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-file-earmark-text text-primary"></i> Justificatif de revenus
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="file" name="justificatif_revenu" class="form-control" required
+                               accept=".pdf,.jpg,.jpeg,.png">
+                        <div class="form-text">3 derniers bulletins de salaire, avis d'imposition, contrat de travail…</div>
+                    </div>
+                    <p class="text-muted small"><span class="text-danger">*</span> Champs obligatoires</p>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success flex-grow-1">
+                            <i class="bi bi-send"></i> Envoyer ma candidature
+                        </button>
+                        <a href="{{ path('app_annonce_show', {id: annonce.id}) }}" class="btn btn-outline-secondary">
+                            Annuler
+                        </a>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

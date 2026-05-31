@@ -34,6 +34,73 @@
                 {{ form_end(form) }}
             </div>
         </div>
+
+        {# Note moyenne #}
+        <div class="col-md-7 mt-4">
+            <div class="card p-4 mb-4">
+                <h2 class="h5 fw-bold mb-3"><i class="bi bi-star-half text-warning"></i> Ma note</h2>
+                {% if moyenne > 0 %}
+                <div class="d-flex align-items-center gap-2">
+                    {% for i in 1..5 %}
+                        <i class="bi bi-star{{ i <= moyenne ? '-fill text-warning' : '' }} fs-5"></i>
+                    {% endfor %}
+                    <span class="fw-bold">{{ moyenne }}/5</span>
+                    <span class="text-muted small">({{ evaluations|length }} avis)</span>
+                </div>
+                {% else %}
+                <p class="text-muted small mb-0">Aucun avis reçu pour le moment.</p>
+                {% endif %}
+            </div>
+
+            {% if isProprio and annonces|length > 0 %}
+            <div class="card p-4 mb-4">
+                <h2 class="h5 fw-bold mb-3"><i class="bi bi-megaphone text-info"></i> Mes annonces actives</h2>
+                <div class="row g-3">
+                    {% for annonce in annonces %}
+                    {% if annonce.statut == 'disponible' %}
+                    <div class="col-md-6">
+                        <a href="{{ path('app_annonce_show', {id: annonce.id}) }}" class="text-decoration-none text-dark">
+                            <div class="card h-100">
+                                {% if annonce.premierPhoto %}
+                                <img src="{{ asset('uploads/annonces/' ~ annonce.premierPhoto.filename) }}"
+                                     class="card-img-top" style="height:100px;object-fit:cover;" loading="lazy">
+                                {% endif %}
+                                <div class="card-body p-2">
+                                    <p class="fw-bold small mb-0">{{ annonce.titre }}</p>
+                                    <p class="text-primary small mb-0">{{ annonce.prix }}€/mois</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if evaluations|length > 0 %}
+            <div class="card p-4">
+                <h2 class="h5 fw-bold mb-3"><i class="bi bi-chat-quote text-warning"></i>
+                    {% if isProprio %}Avis de mes locataires{% else %}Avis de mes propriétaires{% endif %}
+                </h2>
+                {% for eval in evaluations %}
+                <div class="border-bottom pb-3 mb-3">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        {% for i in 1..5 %}
+                            <i class="bi bi-star{{ i <= eval.note ? '-fill text-warning' : '' }}" style="font-size:14px;"></i>
+                        {% endfor %}
+                        <span class="fw-bold small">
+                            {% if isProprio %}{{ eval.locataire.prenom }} {{ eval.locataire.nom|slice(0,1) }}.
+                            {% else %}{{ eval.proprietaire.prenom }} {{ eval.proprietaire.nom|slice(0,1) }}.{% endif %}
+                        </span>
+                        <span class="text-muted small">{{ eval.creeLe|date('d/m/Y') }}</span>
+                    </div>
+                    {% if eval.commentaire %}<p class="mb-0 small">{{ eval.commentaire }}</p>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}

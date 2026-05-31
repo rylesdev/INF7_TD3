@@ -46,20 +46,36 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="bi bi-building"></i> Propriétaire</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ path('app_proprietaire_dashboard') }}">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_proprietaire_dashboard') }}">Tableau de bord</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_proprietaire_colocations') }}">Colocations</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_proprietaire_annonces') }}">Annonces</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_proprietaire_candidatures') }}">Candidatures</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_proprietaire_loyers') }}">Loyers</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_proprietaire_charges') }}">Charges</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_proprietaire_messagerie') }}">Messagerie <span class="badge bg-danger ms-1" id="msgBadge" style="display:none">0</span></a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_proprietaire_evaluations') }}"><i class="bi bi-star"></i> Évaluations</a></li>
                             </ul>
                         </li>
+                        {% if app.user.chambres is not empty %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="bi bi-person-home"></i> Locataire</a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ path('app_locataire_dashboard') }}">Tableau de bord</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_locataire_candidatures') }}">Mes candidatures</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_locataire_loyers') }}">Mes loyers</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_locataire_quittances') }}">Quittances</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_locataire_tantiemes') }}">Tantièmes</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_locataire_messagerie') }}">Messagerie</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_locataire_evaluations') }}"><i class="bi bi-star"></i> Mes évaluations</a></li>
+                            </ul>
+                        </li>
+                        {% endif %}
                     {% else %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="bi bi-person-home"></i> Locataire</a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ path('app_locataire_dashboard') }}">Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_locataire_dashboard') }}">Tableau de bord</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_locataire_candidatures') }}">Mes candidatures</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_locataire_loyers') }}">Mes loyers</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_locataire_quittances') }}">Quittances</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_locataire_tantiemes') }}">Tantièmes</a></li>

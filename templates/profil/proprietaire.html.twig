@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+{% block title %}Profil de {{ proprietaire.nomComplet }}{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card p-4 text-center">
+                {% if proprietaire.photoProfil %}
+                    <img src="{{ asset('uploads/profils/' ~ proprietaire.photoProfil) }}"
+                         width="100" height="100" class="rounded-circle mx-auto d-block mb-3"
+                         style="object-fit:cover;" loading="lazy">
+                {% else %}
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto mb-3"
+                         style="width:100px;height:100px;">
+                        <i class="bi bi-person-fill text-white" style="font-size:2.5rem;"></i>
+                    </div>
+                {% endif %}
+                <h1 class="h4 fw-bold mb-1">{{ proprietaire.nomComplet }}</h1>
+                <p class="text-muted small mb-2"><i class="bi bi-building"></i> Proprietaire</p>
+                {% if moyenne > 0 %}
+                <div class="mb-2">
+                    {% for i in 1..5 %}
+                        <i class="bi bi-star{{ i <= moyenne ? '-fill text-warning' : '' }}"></i>
+                    {% endfor %}
+                    <span class="ms-1 small text-muted">{{ moyenne }}/5 ({{ evaluations|length }} avis)</span>
+                </div>
+                {% else %}
+                <p class="text-muted small">Aucun avis pour le moment.</p>
+                {% endif %}
+
+                {% if is_granted('ROLE_USER') and not is_granted('ROLE_PROPRIETAIRE') %}
+                <a href="{{ path('app_locataire_evaluer_proprietaire', {id: proprietaire.id}) }}"
+                   class="btn btn-outline-primary btn-sm mt-2">
+                    <i class="bi bi-star"></i> Evaluer ce propriétaire
+                </a>
+                {% endif %}
+
+                {% if evaluations|length > 0 %}
+                <hr>
+                <div class="text-start mt-2">
+                    {% for eval in evaluations %}
+                    <div class="border-bottom pb-2 mb-2">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            {% for i in 1..5 %}<i class="bi bi-star{{ i <= eval.note ? '-fill text-warning' : '' }}" style="font-size:13px;"></i>{% endfor %}
+                            <span class="fw-bold small">{{ eval.locataire.prenom }} {{ eval.locataire.nom|slice(0,1) }}.</span>
+                            <span class="text-muted small">{{ eval.creeLe|date('d/m/Y') }}</span>
+                        </div>
+                        {% if eval.commentaire %}<p class="mb-0 small text-muted">{{ eval.commentaire }}</p>{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card p-4 mb-4">
+                <h2 class="h5 fw-bold mb-3"><i class="bi bi-megaphone text-info"></i> Annonces actives</h2>
+                {% if annonces|length == 0 %}
+                    <p class="text-muted">Aucune annonce active.</p>
+                {% else %}
+                <div class="row g-3">
+                    {% for annonce in annonces %}
+                    {% if annonce.statut == 'disponible' %}
+                    <div class="col-md-6">
+                        <a href="{{ path('app_annonce_show', {id: annonce.id}) }}" class="text-decoration-none text-dark">
+                            <div class="card h-100">
+                                {% if annonce.premierPhoto %}
+                                <img src="{{ asset('uploads/annonces/' ~ annonce.premierPhoto.filename) }}"
+                                     class="card-img-top" style="height:120px;object-fit:cover;" loading="lazy">
+                                {% endif %}
+                                <div class="card-body p-2">
+                                    <p class="fw-bold small mb-0">{{ annonce.titre }}</p>
+                                    <p class="text-primary small mb-0">{{ annonce.prix }}€/mois</p>
+                                    <p class="text-muted small">{{ annonce.localisation }}</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

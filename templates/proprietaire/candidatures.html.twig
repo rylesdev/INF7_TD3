@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+{% block title %}Candidatures reçues{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <h1 class="fw-bold mb-4"><i class="bi bi-people text-primary"></i> Candidatures reçues</h1>
+
+    {% if candidatures|length == 0 %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> Aucune candidature reçue pour le moment.
+        </div>
+    {% else %}
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Candidat</th>
+                        <th>Annonce</th>
+                        <th>Date</th>
+                        <th>Statut</th>
+                        <th>Documents</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in candidatures %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('app_profil_locataire', {id: c.locataire.id}) }}" class="d-flex align-items-center gap-2 text-decoration-none text-dark">
+                                {% if c.locataire.photoProfil %}
+                                    <img src="{{ asset('uploads/profils/' ~ c.locataire.photoProfil) }}"
+                                         class="rounded-circle" style="width:36px;height:36px;object-fit:cover;" alt="">
+                                {% else %}
+                                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold"
+                                         style="width:36px;height:36px;font-size:.9rem;">
+                                        {{ c.locataire.prenom|slice(0,1)|upper }}
+                                    </div>
+                                {% endif %}
+                                <div>
+                                    <span class="fw-bold">{{ c.locataire.prenom }} {{ c.locataire.nom }}</span><br>
+                                    <small class="text-muted">{{ c.locataire.email }}</small>
+                                </div>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ path('app_annonce_show', {id: c.annonce.id}) }}" class="text-decoration-none">
+                                {{ c.annonce.titre }}
+                            </a><br>
+                            <small class="text-muted">{{ c.annonce.colocation.nom }}</small>
+                        </td>
+                        <td>{{ c.creeLe|date('d/m/Y') }}</td>
+                        <td>
+                            {% if c.statut == 'en_attente' %}
+                                <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split"></i> En attente</span>
+                            {% elseif c.statut == 'accepte' %}
+                                <span class="badge bg-success"><i class="bi bi-check-circle"></i> Acceptée</span>
+                            {% else %}
+                                <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Refusée</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if c.pieceIdentite %}
+                            <a href="{{ asset('uploads/candidatures/' ~ c.pieceIdentite) }}" target="_blank" class="btn btn-sm btn-outline-secondary me-1" title="Pièce d'identité">
+                                <i class="bi bi-card-heading"></i>
+                            </a>
+                            {% endif %}
+                            {% if c.justificatifRevenu %}
+                            <a href="{{ asset('uploads/candidatures/' ~ c.justificatifRevenu) }}" target="_blank" class="btn btn-sm btn-outline-secondary" title="Justificatif de revenus">
+                                <i class="bi bi-file-earmark-text"></i>
+                            </a>
+                            {% endif %}
+                            {% if not c.pieceIdentite and not c.justificatifRevenu %}
+                            <span class="text-muted small">Aucun</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if c.statut == 'en_attente' %}
+                            <div class="d-flex gap-2">
+                                <a href="{{ path('app_proprietaire_candidature_accepter', {id: c.id}) }}"
+                                   class="btn btn-sm btn-success">
+                                    <i class="bi bi-check-lg"></i> Accepter
+                                </a>
+                                <form method="POST" action="{{ path('app_proprietaire_candidature_refuser', {id: c.id}) }}"
+                                      onsubmit="return confirm('Refuser cette candidature ?')">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('refuser_' ~ c.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-x-lg"></i> Refuser
+                                    </button>
+                                </form>
+                            </div>
+                            {% else %}
+                                <span class="text-muted small">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

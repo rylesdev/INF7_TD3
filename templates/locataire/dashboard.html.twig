@@ -46,6 +46,9 @@
                     <li class="mb-2"><strong>Adresse :</strong> {{ chambre.colocation.adresse }}, {{ chambre.colocation.ville }}</li>
                     <li class="mb-2"><strong>Loyer :</strong> <span class="fw-bold text-primary">{{ chambre.loyerMensuel }}€/mois</span></li>
                 </ul>
+                <a href="{{ path('app_locataire_resilier') }}" class="btn btn-outline-danger btn-sm mt-2">
+                    <i class="bi bi-door-open"></i> Résilier mon bail
+                </a>
             </div>
         </div>
         <div class="col-md-6">
@@ -78,6 +81,12 @@
 
     <div class="row g-4 mt-2">
         <div class="col-md-4">
+            <a href="{{ path('app_locataire_candidatures') }}" class="card p-4 text-decoration-none text-dark h-100 d-flex flex-column align-items-center justify-content-center">
+                <i class="bi bi-send display-4 text-primary mb-2"></i>
+                <span class="fw-bold">Mes candidatures</span>
+            </a>
+        </div>
+        <div class="col-md-4">
             <a href="{{ path('app_locataire_loyers') }}" class="card p-4 text-decoration-none text-dark h-100 d-flex flex-column align-items-center justify-content-center">
                 <i class="bi bi-receipt display-4 text-primary mb-2"></i>
                 <span class="fw-bold">Mes loyers</span>
@@ -90,9 +99,21 @@
             </a>
         </div>
         <div class="col-md-4">
+            <a href="{{ path('app_locataire_tantiemes') }}" class="card p-4 text-decoration-none text-dark h-100 d-flex flex-column align-items-center justify-content-center">
+                <i class="bi bi-percent display-4 text-info mb-2"></i>
+                <span class="fw-bold">Tantièmes</span>
+            </a>
+        </div>
+        <div class="col-md-4">
             <a href="{{ path('app_locataire_messagerie') }}" class="card p-4 text-decoration-none text-dark h-100 d-flex flex-column align-items-center justify-content-center">
                 <i class="bi bi-chat-dots display-4 text-success mb-2"></i>
                 <span class="fw-bold">Messagerie</span>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ path('app_locataire_evaluations') }}" class="card p-4 text-decoration-none text-dark h-100 d-flex flex-column align-items-center justify-content-center">
+                <i class="bi bi-star-half display-4 text-warning mb-2"></i>
+                <span class="fw-bold">Mes évaluations</span>
             </a>
         </div>
     </div>

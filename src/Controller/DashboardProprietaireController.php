@@ -41,24 +41,32 @@ class DashboardProprietaireController extends AbstractController
         ColocationRepository $colocationRepo,
         LoyerRepository $loyerRepo,
         ChargeRepository $chargeRepo,
-        NotificationRepository $notifRepo
+        NotificationRepository $notifRepo,
+        EntityManagerInterface $em,
+        \App\Repository\CandidatureRepository $candidatureRepo
     ): Response {
-        $user       = $this->getUser();
+        $user        = $this->getUser();
         $colocations = $colocationRepo->findByProprietaire($user->getId());
-        $annee      = (int) date('Y');
+        $annee       = (int) date('Y');
 
-        $statsLoyers  = ['payes' => 0, 'impayes' => 0, 'total' => 0];
+        $loyerRepo->marquerEnRetard($em);
+
+        $statsLoyers  = ['payes' => 0, 'impayes' => 0, 'enRetard' => 0, 'total' => 0];
         $chargesParMois = [];
+        $nbChambres = 0;
+        $nbOccupees = 0;
 
         foreach ($colocations as $col) {
+            foreach ($col->getChambres() as $ch) {
+                $nbChambres++;
+                if ($ch->getLocataire()) $nbOccupees++;
+            }
             $loyers = $loyerRepo->findByColocation($col->getId());
             foreach ($loyers as $l) {
                 $statsLoyers['total']++;
-                if ($l->isPaye()) {
-                    $statsLoyers['payes']++;
-                } else {
-                    $statsLoyers['impayes']++;
-                }
+                if ($l->isPaye()) $statsLoyers['payes']++;
+                elseif ($l->getStatut() === Loyer::STATUT_EN_RETARD) $statsLoyers['enRetard']++;
+                else $statsLoyers['impayes']++;
             }
             $charges = $chargeRepo->findByColocationAndAnnee($col->getId(), $annee);
             foreach ($charges as $c) {
@@ -73,20 +81,30 @@ class DashboardProprietaireController extends AbstractController
         }
 
         $alertes = [];
-        if ($statsLoyers['impayes'] > 0) {
-            $alertes[] = ['type' => 'danger', 'message' => $statsLoyers['impayes'] . ' loyer(s) impayé(s) ce mois.'];
+        if ($statsLoyers['enRetard'] > 0) {
+            $alertes[] = ['type' => 'danger', 'message' => $statsLoyers['enRetard'] . ' loyer(s) en retard.'];
         }
+        if ($statsLoyers['impayes'] > 0) {
+            $alertes[] = ['type' => 'warning', 'message' => $statsLoyers['impayes'] . ' loyer(s) impayé(s).'];
+        }
+
+        $tauxOccupation = $nbChambres > 0 ? round(($nbOccupees / $nbChambres) * 100) : 0;
+        $nbCandidatures = $candidatureRepo->countEnAttenteByProprietaire($user->getId());
 
         return $this->render('proprietaire/dashboard.html.twig', [
             'stats' => [
-                'nbColocations' => count($colocations),
-                'loyersPercus'  => $statsLoyers['payes'],
-                'loyersImpayes' => $statsLoyers['impayes'],
-                'nbAnnonces'    => $nbAnnonces,
+                'nbColocations'  => count($colocations),
+                'loyersPercus'   => $statsLoyers['payes'],
+                'loyersImpayes'  => $statsLoyers['impayes'] + $statsLoyers['enRetard'],
+                'nbAnnonces'     => $nbAnnonces,
+                'tauxOccupation' => $tauxOccupation,
+                'nbChambres'     => $nbChambres,
+                'nbOccupees'     => $nbOccupees,
+                'nbCandidatures' => $nbCandidatures,
             ],
-            'alertes'        => $alertes,
-            'colocations'    => $colocations,
-            'notifications'  => $notifRepo->findNonLues($user->getId()),
+            'alertes'       => $alertes,
+            'colocations'   => $colocations,
+            'notifications' => $notifRepo->findNonLues($user->getId()),
         ]);
     }
 
@@ -204,15 +222,14 @@ class DashboardProprietaireController extends AbstractController
     #[Route('/charges', name: 'app_proprietaire_charges')]
     public function charges(ColocationRepository $colRepo, ChargeRepository $chargeRepo): Response
     {
-        $annee   = (int) date('Y');
         $charges = [];
         foreach ($colRepo->findByProprietaire($this->getUser()->getId()) as $col) {
-            foreach ($chargeRepo->findByColocationAndAnnee($col->getId(), $annee) as $c) {
+            foreach ($chargeRepo->findByColocation($col->getId()) as $c) {
                 $charges[] = $c;
             }
         }
 
-        return $this->render('proprietaire/charges.html.twig', ['charges' => $charges, 'annee' => $annee]);
+        return $this->render('proprietaire/charges.html.twig', ['charges' => $charges]);
     }
 
     #[Route('/charges/new', name: 'app_proprietaire_charge_new', methods: ['GET', 'POST'])]
@@ -228,12 +245,16 @@ class DashboardProprietaireController extends AbstractController
             $charge->setAnnee((int) $charge->getDate()->format('Y'));
             $charge->setMois($charge->getDate()->format('m'));
             $em->persist($charge);
-
-            // Calcul automatique des tantièmes
-            $this->calculerTantiemes($charge, $em);
-
             $em->flush();
-            $this->addFlash('success', 'Charge enregistrée et tantièmes calculés.');
+
+            try {
+                $this->calculerTantiemes($charge, $em);
+                $em->flush();
+                $this->addFlash('success', 'Charge enregistrée et tantièmes calculés.');
+            } catch (\Throwable) {
+                $this->addFlash('success', 'Charge enregistrée.');
+            }
+
             return $this->redirectToRoute('app_proprietaire_charges');
         }
 
@@ -274,27 +295,9 @@ class DashboardProprietaireController extends AbstractController
     }
 
     #[Route('/messagerie', name: 'app_proprietaire_messagerie')]
-    public function messagerie(ColocationRepository $colRepo, MessageRepository $messageRepo): Response
+    public function messagerie(MessageRepository $messageRepo): Response
     {
-        $colocations   = $colRepo->findByProprietaire($this->getUser()->getId());
-        $conversations = [];
-
-        foreach ($colocations as $col) {
-            foreach ($col->getChambres() as $chambre) {
-                if (!$chambre->getLocataire()) {
-                    continue;
-                }
-                $loc      = $chambre->getLocataire();
-                $messages = $messageRepo->findConversation($this->getUser()->getId(), $loc->getId(), $col->getId());
-                $dernier  = count($messages) > 0 ? $messages[array_key_last($messages)]->getContenu() : '';
-                $conversations[] = [
-                    'user'         => $loc,
-                    'colocation'   => $col,
-                    'dernierMessage' => mb_substr($dernier, 0, 60),
-                    'nonLus'       => 0,
-                ];
-            }
-        }
+        $conversations = $messageRepo->findAllConversationsForUser($this->getUser()->getId());
 
         return $this->render('proprietaire/messagerie.html.twig', ['conversations' => $conversations]);
     }
@@ -312,7 +315,7 @@ class DashboardProprietaireController extends AbstractController
         $user        = $this->getUser();
         $locataire   = $userRepo->find($locataireId);
         $colocation  = $colRepo->find($colocationId);
-        $messages    = $messageRepo->findConversation($user->getId(), $locataireId, $colocationId);
+        $messages    = $messageRepo->findAllBetweenUsers($user->getId(), $locataireId);
 
         // Marquer les messages reçus comme lus
         $messageRepo->marquerLus($locataireId, $user->getId(), $colocationId);
@@ -374,13 +377,16 @@ class DashboardProprietaireController extends AbstractController
         \App\Entity\Annonce $annonce,
         VisiteAnnonceRepository $visiteRepo
     ): Response {
+        $ownerId = $this->getUser()->getId();
         $parJour = $visiteRepo->countParJour($annonce->getId());
+        $allVisites = $visiteRepo->findByAnnonce($annonce->getId());
+        $visites = array_values(array_filter($allVisites, fn($v) => $v->getUser()?->getId() !== $ownerId));
         return $this->render('proprietaire/visites_annonce.html.twig', [
             'annonce'      => $annonce,
-            'visites'      => $visiteRepo->findByAnnonce($annonce->getId()),
+            'visites'      => $visites,
             'parJour'      => $parJour,
             'parJourValues'=> array_values($parJour),
-            'total'        => $visiteRepo->countByAnnonce($annonce->getId()),
+            'total'        => count($visites),
         ]);
     }
 
@@ -433,6 +439,13 @@ class DashboardProprietaireController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($isNew) {
                 $em->persist($evaluation);
+                $notif = new Notification();
+                $notif->setUser($locataire);
+                $notif->setType(Notification::TYPE_INFO);
+                $notif->setTitre($this->getUser()->getNomComplet() . ' vous a évalué(e)');
+                $notif->setMessage('Vous avez reçu un avis de ' . $this->getUser()->getNomComplet() . '.');
+                $notif->setLien($this->generateUrl('app_profil_locataire', ['id' => $locataire->getId()]));
+                $em->persist($notif);
             }
             $em->flush();
             $this->addFlash('success', 'Évaluation enregistrée.');
@@ -472,12 +485,18 @@ class DashboardProprietaireController extends AbstractController
     #[Route('/loyers/{id}/edit', name: 'app_proprietaire_loyer_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function editLoyer(Loyer $loyer, Request $request, EntityManagerInterface $em, ColocationRepository $colRepo): Response
     {
+        $etaitPaye = $loyer->getStatut() === Loyer::STATUT_PAYE;
+
         $form = $this->createForm(LoyerType::class, $loyer, [
             'colocations' => $colRepo->findByProprietaire($this->getUser()->getId()),
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($etaitPaye && $loyer->getStatut() !== Loyer::STATUT_PAYE) {
+                $this->addFlash('error', 'Impossible de modifier le statut d\'un loyer déjà payé.');
+                return $this->redirectToRoute('app_proprietaire_loyers');
+            }
             $em->flush();
             $this->addFlash('success', 'Loyer mis à jour.');
             return $this->redirectToRoute('app_proprietaire_loyers');

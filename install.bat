@@ -56,7 +56,10 @@ echo [8/9] Nettoyage du cache...
 call php bin/console cache:clear
 if %errorlevel% neq 0 echo AVERTISSEMENT: cache:clear a echoue.
 
-echo [9/9] Configuration de Mailpit (serveur mail de test)...
+echo [9/9] Configuration de Mailpit (serveur mail de SIMULATION - dev uniquement)...
+echo  NOTE : Mailpit est un faux serveur SMTP pour le developpement.
+echo  En production, remplacez MAILER_DSN dans .env par un vrai service (ex: SendGrid, Mailgun, SMTP).
+echo  Mailpit n'est PAS necessaire en production et n'envoie aucun vrai email.
 if not exist tools\mailpit.exe (
     echo  Telechargement de Mailpit...
     powershell -Command "Invoke-WebRequest -Uri 'https://github.com/axllent/mailpit/releases/latest/download/mailpit-windows-amd64.zip' -OutFile 'tools\mailpit.zip'"
@@ -95,7 +98,13 @@ echo  Comptes de test :
 echo    Proprietaire : proprio@colocation.com / Proprio1234!
 echo    Locataire    : locataire@colocation.com / Locataire1234!
 echo.
-echo  Acces : http://localhost/INF7_TD3/public/
-echo  Mails : http://localhost:8025/ (si Mailpit installe)
+echo  Acces : http://localhost/htdocs/INF7_TD3/public/
+echo  Comptes :
+echo    Proprietaire : proprio@colocation.com / Proprio1234!
+echo    Locataire    : locataire@colocation.com / Locataire1234!
+echo.
+echo  Mailpit (simulation email dev) : http://localhost:8025/
+echo  Fichier executable : INF7_TD3\tools\mailpit.exe
+echo  Script de demarrage manuel : INF7_TD3\demarrer_mailpit.bat
 echo ============================================================
 pause

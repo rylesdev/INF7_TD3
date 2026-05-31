@@ -1,13 +1,45 @@
 {% extends 'base.html.twig' %}
 {% block title %}Annonces de colocation{% endblock %}
-{% block meta_description %}Trouvez votre colocation idéale. {{ annonces|length }} annonces disponibles.{% endblock %}
+{% block meta_description %}Trouvez votre colocation idéale. {{ total }} annonces disponibles.{% endblock %}
 
 {% block body %}
 <div class="container py-5">
     <h1 class="fw-bold mb-4"><i class="bi bi-house-door text-primary"></i> Colocations disponibles</h1>
 
+    <form method="GET" action="{{ path('app_annonces') }}" class="card p-3 mb-4">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">Ville</label>
+                <select name="ville" class="form-select form-select-sm">
+                    <option value="">Toutes les villes</option>
+                    {% for ville in villes %}
+                    <option value="{{ ville }}" {{ filters.ville == ville ? 'selected' : '' }}>{{ ville }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-bold">Prix min (€)</label>
+                <input type="number" name="prix_min" class="form-control form-control-sm" placeholder="0" value="{{ filters.prix_min }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-bold">Prix max (€)</label>
+                <input type="number" name="prix_max" class="form-control form-control-sm" placeholder="2000" value="{{ filters.prix_max }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary btn-sm w-100"><i class="bi bi-search"></i> Filtrer</button>
+            </div>
+            {% if filters.ville or filters.prix_min or filters.prix_max %}
+            <div class="col-md-2">
+                <a href="{{ path('app_annonces') }}" class="btn btn-outline-secondary btn-sm w-100"><i class="bi bi-x"></i> Réinitialiser</a>
+            </div>
+            {% endif %}
+        </div>
+    </form>
+
+    <p class="text-muted small mb-3">{{ total }} annonce{{ total != 1 ? 's' : '' }} trouvée{{ total != 1 ? 's' : '' }}</p>
+
     {% if annonces|length == 0 %}
-        <div class="alert alert-info">Aucune annonce disponible pour le moment.</div>
+        <div class="alert alert-info">Aucune annonce ne correspond à vos critères.</div>
     {% else %}
         <div class="row g-4">
             {% for annonce in annonces %}
@@ -38,6 +70,28 @@
             </div>
             {% endfor %}
         </div>
+
+        {% if totalPages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {{ page == 1 ? 'disabled' : '' }}">
+                    <a class="page-link" href="{{ path('app_annonces', filters|merge({page: page - 1})) }}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                {% for p in 1..totalPages %}
+                <li class="page-item {{ p == page ? 'active' : '' }}">
+                    <a class="page-link" href="{{ path('app_annonces', filters|merge({page: p})) }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                <li class="page-item {{ page == totalPages ? 'disabled' : '' }}">
+                    <a class="page-link" href="{{ path('app_annonces', filters|merge({page: page + 1})) }}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
     {% endif %}
 </div>
 {% endblock %}

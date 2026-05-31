@@ -13,24 +13,30 @@
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
+                        <th>Colocation</th>
+                        <th>Chambre</th>
                         <th>Période</th>
                         <th>Montant</th>
                         <th>Échéance</th>
                         <th>Paiement</th>
                         <th>Statut</th>
                         <th>Quittance</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% set statutLabels = {'payé': 'Payé', 'impayé': 'Impayé', 'en_retard': 'En retard'} %}
                     {% for loyer in loyers %}
                     <tr>
+                        <td>{{ loyer.colocation ? loyer.colocation.nom : '-' }}</td>
+                        <td>{{ loyer.chambre ? loyer.chambre.nom : '-' }}</td>
                         <td>{{ loyer.mois }}/{{ loyer.annee }}</td>
                         <td class="fw-bold">{{ loyer.montant }}€</td>
                         <td>{{ loyer.dateEcheance|date('d/m/Y') }}</td>
                         <td>{{ loyer.datePaiement ? loyer.datePaiement|date('d/m/Y') : '-' }}</td>
                         <td>
                             <span class="badge bg-{{ loyer.statut == 'payé' ? 'success' : (loyer.statut == 'en_retard' ? 'danger' : 'warning') }}">
-                                {{ loyer.statut }}
+                                {{ statutLabels[loyer.statut] ?? loyer.statut }}
                             </span>
                         </td>
                         <td>
@@ -40,6 +46,18 @@
                                 </a>
                             {% else %}
                                 <span class="text-muted small">Non disponible</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if loyer.statut != 'payé' %}
+                            <form method="POST" action="{{ path('app_locataire_loyer_payer', {id: loyer.id}) }}" onsubmit="return confirm('Simuler le paiement de ce loyer ?')">
+                                <input type="hidden" name="_token" value="{{ csrf_token('payer_loyer_' ~ loyer.id) }}">
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="bi bi-credit-card"></i> Payer
+                                </button>
+                            </form>
+                            {% else %}
+                                <span class="text-success small"><i class="bi bi-check-circle"></i> Payé</span>
                             {% endif %}
                         </td>
                     </tr>

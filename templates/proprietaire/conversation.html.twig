@@ -7,20 +7,43 @@
         <a href="{{ path('app_proprietaire_messagerie') }}" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-arrow-left"></i>
         </a>
-        <h1 class="fw-bold mb-0 h4">
-            <i class="bi bi-person-circle text-primary"></i> {{ interlocuteur.nomComplet }}
-        </h1>
+        <a href="{{ path('app_profil_locataire', {id: interlocuteur.id}) }}" class="text-decoration-none text-dark d-flex align-items-center gap-2">
+            {% if interlocuteur.photoProfil %}
+                <img src="{{ asset('uploads/profils/' ~ interlocuteur.photoProfil) }}" width="38" height="38" class="rounded-circle" style="object-fit:cover;">
+            {% else %}
+                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style="width:38px;height:38px;">
+                    {{ interlocuteur.prenom|slice(0,1)|upper }}
+                </div>
+            {% endif %}
+            <span class="fw-bold h5 mb-0">{{ interlocuteur.nomComplet }}</span>
+            <i class="bi bi-box-arrow-up-right text-muted small"></i>
+        </a>
     </div>
 
     <div class="card p-4">
         <div class="overflow-auto mb-3" style="max-height:450px;" id="messagesList">
             {% for message in messages %}
+            {% if message.automatique %}
+            <div class="d-flex justify-content-center mb-3">
+                <div class="border border-info rounded p-3 text-center" style="background:#e8f4fd;max-width:85%;">
+                    <div class="small fw-bold text-info mb-1"><i class="bi bi-robot"></i> Message automatique</div>
+                    <p class="small mb-2">{{ message.contenu|nl2br }}</p>
+                    {% if message.lien %}
+                    <a href="{{ message.lien }}" class="btn btn-info btn-sm text-white">
+                        <i class="bi bi-arrow-right-circle"></i> Voir
+                    </a>
+                    {% endif %}
+                    <div class="text-muted small mt-2">{{ message.envoyeLe|date('d/m H:i') }}</div>
+                </div>
+            </div>
+            {% else %}
             <div class="d-flex mb-3 {{ message.expediteur.id == app.user.id ? 'justify-content-end' : '' }}">
                 <div class="card p-2 px-3 {{ message.expediteur.id == app.user.id ? 'bg-primary text-white' : 'bg-light' }}" style="max-width:70%;">
-                    <p class="mb-1 small">{{ message.contenu }}</p>
+                    <p class="mb-1 small">{{ message.contenu|nl2br }}</p>
                     <small class="opacity-75">{{ message.envoyeLe|date('d/m H:i') }}</small>
                 </div>
             </div>
+            {% endif %}
             {% else %}
             <p class="text-center text-muted">Aucun message dans cette conversation.</p>
             {% endfor %}

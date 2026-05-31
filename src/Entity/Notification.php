@@ -48,6 +48,9 @@ class Notification
     #[Groups(['notification:read'])]
     private bool $lue = false;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $lien = null;
+
     #[ORM\Column(type: 'datetime_immutable')]
     #[Groups(['notification:read'])]
     private ?\DateTimeImmutable $creeLe = null;
@@ -71,4 +74,6 @@ class Notification
     public function getCreeLe(): ?\DateTimeImmutable { return $this->creeLe; }
     public function getUser(): ?User { return $this->user; }
     public function setUser(?User $user): static { $this->user = $user; return $this; }
+    public function getLien(): ?string { return $this->lien; }
+    public function setLien(?string $lien): static { $this->lien = $lien; return $this; }
 }

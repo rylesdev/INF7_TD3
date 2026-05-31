@@ -20,6 +20,7 @@
                     <tr>
                         <th>Colocation</th>
                         <th>Chambre</th>
+                        <th>Locataire</th>
                         <th>Période</th>
                         <th>Montant</th>
                         <th>Échéance</th>
@@ -32,12 +33,21 @@
                     <tr>
                         <td>{{ loyer.colocation.nom }}</td>
                         <td>{{ loyer.chambre ? loyer.chambre.nom : '-' }}</td>
+                        <td>
+                            {% set loc = loyer.chambre ? loyer.chambre.locataire : null %}
+                            {% if loc %}
+                            <a href="{{ path('app_profil_locataire', {id: loc.id}) }}" class="text-decoration-none">
+                                {{ loc.prenom }} {{ loc.nom|slice(0,1) }}.
+                            </a>
+                            {% else %}<span class="text-muted">-</span>{% endif %}
+                        </td>
                         <td>{{ loyer.mois }}/{{ loyer.annee }}</td>
                         <td class="fw-bold">{{ loyer.montant }}€</td>
                         <td>{{ loyer.dateEcheance|date('d/m/Y') }}</td>
                         <td>
+                            {% set statutLabels = {'payé': 'Payé', 'impayé': 'Impayé', 'en_retard': 'En retard'} %}
                             <span class="badge bg-{{ loyer.statut == 'payé' ? 'success' : (loyer.statut == 'en_retard' ? 'danger' : 'warning') }}">
-                                {{ loyer.statut }}
+                                {{ statutLabels[loyer.statut] ?? loyer.statut }}
                             </span>
                         </td>
                         <td>

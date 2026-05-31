@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Regex;
 
 class RegistrationFormType extends AbstractType
@@ -25,11 +26,12 @@ class RegistrationFormType extends AbstractType
             ->add('email', EmailType::class, ['label' => 'Email', 'attr' => ['class' => 'form-control', 'autocomplete' => 'email', 'inputmode' => 'email']])
             ->add('telephone', TextType::class, ['label' => 'Téléphone', 'required' => false, 'attr' => ['class' => 'form-control', 'autocomplete' => 'tel', 'type' => 'tel', 'placeholder' => 'ex : +33 6 12 34 56 78']])
             ->add('role', ChoiceType::class, [
-                'label'    => 'Je suis',
-                'mapped'   => false,
-                'choices'  => ['Locataire' => 'locataire', 'Propriétaire' => 'proprietaire'],
-                'expanded' => true,
-                'attr'     => ['class' => 'form-check'],
+                'label'       => 'Je suis',
+                'mapped'      => false,
+                'choices'     => ['Locataire' => 'locataire', 'Propriétaire' => 'proprietaire'],
+                'expanded'    => true,
+                'attr'        => ['class' => 'form-check'],
+                'constraints' => [new NotNull(['message' => 'Veuillez sélectionner un rôle.'])],
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type'            => PasswordType::class,

@@ -3,7 +3,15 @@
 
 {% block body %}
 <div class="container py-5">
-    <h1 class="h3 fw-bold mb-4"><i class="bi bi-star-fill text-warning"></i> Mes évaluations</h1>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 fw-bold mb-0"><i class="bi bi-star-fill text-warning"></i> Mes évaluations</h1>
+        {% if chambre and chambre.colocation and chambre.colocation.proprietaire %}
+        <a href="{{ path('app_locataire_evaluer_proprietaire', {id: chambre.colocation.proprietaire.id}) }}"
+           class="btn btn-outline-warning btn-sm">
+            <i class="bi bi-star"></i> Évaluer mon propriétaire
+        </a>
+        {% endif %}
+    </div>
 
     {% if evaluations|length > 0 %}
     <div class="card mb-4 border-warning">
@@ -24,12 +32,14 @@
             <div class="card h-100">
                 <div class="card-body">
                     <div class="d-flex align-items-center gap-3 mb-3">
-                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white fw-bold"
-                             style="width:44px;height:44px">
-                            {{ eval.proprietaire.prenom|slice(0,1)|upper }}{{ eval.proprietaire.nom|slice(0,1)|upper }}
-                        </div>
+                        <a href="{{ path('app_profil_proprietaire', {id: eval.proprietaire.id}) }}" class="text-decoration-none flex-shrink-0">
+                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white fw-bold"
+                                 style="width:44px;height:44px">
+                                {{ eval.proprietaire.prenom|slice(0,1)|upper }}{{ eval.proprietaire.nom|slice(0,1)|upper }}
+                            </div>
+                        </a>
                         <div>
-                            <div class="fw-semibold">{{ eval.proprietaire.nomComplet }}</div>
+                            <a href="{{ path('app_profil_proprietaire', {id: eval.proprietaire.id}) }}" class="fw-semibold text-decoration-none text-dark">{{ eval.proprietaire.nomComplet }}</a>
                             <div class="text-muted small"><i class="bi bi-building"></i> {{ eval.colocation.nom }}</div>
                         </div>
                     </div>
@@ -59,12 +69,42 @@
         {% endfor %}
     </div>
     {% else %}
-    <div class="card">
+    <div class="card mb-4">
         <div class="card-body text-center text-muted py-5">
             <i class="bi bi-star display-4 mb-3 d-block"></i>
             <p>Vous n'avez pas encore reçu d'évaluation.</p>
-            <p class="small">Les évaluations sont rédigées par votre propriétaire à l'issue de votre période de colocation.</p>
         </div>
+    </div>
+    {% endif %}
+
+    {% if evalDonnees|length > 0 %}
+    <h2 class="h5 fw-bold mt-4 mb-3"><i class="bi bi-star text-info"></i> Mes avis donnés aux propriétaires</h2>
+    <div class="row g-4">
+        {% for eval in evalDonnees %}
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3 mb-2">
+                        <div>
+                            <a href="{{ path('app_profil_proprietaire', {id: eval.proprietaire.id}) }}" class="fw-semibold text-decoration-none">
+                                {{ eval.proprietaire.nomComplet }}
+                            </a>
+                            <div class="text-muted small"><i class="bi bi-building"></i> {{ eval.colocation.nom }}</div>
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        {% for i in 1..5 %}
+                            <i class="bi bi-star{{ i <= eval.note ? '-fill text-warning' : ' text-muted' }}"></i>
+                        {% endfor %}
+                    </div>
+                    {% if eval.commentaire %}
+                        <p class="small text-muted mb-0">{{ eval.commentaire }}</p>
+                    {% endif %}
+                    <div class="text-muted small mt-2">{{ eval.creeLe|date('d/m/Y') }}</div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
     {% endif %}
 </div>

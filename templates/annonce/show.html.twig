@@ -98,6 +98,8 @@
                 </div>
                 {% elseif dejaAvis %}
                     <p class="text-muted small mt-2"><i class="bi bi-check-circle text-success"></i> Vous avez déjà laissé un avis pour cette annonce.</p>
+                {% elseif is_granted('ROLE_USER') and not is_granted('ROLE_PROPRIETAIRE') and not peutNoter %}
+                    <p class="text-muted small mt-2"><i class="bi bi-info-circle"></i> Vous pouvez noter cette colocation uniquement après avoir payé un loyer.</p>
                 {% elseif not is_granted('ROLE_USER') %}
                     <a href="{{ path('app_login') }}" class="btn btn-outline-primary btn-sm mt-2">Se connecter pour laisser un avis</a>
                 {% endif %}
@@ -131,14 +133,55 @@
                     <li class="mb-2"><i class="bi bi-eye me-2 text-muted"></i> {{ annonce.nbVisites }} vue(s)</li>
                     <li class="mb-2"><i class="bi bi-calendar me-2 text-muted"></i> Publiée le {{ annonce.createdAt|date('d/m/Y') }}</li>
                 </ul>
+                {% if annonce.colocation.proprietaire %}
                 <hr>
-                {% if is_granted('ROLE_USER') %}
-                    <a href="{{ path('app_locataire_messagerie') }}" class="btn btn-primary w-100 mb-2">
+                <a href="{{ path('app_profil_proprietaire', {id: annonce.colocation.proprietaire.id}) }}"
+                   class="d-flex align-items-center gap-3 text-decoration-none text-dark p-2 rounded hover-bg"
+                   style="transition:background .15s;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background=''">
+                    {% if annonce.colocation.proprietaire.photoProfil %}
+                        <img src="{{ asset('uploads/profils/' ~ annonce.colocation.proprietaire.photoProfil) }}"
+                             class="rounded-circle" style="width:52px;height:52px;object-fit:cover;flex-shrink:0;" alt="Photo">
+                    {% else %}
+                        <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold flex-shrink-0"
+                             style="width:52px;height:52px;font-size:1.3rem;">
+                            {{ annonce.colocation.proprietaire.prenom|slice(0,1)|upper }}
+                        </div>
+                    {% endif %}
+                    <div class="flex-grow-1">
+                        <div class="fw-bold">{{ annonce.colocation.proprietaire.prenom }} {{ annonce.colocation.proprietaire.nom }}</div>
+                        <div class="small text-muted">Propriétaire</div>
+                        {% if moyenneProprio > 0 %}
+                        <div class="small">
+                            {% for i in 1..5 %}<i class="bi bi-star{{ i <= moyenneProprio ? '-fill text-warning' : '' }}" style="font-size:11px;"></i>{% endfor %}
+                            <span class="text-muted ms-1">{{ moyenneProprio }}/5 ({{ nbAvisProprio }} avis)</span>
+                        </div>
+                        {% else %}
+                        <div class="small text-muted">Aucun avis</div>
+                        {% endif %}
+                    </div>
+                    <i class="bi bi-chevron-right text-muted"></i>
+                </a>
+                {% endif %}
+                <hr>
+                {% if is_granted('ROLE_USER') and not is_granted('ROLE_PROPRIETAIRE') %}
+                    {% if annonce.statut == 'disponible' %}
+                        {% if dejaCandidat %}
+                            <div class="alert alert-success py-2 text-center small mb-2">
+                                <i class="bi bi-check-circle-fill"></i> Candidature envoyée, en attente de réponse
+                            </div>
+                        {% else %}
+                            <a href="{{ path('app_locataire_candidature_form', {id: annonce.id}) }}"
+                               class="btn btn-success w-100 mb-2">
+                                <i class="bi bi-send"></i> Candidater
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                    <a href="{{ path('app_locataire_messagerie_annonce', {id: annonce.id}) }}" class="btn btn-outline-primary w-100 mb-2">
                         <i class="bi bi-chat-dots"></i> Contacter le propriétaire
                     </a>
-                {% else %}
+                {% elseif not is_granted('ROLE_USER') %}
                     <a href="{{ path('app_login') }}" class="btn btn-primary w-100 mb-2">
-                        <i class="bi bi-box-arrow-in-right"></i> Se connecter pour contacter
+                        <i class="bi bi-box-arrow-in-right"></i> Se connecter pour candidater
                     </a>
                 {% endif %}
                 <a href="{{ path('app_annonces') }}" class="btn btn-outline-secondary w-100">

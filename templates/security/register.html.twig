@@ -9,15 +9,23 @@
                 <h1 class="h3 mb-4 text-center"><i class="bi bi-person-plus text-primary"></i> Créer un compte</h1>
                 {{ form_start(form, {attr: {id: 'registerForm', novalidate: true}}) }}
                     <div class="row">
-                        <div class="col-md-6 mb-3">{{ form_label(form.prenom) }}{{ form_widget(form.prenom) }}{{ form_errors(form.prenom) }}</div>
-                        <div class="col-md-6 mb-3">{{ form_label(form.nom) }}{{ form_widget(form.nom) }}{{ form_errors(form.nom) }}</div>
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(form.prenom) }}
+                            {{ form_widget(form.prenom) }}
+                            {% for error in form.prenom.vars.errors %}<div class="text-danger small mt-1">{{ error.message }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            {{ form_label(form.nom) }}
+                            {{ form_widget(form.nom) }}
+                            {% for error in form.nom.vars.errors %}<div class="text-danger small mt-1">{{ error.message }}</div>{% endfor %}
+                        </div>
                     </div>
 
                     <div class="mb-3">
                         {{ form_label(form.email) }}
                         {{ form_widget(form.email, {attr: {id: 'emailField'}}) }}
                         <div id="emailFeedback" class="text-danger small mt-1" style="display:none"></div>
-                        {{ form_errors(form.email) }}
+                        {% for error in form.email.vars.errors %}<div class="text-danger small mt-1">{{ error.message }}</div>{% endfor %}
                     </div>
 
                     <div class="mb-3">
@@ -38,10 +46,10 @@
                                 <option value="+216">🇹🇳 +216</option>
                                 <option value="">Autre</option>
                             </select>
-                            {{ form_widget(form.telephone, {attr: {id: 'phoneNumber', placeholder: '6 12 34 56 78', style: 'flex:1;'}}) }}
+                            {{ form_widget(form.telephone, {attr: {placeholder: '6 12 34 56 78', style: 'flex:1;'}}) }}
                         </div>
                         <div id="phoneFeedback" class="text-danger small mt-1" style="display:none"></div>
-                        {{ form_errors(form.telephone) }}
+                        {% for error in form.telephone.vars.errors %}<div class="text-danger small mt-1">{{ error.message }}</div>{% endfor %}
                     </div>
 
                     <div class="mb-3">
@@ -54,10 +62,22 @@
                                 </div>
                             {% endfor %}
                         </div>
-                        {{ form_errors(form.role) }}
+                        <div id="roleFeedback" class="text-danger small mt-1" style="display:none"></div>
+                        {% for error in form.role.vars.errors %}<div class="text-danger small mt-1">{{ error.message }}</div>{% endfor %}
                     </div>
-                    <div class="mb-3">{{ form_label(form.plainPassword.first) }}{{ form_widget(form.plainPassword.first) }}{{ form_errors(form.plainPassword.first) }}</div>
-                    <div class="mb-3">{{ form_label(form.plainPassword.second) }}{{ form_widget(form.plainPassword.second) }}{{ form_errors(form.plainPassword.second) }}</div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.plainPassword.first) }}
+                        {{ form_widget(form.plainPassword.first) }}
+                        {% for error in form.plainPassword.first.vars.errors %}<div class="text-danger small mt-1">{{ error.message }}</div>{% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        {{ form_label(form.plainPassword.second) }}
+                        {{ form_widget(form.plainPassword.second) }}
+                        {% for error in form.plainPassword.vars.errors %}<div class="text-danger small mt-1">{{ error.message }}</div>{% endfor %}
+                        {% for error in form.plainPassword.second.vars.errors %}<div class="text-danger small mt-1">{{ error.message }}</div>{% endfor %}
+                    </div>
+
                     <button type="submit" class="btn btn-primary w-100">Créer mon compte</button>
                 {{ form_end(form) }}
                 <div class="text-center mt-3">
@@ -73,12 +93,23 @@
 {% block javascripts %}
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const emailField   = document.getElementById('emailField');
+    const emailField    = document.querySelector('#registerForm input[type="email"]');
     const emailFeedback = document.getElementById('emailFeedback');
-    const phoneNumber  = document.getElementById('phoneNumber');
-    const phonePrefix  = document.getElementById('phonePrefix');
+    const phoneNumber   = document.getElementById('registration_form_telephone');
+    const phonePrefix   = document.getElementById('phonePrefix');
     const phoneFeedback = document.getElementById('phoneFeedback');
-    const form         = document.getElementById('registerForm');
+    const roleFeedback  = document.getElementById('roleFeedback');
+    const form          = document.getElementById('registerForm');
+
+    // Si le formulaire a été renvoyé par le serveur avec une valeur déjà préfixée, la décomposer
+    if (phoneNumber && phoneNumber.value.trim().startsWith('+')) {
+        const val = phoneNumber.value.trim();
+        const match = Array.from(phonePrefix.options).find(o => o.value && val.startsWith(o.value));
+        if (match) {
+            phonePrefix.value = match.value;
+            phoneNumber.value = val.slice(match.value.length).trim();
+        }
+    }
 
     function validateEmail(val) {
         if (!val) return 'L\'adresse email est obligatoire.';
@@ -101,6 +132,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return '';
     }
 
+    function validateRole() {
+        const checked = document.querySelector('#registerForm input[name="registration_form[role]"]:checked');
+        return checked ? '' : 'Veuillez sélectionner un rôle (Locataire ou Propriétaire).';
+    }
+
     emailField?.addEventListener('input', () => {
         const val = emailField.value.trim();
         const err = val ? validateEmail(val) : '';
@@ -111,32 +147,49 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     phoneNumber?.addEventListener('input', () => {
-        const err = validatePhone(phoneNumber.value.trim());
+        const val = phoneNumber.value.trim();
+        const err = val ? validatePhone(val) : '';
         phoneFeedback.textContent = err;
-        phoneFeedback.style.display = err ? '' : 'none';
+        phoneFeedback.style.display = err ? 'block' : 'none';
         phoneNumber.classList.toggle('is-invalid', !!err);
+        phoneNumber.classList.toggle('is-valid', !err && val.length > 0);
+    });
+
+    document.querySelectorAll('#registerForm input[name="registration_form[role]"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            roleFeedback.style.display = 'none';
+        });
     });
 
     form?.addEventListener('submit', e => {
         const emailErr = validateEmail(emailField?.value.trim() ?? '');
         const phoneErr = validatePhone(phoneNumber?.value.trim() ?? '');
+        const roleErr  = validateRole();
+        let blocked = false;
+
         if (emailErr) {
-            e.preventDefault();
+            e.preventDefault(); blocked = true;
             emailFeedback.textContent = emailErr;
             emailFeedback.style.display = 'block';
             emailField.classList.add('is-invalid');
         }
         if (phoneErr) {
-            e.preventDefault();
+            e.preventDefault(); blocked = true;
             phoneFeedback.textContent = phoneErr;
-            phoneFeedback.style.display = '';
+            phoneFeedback.style.display = 'block';
             phoneNumber.classList.add('is-invalid');
         }
+        if (roleErr) {
+            e.preventDefault(); blocked = true;
+            roleFeedback.textContent = roleErr;
+            roleFeedback.style.display = 'block';
+        }
 
-        // Combiner préfixe + numéro avant soumission
-        if (!emailErr && !phoneErr && phoneNumber && phonePrefix?.value) {
-            const digits = phoneNumber.value.trim().replace(/^0/, '');
-            phoneNumber.value = phonePrefix.value + ' ' + digits;
+        if (!blocked && phoneNumber && phonePrefix?.value) {
+            const val = phoneNumber.value.trim();
+            if (val && !val.startsWith('+')) {
+                phoneNumber.value = phonePrefix.value + ' ' + val.replace(/^0/, '');
+            }
         }
     });
 });

@@ -30,6 +30,12 @@
                 <div class="text-muted small">Annonces actives</div>
             </div>
         </div>
+        <div class="col-md-3">
+            <div class="card text-center p-3" style="border-color:#6f42c1;">
+                <div class="display-6 fw-bold" style="color:#6f42c1;">{{ stats.tauxOccupation }}%</div>
+                <div class="text-muted small">Taux d'occupation ({{ stats.nbOccupees }}/{{ stats.nbChambres }} chambres)</div>
+            </div>
+        </div>
     </div>
 
     <div class="row g-4 mb-4">
@@ -69,6 +75,12 @@
             <a href="{{ path('app_proprietaire_annonces') }}" class="card p-3 text-decoration-none text-dark text-center d-block h-100">
                 <i class="bi bi-megaphone display-5 text-info mb-1 d-block"></i>
                 <small class="fw-bold">Annonces</small>
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a href="{{ path('app_proprietaire_candidatures') }}" class="card p-3 text-decoration-none text-dark text-center d-block h-100">
+                <i class="bi bi-people display-5 text-primary mb-1 d-block"></i>
+                <small class="fw-bold">Candidatures{% if stats.nbCandidatures > 0 %} <span class="badge bg-danger">{{ stats.nbCandidatures }}</span>{% endif %}</small>
             </a>
         </div>
         <div class="col-md-2">

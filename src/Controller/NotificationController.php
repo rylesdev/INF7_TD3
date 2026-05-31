@@ -29,7 +29,7 @@ class NotificationController extends AbstractController
     }
 
     #[Route('/mark-all-read', name: 'app_notifications_mark_read', methods: ['POST'])]
-    public function markAllRead(NotificationRepository $repo, EntityManagerInterface $em): JsonResponse
+    public function markAllRead(NotificationRepository $repo, EntityManagerInterface $em): \Symfony\Component\HttpFoundation\Response
     {
         $notifications = $repo->findNonLues($this->getUser()->getId());
         foreach ($notifications as $n) {
@@ -37,6 +37,6 @@ class NotificationController extends AbstractController
         }
         $em->flush();
 
-        return $this->json(['success' => true]);
+        return $this->redirectToRoute('app_locataire_notifications');
     }
 }

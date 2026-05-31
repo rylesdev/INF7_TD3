@@ -13,6 +13,16 @@ class ChargeRepository extends ServiceEntityRepository
         parent::__construct($registry, Charge::class);
     }
 
+    public function findByColocation(int $colocationId): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.colocation = :colId')
+            ->setParameter('colId', $colocationId)
+            ->orderBy('c.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findByColocationAndAnnee(int $colocationId, int $annee): array
     {
         return $this->createQueryBuilder('c')

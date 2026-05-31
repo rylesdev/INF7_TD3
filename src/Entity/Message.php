@@ -40,6 +40,12 @@ class Message
     #[Groups(['message:read'])]
     private bool $lu = false;
 
+    #[ORM\Column(type: 'boolean')]
+    private bool $automatique = false;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $lien = null;
+
     #[ORM\Column(type: 'datetime_immutable')]
     #[Groups(['message:read'])]
     private ?\DateTimeImmutable $envoyeLe = null;
@@ -74,4 +80,8 @@ class Message
     public function setDestinataire(?User $destinataire): static { $this->destinataire = $destinataire; return $this; }
     public function getColocation(): ?Colocation { return $this->colocation; }
     public function setColocation(?Colocation $colocation): static { $this->colocation = $colocation; return $this; }
+    public function isAutomatique(): bool { return $this->automatique; }
+    public function setAutomatique(bool $automatique): static { $this->automatique = $automatique; return $this; }
+    public function getLien(): ?string { return $this->lien; }
+    public function setLien(?string $lien): static { $this->lien = $lien; return $this; }
 }

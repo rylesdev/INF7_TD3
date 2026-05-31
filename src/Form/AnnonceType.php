@@ -38,6 +38,7 @@ class AnnonceType extends AbstractType
             ])
             ->add('colocation', EntityType::class, [
                 'class'        => Colocation::class,
+                'choices'      => $options['colocations'],
                 'choice_label' => 'nom',
                 'label'        => 'Colocation',
                 'attr'         => ['class' => 'form-select'],
@@ -64,6 +65,6 @@ class AnnonceType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => Annonce::class]);
+        $resolver->setDefaults(['data_class' => Annonce::class, 'colocations' => []]);
     }
 }

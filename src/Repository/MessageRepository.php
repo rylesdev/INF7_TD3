@@ -51,6 +51,49 @@ class MessageRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function findAllConversationsForUser(int $userId): array
+    {
+        $messages = $this->createQueryBuilder('m')
+            ->andWhere('m.expediteur = :uid OR m.destinataire = :uid')
+            ->setParameter('uid', $userId)
+            ->orderBy('m.envoyeLe', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        // Une seule conversation par interlocuteur, peu importe la colocation
+        $conversations = [];
+        foreach ($messages as $msg) {
+            $other = $msg->getExpediteur()->getId() === $userId
+                ? $msg->getDestinataire()
+                : $msg->getExpediteur();
+            $key = $other->getId();
+            if (!isset($conversations[$key])) {
+                $conversations[$key] = [
+                    'user'           => $other,
+                    'colocation'     => $msg->getColocation(),
+                    'dernierMessage' => mb_substr($msg->getContenu(), 0, 60),
+                    'nonLus'         => 0,
+                ];
+            }
+            if (!$msg->isLu() && $msg->getDestinataire()->getId() === $userId) {
+                $conversations[$key]['nonLus']++;
+            }
+        }
+
+        return array_values($conversations);
+    }
+
+    public function findAllBetweenUsers(int $user1Id, int $user2Id): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('(m.expediteur = :u1 AND m.destinataire = :u2) OR (m.expediteur = :u2 AND m.destinataire = :u1)')
+            ->setParameter('u1', $user1Id)
+            ->setParameter('u2', $user2Id)
+            ->orderBy('m.envoyeLe', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findConversation(int $user1Id, int $user2Id, int $colocationId): array
     {
         return $this->createQueryBuilder('m')

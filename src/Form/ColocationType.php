@@ -18,7 +18,16 @@ class ColocationType extends AbstractType
             ->add('nom', TextType::class, ['label' => 'Nom de la colocation', 'attr' => ['class' => 'form-control']])
             ->add('adresse', TextType::class, ['label' => 'Adresse', 'attr' => ['class' => 'form-control']])
             ->add('ville', TextType::class, ['label' => 'Ville', 'attr' => ['class' => 'form-control']])
-            ->add('codePostal', TextType::class, ['label' => 'Code postal', 'attr' => ['class' => 'form-control', 'maxlength' => 10]])
+            ->add('codePostal', TextType::class, [
+                'label' => 'Code postal',
+                'attr'  => ['class' => 'form-control', 'maxlength' => 5, 'pattern' => '[0-9]{5}', 'placeholder' => '75001'],
+                'constraints' => [
+                    new \Symfony\Component\Validator\Constraints\Regex([
+                        'pattern' => '/^[0-9]{5}$/',
+                        'message' => 'Le code postal doit contenir exactement 5 chiffres.',
+                    ]),
+                ],
+            ])
             ->add('description', TextareaType::class, ['label' => 'Description', 'required' => false, 'attr' => ['class' => 'form-control', 'rows' => 3]])
             ->add('loyer', NumberType::class, ['label' => 'Loyer global (€)', 'required' => false, 'attr' => ['class' => 'form-control']])
             ->add('latitude', NumberType::class, ['label' => 'Latitude (optionnel)', 'required' => false, 'attr' => ['class' => 'form-control']])

@@ -39,7 +39,6 @@
                         <th>#</th>
                         <th>Date et heure</th>
                         <th>Visiteur</th>
-                        <th>Adresse IP</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,12 +49,13 @@
                     <td>
                         {% if visite.user %}
                             <i class="bi bi-person-fill text-primary"></i>
-                            {{ visite.user.prenom }} {{ visite.user.nom|slice(0,1) }}.
+                            <a href="{{ path('app_profil_locataire', {id: visite.user.id}) }}" class="text-decoration-none">
+                                {{ visite.user.prenom }} {{ visite.user.nom|slice(0,1) }}.
+                            </a>
                         {% else %}
                             <span class="text-muted">Anonyme</span>
                         {% endif %}
                     </td>
-                    <td><code>{{ visite.ipAddress == '::1' ? '127.0.0.1' : (visite.ipAddress ?? '-') }}</code></td>
                 </tr>
                 {% endfor %}
                 </tbody>

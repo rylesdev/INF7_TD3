@@ -44,6 +44,8 @@ security:
             remember_me:
                 secret: '%kernel.secret%'
                 lifetime: 604800
+                secure: false
+                samesite: lax
 
     access_control:
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
