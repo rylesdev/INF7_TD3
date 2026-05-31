@@ -141,14 +141,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPrenom(): ?string { return $this->prenom; }
     public function setPrenom(string $prenom): static
     {
-        $this->prenom = htmlspecialchars(strip_tags($prenom), ENT_QUOTES, 'UTF-8');
+        $this->prenom = strip_tags($prenom);
         return $this;
     }
 
     public function getNom(): ?string { return $this->nom; }
     public function setNom(string $nom): static
     {
-        $this->nom = htmlspecialchars(strip_tags($nom), ENT_QUOTES, 'UTF-8');
+        $this->nom = strip_tags($nom);
         return $this;
     }
 

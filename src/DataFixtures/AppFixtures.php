@@ -592,21 +592,6 @@ class AppFixtures extends Fixture
         $notif->setUser($locataire);
         $manager->persist($notif);
 
-        $notif2 = new Notification();
-        $notif2->setTitre('Nouveau message de Marie Martin');
-        $notif2->setMessage('Marie Martin vous a envoyé un message.');
-        $notif2->setType(Notification::TYPE_NOUVEAU_MESSAGE);
-        $notif2->setLue(false);
-        $notif2->setUser($proprio);
-        $manager->persist($notif2);
-
-        $notif3 = new Notification();
-        $notif3->setTitre('Nouveau message de Jean Dupont');
-        $notif3->setMessage('Jean Dupont vous a répondu.');
-        $notif3->setType(Notification::TYPE_NOUVEAU_MESSAGE);
-        $notif3->setLue(false);
-        $notif3->setUser($locataire);
-        $manager->persist($notif3);
 
         // Taches
         $tache1 = new Tache();

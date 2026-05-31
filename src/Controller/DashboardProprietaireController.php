@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Chambre;
 use App\Entity\Charge;
 use App\Entity\Colocation;
 use App\Entity\EvaluationLocataire;
@@ -127,6 +128,8 @@ class DashboardProprietaireController extends AbstractController
             $col->setProprietaire($this->getUser());
             $em->persist($col);
             $em->flush();
+            $this->processChambreData($col, $request, $em);
+            $em->flush();
             $this->addFlash('success', 'Colocation créée.');
             return $this->redirectToRoute('app_proprietaire_colocations');
         }
@@ -142,12 +145,60 @@ class DashboardProprietaireController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $nonSupprimees = $this->processChambreData($col, $request, $em);
+            if ($nonSupprimees > 0) {
+                $this->addFlash('warning', $nonSupprimees . ' chambre(s) non supprimée(s) car elles ont un locataire assigné.');
+            }
             $em->flush();
             $this->addFlash('success', 'Colocation mise à jour.');
             return $this->redirectToRoute('app_proprietaire_colocations');
         }
 
         return $this->render('proprietaire/colocation_form.html.twig', ['form' => $form->createView(), 'colocation' => $col]);
+    }
+
+    private function processChambreData(Colocation $col, Request $request, EntityManagerInterface $em): int
+    {
+        $data = $request->request->all('chambres');
+        if (empty($data)) return 0;
+
+        $submittedIds = [];
+        foreach ($data as $row) {
+            $nom     = trim(strip_tags($row['nom'] ?? ''));
+            $surface = str_replace(',', '.', $row['surface'] ?? '15');
+            $loyer   = str_replace(',', '.', $row['loyer'] ?? '500');
+            $id      = (int) ($row['id'] ?? 0);
+            if ($nom === '') continue;
+
+            if ($id > 0) {
+                $ch = $em->find(Chambre::class, $id);
+                if ($ch && $ch->getColocation()->getId() === $col->getId()) {
+                    $ch->setNom($nom);
+                    $ch->setSurface($surface);
+                    $ch->setLoyerMensuel((float) $loyer);
+                    $submittedIds[] = $id;
+                }
+            } else {
+                $ch = new Chambre();
+                $ch->setNom($nom);
+                $ch->setSurface($surface);
+                $ch->setLoyerMensuel((float) $loyer);
+                $ch->setColocation($col);
+                $em->persist($ch);
+            }
+        }
+
+        $nonSupprimees = 0;
+        foreach ($col->getChambres() as $existing) {
+            if (!in_array($existing->getId(), $submittedIds)) {
+                if ($existing->getLocataire() === null) {
+                    $em->remove($existing);
+                } else {
+                    $nonSupprimees++;
+                }
+            }
+        }
+        return $nonSupprimees;
     }
 
     #[Route('/loyers', name: 'app_proprietaire_loyers')]
@@ -474,11 +525,26 @@ class DashboardProprietaireController extends AbstractController
     #[Route('/colocations/{id}/delete', name: 'app_proprietaire_colocation_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function deleteColocation(Colocation $col, Request $request, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete_colocation_' . $col->getId(), $request->request->get('_token'))) {
-            $em->remove($col);
-            $em->flush();
-            $this->addFlash('success', 'Colocation supprimée.');
+        if (!$this->isCsrfTokenValid('delete_colocation_' . $col->getId(), $request->request->get('_token'))) {
+            return $this->redirectToRoute('app_proprietaire_colocations');
         }
+
+        foreach ($col->getChambres() as $chambre) {
+            if ($chambre->getLocataire() !== null) {
+                $this->addFlash('error', 'Impossible de supprimer cette colocation : un ou plusieurs locataires y sont assignés.');
+                return $this->redirectToRoute('app_proprietaire_colocations');
+            }
+            foreach ($chambre->getLoyers() as $loyer) {
+                if ($loyer->getStatut() !== Loyer::STATUT_PAYE) {
+                    $this->addFlash('error', 'Impossible de supprimer cette colocation : des loyers sont encore en attente de paiement.');
+                    return $this->redirectToRoute('app_proprietaire_colocations');
+                }
+            }
+        }
+
+        $em->remove($col);
+        $em->flush();
+        $this->addFlash('success', 'Colocation supprimée.');
         return $this->redirectToRoute('app_proprietaire_colocations');
     }
 

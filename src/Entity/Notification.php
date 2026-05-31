@@ -66,7 +66,7 @@ class Notification
     public function getType(): string { return $this->type; }
     public function setType(string $type): static { $this->type = $type; return $this; }
     public function getTitre(): ?string { return $this->titre; }
-    public function setTitre(string $titre): static { $this->titre = htmlspecialchars(strip_tags($titre), ENT_QUOTES, 'UTF-8'); return $this; }
+    public function setTitre(string $titre): static { $this->titre = strip_tags($titre); return $this; }
     public function getMessage(): ?string { return $this->message; }
     public function setMessage(?string $message): static { $this->message = $message; return $this; }
     public function isLue(): bool { return $this->lue; }

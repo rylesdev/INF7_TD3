@@ -58,7 +58,7 @@ class ProfilController extends AbstractController
             : $evalLocRepo->findByLocataire($user->getId());
         $evalDonnees = $isProprio ? [] : $evalProRepo->findByLocataire($user->getId());
         $moyenne     = $isProprio
-            ? $evalLocRepo->moyenneNoteProprietaire($user->getId())
+            ? $evalProRepo->moyenneNoteProprietaire($user->getId())
             : $evalLocRepo->moyenneNoteLocataire($user->getId());
 
         return $this->render('profil/edit.html.twig', [

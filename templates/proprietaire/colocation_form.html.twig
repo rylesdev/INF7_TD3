@@ -10,15 +10,87 @@
     <div class="card p-4">
         {{ form_start(form) }}
         <div class="row g-3">
-            <div class="col-md-8">{{ form_label(form.nom) }}{{ form_widget(form.nom) }}{{ form_errors(form.nom) }}</div>
-            <div class="col-md-4">{{ form_label(form.loyer) }}{{ form_widget(form.loyer) }}{{ form_errors(form.loyer) }}</div>
+            <div class="col-12">{{ form_label(form.nom) }}{{ form_widget(form.nom) }}{{ form_errors(form.nom) }}</div>
             <div class="col-md-8">{{ form_label(form.adresse) }}{{ form_widget(form.adresse) }}{{ form_errors(form.adresse) }}</div>
             <div class="col-md-4">{{ form_label(form.codePostal) }}{{ form_widget(form.codePostal) }}{{ form_errors(form.codePostal) }}</div>
             <div class="col-md-6">{{ form_label(form.ville) }}{{ form_widget(form.ville) }}{{ form_errors(form.ville) }}</div>
             <div class="col-md-3">{{ form_label(form.latitude) }}{{ form_widget(form.latitude) }}{{ form_errors(form.latitude) }}</div>
             <div class="col-md-3">{{ form_label(form.longitude) }}{{ form_widget(form.longitude) }}{{ form_errors(form.longitude) }}</div>
             <div class="col-12">{{ form_label(form.description) }}{{ form_widget(form.description) }}{{ form_errors(form.description) }}</div>
+
+            <div class="col-12 mt-2">
+                <label class="fw-bold mb-2 d-block">Chambres</label>
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle mb-2">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nom</th>
+                                <th style="width:150px">Surface (m²)</th>
+                                <th style="width:180px">Loyer mensuel (€)</th>
+                                <th style="width:60px"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="chambresBody">
+                            {% if colocation and colocation.chambres|length > 0 %}
+                                {% for ch in colocation.chambres %}
+                                <tr>
+                                    <td>
+                                        <input type="hidden" name="chambres[{{ loop.index0 }}][id]" value="{{ ch.id }}">
+                                        <input type="text" name="chambres[{{ loop.index0 }}][nom]" value="{{ ch.nom }}"
+                                               class="form-control form-control-sm" required>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="chambres[{{ loop.index0 }}][surface]" value="{{ ch.surface }}"
+                                               class="form-control form-control-sm" step="0.1" min="1" required>
+                                    </td>
+                                    <td>
+                                        <input type="number" name="chambres[{{ loop.index0 }}][loyer]" value="{{ ch.loyerMensuel }}"
+                                               class="form-control form-control-sm" step="0.01" min="0" required>
+                                    </td>
+                                    <td class="text-center">
+                                        {% if ch.locataire %}
+                                            <span class="badge bg-warning text-dark" title="Chambre occupée">
+                                                <i class="bi bi-person-fill"></i>
+                                            </span>
+                                        {% else %}
+                                            <button type="button" class="btn btn-outline-danger btn-sm remove-row" title="Supprimer">
+                                                <i class="bi bi-x"></i>
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td>
+                                    <input type="hidden" name="chambres[0][id]" value="">
+                                    <input type="text" name="chambres[0][nom]" value="Chambre A"
+                                           class="form-control form-control-sm" required>
+                                </td>
+                                <td>
+                                    <input type="number" name="chambres[0][surface]" value="15"
+                                           class="form-control form-control-sm" step="0.1" min="1" required>
+                                </td>
+                                <td>
+                                    <input type="number" name="chambres[0][loyer]" value="500"
+                                           class="form-control form-control-sm" step="0.01" min="0" required>
+                                </td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-outline-danger btn-sm remove-row" title="Supprimer">
+                                        <i class="bi bi-x"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="btn btn-outline-primary btn-sm" id="addChambre">
+                    <i class="bi bi-plus-circle"></i> Ajouter une chambre
+                </button>
+            </div>
         </div>
+
         <div class="mt-4 d-flex gap-2">
             <button type="submit" class="btn btn-primary">Enregistrer</button>
             <a href="{{ path('app_proprietaire_colocations') }}" class="btn btn-outline-secondary">Annuler</a>
@@ -26,4 +98,46 @@
         {{ form_end(form) }}
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const lettres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const body    = document.getElementById('chambresBody');
+
+    function reindex() {
+        body.querySelectorAll('tr').forEach((row, i) => {
+            row.querySelectorAll('input').forEach(inp => {
+                inp.name = inp.name.replace(/\[\d+\]/, '[' + i + ']');
+            });
+        });
+    }
+
+    document.getElementById('addChambre').addEventListener('click', () => {
+        const count = body.querySelectorAll('tr').length;
+        const nom   = 'Chambre ' + (lettres[count] || (count + 1));
+        const row   = document.createElement('tr');
+        row.innerHTML = `
+            <td>
+                <input type="hidden" name="chambres[${count}][id]" value="">
+                <input type="text" name="chambres[${count}][nom]" value="${nom}" class="form-control form-control-sm" required>
+            </td>
+            <td><input type="number" name="chambres[${count}][surface]" value="15" class="form-control form-control-sm" step="0.1" min="1" required></td>
+            <td><input type="number" name="chambres[${count}][loyer]" value="500" class="form-control form-control-sm" step="0.01" min="0" required></td>
+            <td class="text-center"><button type="button" class="btn btn-outline-danger btn-sm remove-row" title="Supprimer"><i class="bi bi-x"></i></button></td>
+        `;
+        body.appendChild(row);
+    });
+
+    body.addEventListener('click', e => {
+        const btn = e.target.closest('.remove-row');
+        if (!btn) return;
+        if (body.querySelectorAll('tr').length > 1) {
+            btn.closest('tr').remove();
+            reindex();
+        }
+    });
+});
+</script>
 {% endblock %}

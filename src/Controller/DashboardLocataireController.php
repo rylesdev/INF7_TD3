@@ -201,26 +201,46 @@ class DashboardLocataireController extends AbstractController
     public function messagerie(
         Request $request,
         MessageRepository $messageRepo,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        UserRepository $userRepo
     ): Response {
         $user          = $this->getUser();
-        $chambre       = $user->getChambres()->first() ?: null;
         $conversations = $messageRepo->findAllConversationsForUser($user->getId());
 
-        // Conversation active : chambre assignée en priorité, sinon la plus récente
-        if ($chambre) {
-            $colocation   = $chambre->getColocation();
-            $proprietaire = $colocation->getProprietaire();
-        } elseif (!empty($conversations)) {
-            $colocation   = $conversations[0]['colocation'];
-            $proprietaire = $conversations[0]['user'];
-        } else {
+        if (empty($conversations)) {
             return $this->render('locataire/messagerie.html.twig', [
-                'messages'      => [],
-                'proprietaire'  => null,
-                'conversations' => [],
-                'form'          => $this->createForm(MessageType::class)->createView(),
+                'messages'        => [],
+                'proprietaire'    => null,
+                'conversations'   => [],
+                'activeUserId'    => null,
+                'form'            => $this->createForm(MessageType::class)->createView(),
             ]);
+        }
+
+        // Conversation active : paramètre ?with=userId, sinon chambre assignée, sinon la plus récente
+        $withId = (int) $request->query->get('with', 0);
+        $proprietaire = null;
+        $colocation   = null;
+
+        if ($withId) {
+            foreach ($conversations as $conv) {
+                if ($conv['user']->getId() === $withId) {
+                    $proprietaire = $conv['user'];
+                    $colocation   = $conv['colocation'];
+                    break;
+                }
+            }
+        }
+
+        if (!$proprietaire) {
+            $chambre = $user->getChambres()->first() ?: null;
+            if ($chambre) {
+                $colocation   = $chambre->getColocation();
+                $proprietaire = $colocation->getProprietaire();
+            } else {
+                $colocation   = $conversations[0]['colocation'];
+                $proprietaire = $conversations[0]['user'];
+            }
         }
 
         $messages = $messageRepo->findAllBetweenUsers($user->getId(), $proprietaire->getId());
@@ -245,13 +265,14 @@ class DashboardLocataireController extends AbstractController
             $em->persist($notif);
 
             $em->flush();
-            return $this->redirectToRoute('app_locataire_messagerie');
+            return $this->redirectToRoute('app_locataire_messagerie', ['with' => $proprietaire->getId()]);
         }
 
         return $this->render('locataire/messagerie.html.twig', [
             'messages'      => $messages,
             'proprietaire'  => $proprietaire,
             'conversations' => $conversations,
+            'activeUserId'  => $proprietaire->getId(),
             'form'          => $form->createView(),
         ]);
     }

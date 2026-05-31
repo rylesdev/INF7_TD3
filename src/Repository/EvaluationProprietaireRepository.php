@@ -16,6 +16,7 @@ class EvaluationProprietaireRepository extends ServiceEntityRepository
     public function findByProprietaire(int $proprietaireId): array
     {
         return $this->createQueryBuilder('e')
+            ->innerJoin('e.colocation', 'c')
             ->andWhere('e.proprietaire = :id')
             ->setParameter('id', $proprietaireId)
             ->orderBy('e.creeLe', 'DESC')
@@ -26,6 +27,7 @@ class EvaluationProprietaireRepository extends ServiceEntityRepository
     public function findByLocataire(int $locataireId): array
     {
         return $this->createQueryBuilder('e')
+            ->innerJoin('e.colocation', 'c')
             ->andWhere('e.locataire = :id')
             ->setParameter('id', $locataireId)
             ->orderBy('e.creeLe', 'DESC')

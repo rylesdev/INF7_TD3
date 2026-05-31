@@ -29,7 +29,6 @@ class ColocationType extends AbstractType
                 ],
             ])
             ->add('description', TextareaType::class, ['label' => 'Description', 'required' => false, 'attr' => ['class' => 'form-control', 'rows' => 3]])
-            ->add('loyer', NumberType::class, ['label' => 'Loyer global (€)', 'required' => false, 'attr' => ['class' => 'form-control']])
             ->add('latitude', NumberType::class, ['label' => 'Latitude (optionnel)', 'required' => false, 'attr' => ['class' => 'form-control']])
             ->add('longitude', NumberType::class, ['label' => 'Longitude (optionnel)', 'required' => false, 'attr' => ['class' => 'form-control']]);
     }

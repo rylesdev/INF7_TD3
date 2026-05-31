@@ -107,13 +107,13 @@ class Annonce
 
     public function getId(): ?int { return $this->id; }
     public function getTitre(): ?string { return $this->titre; }
-    public function setTitre(string $titre): static { $this->titre = htmlspecialchars(strip_tags($titre), ENT_QUOTES, 'UTF-8'); return $this; }
+    public function setTitre(string $titre): static { $this->titre = strip_tags($titre); return $this; }
     public function getDescription(): ?string { return $this->description; }
     public function setDescription(string $description): static { $this->description = $description; return $this; }
     public function getPrix(): ?string { return $this->prix; }
     public function setPrix(string $prix): static { $this->prix = $prix; return $this; }
     public function getLocalisation(): ?string { return $this->localisation; }
-    public function setLocalisation(string $localisation): static { $this->localisation = htmlspecialchars(strip_tags($localisation), ENT_QUOTES, 'UTF-8'); return $this; }
+    public function setLocalisation(string $localisation): static { $this->localisation = strip_tags($localisation); return $this; }
     public function getStatut(): string { return $this->statut; }
     public function setStatut(string $statut): static { $this->statut = $statut; return $this; }
     public function isDisponible(): bool { return $this->statut === self::STATUT_DISPONIBLE; }

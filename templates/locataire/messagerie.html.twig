@@ -14,7 +14,8 @@
                 {% else %}
                 <div class="list-group list-group-flush">
                     {% for conv in conversations %}
-                    <div class="list-group-item px-2 py-2" id="conv-{{ conv.user.id }}">
+                    {% set isActive = activeUserId is defined and activeUserId == conv.user.id %}
+                    <div class="list-group-item px-2 py-2 {{ isActive ? 'bg-primary bg-opacity-10 border-start border-primary border-3' : '' }}">
                         <div class="d-flex align-items-center gap-2">
                             <a href="{{ path('app_profil_proprietaire', {id: conv.user.id}) }}" class="text-decoration-none flex-shrink-0" title="Voir le profil">
                                 {% if conv.user.photoProfil %}
@@ -25,12 +26,10 @@
                                     </div>
                                 {% endif %}
                             </a>
-                            <div class="flex-grow-1 overflow-hidden">
-                                <a href="{{ path('app_profil_proprietaire', {id: conv.user.id}) }}" class="fw-bold small text-truncate d-block text-dark text-decoration-none">
-                                    {{ conv.user.nomComplet }}
-                                </a>
+                            <a href="{{ path('app_locataire_messagerie', {with: conv.user.id}) }}" class="flex-grow-1 overflow-hidden text-decoration-none">
+                                <div class="fw-bold small text-truncate text-dark">{{ conv.user.nomComplet }}</div>
                                 <div class="text-muted small text-truncate">{{ conv.dernierMessage }}</div>
-                            </div>
+                            </a>
                             {% if conv.nonLus > 0 %}
                                 <span class="badge bg-primary rounded-pill">{{ conv.nonLus }}</span>
                             {% endif %}
@@ -69,7 +68,7 @@
                         <div class="border border-info rounded p-3 text-center" style="background:#e8f4fd;max-width:85%;">
                             <div class="small fw-bold text-info mb-1"><i class="bi bi-robot"></i> Message automatique</div>
                             <p class="small mb-2">{{ message.contenu|nl2br }}</p>
-                            {% if message.lien %}
+                            {% if message.lien and message.destinataire.id == app.user.id %}
                             {% if '/proprietaire/' in message.lien %}
                             <a href="{{ path('app_locataire_candidatures') }}" class="btn btn-info btn-sm text-white">
                                 <i class="bi bi-arrow-right-circle"></i> Voir ma candidature

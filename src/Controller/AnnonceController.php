@@ -115,9 +115,12 @@ class AnnonceController extends AbstractController
             }
         }
 
-        $dejaCandidat = false;
+        $dejaCandidat    = false;
+        $aDejaUneChambre = false;
         if ($this->isGranted('ROLE_USER') && !$this->isGranted('ROLE_PROPRIETAIRE')) {
-            $dejaCandidat = $candidatureRepo->findOneByLocataireAnnonce($this->getUser()->getId(), $annonce->getId()) !== null;
+            $user            = $this->getUser();
+            $dejaCandidat    = $candidatureRepo->findOneByLocataireAnnonce($user->getId(), $annonce->getId()) !== null;
+            $aDejaUneChambre = $user->getChambres()->count() > 0;
         }
 
         $proprioId     = $annonce->getColocation()?->getProprietaire()?->getId();
@@ -125,14 +128,15 @@ class AnnonceController extends AbstractController
         $nbAvisProprio  = $proprioId ? count($evalProRepo->findByProprietaire($proprioId)) : 0;
 
         return $this->render('annonce/show.html.twig', [
-            'annonce'        => $annonce,
-            'avis'           => $avisRepo->findByAnnonce($annonce->getId()),
-            'avisForm'       => $avisForm?->createView(),
-            'dejaAvis'       => $dejaAvis,
-            'peutNoter'      => $peutNoter,
-            'dejaCandidat'   => $dejaCandidat,
-            'moyenneProprio' => $moyenneProprio,
-            'nbAvisProprio'  => $nbAvisProprio,
+            'annonce'         => $annonce,
+            'avis'            => $avisRepo->findByAnnonce($annonce->getId()),
+            'avisForm'        => $avisForm?->createView(),
+            'dejaAvis'        => $dejaAvis,
+            'peutNoter'       => $peutNoter,
+            'dejaCandidat'    => $dejaCandidat,
+            'aDejaUneChambre' => $aDejaUneChambre,
+            'moyenneProprio'  => $moyenneProprio,
+            'nbAvisProprio'   => $nbAvisProprio,
         ]);
     }
 

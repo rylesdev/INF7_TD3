@@ -119,11 +119,11 @@ class Colocation
 
     public function getId(): ?int { return $this->id; }
     public function getNom(): ?string { return $this->nom; }
-    public function setNom(string $nom): static { $this->nom = htmlspecialchars(strip_tags($nom), ENT_QUOTES, 'UTF-8'); return $this; }
+    public function setNom(string $nom): static { $this->nom = strip_tags($nom); return $this; }
     public function getAdresse(): ?string { return $this->adresse; }
-    public function setAdresse(string $adresse): static { $this->adresse = htmlspecialchars(strip_tags($adresse), ENT_QUOTES, 'UTF-8'); return $this; }
+    public function setAdresse(string $adresse): static { $this->adresse = strip_tags($adresse); return $this; }
     public function getVille(): ?string { return $this->ville; }
-    public function setVille(string $ville): static { $this->ville = htmlspecialchars(strip_tags($ville), ENT_QUOTES, 'UTF-8'); return $this; }
+    public function setVille(string $ville): static { $this->ville = strip_tags($ville); return $this; }
     public function getCodePostal(): ?string { return $this->codePostal; }
     public function setCodePostal(string $codePostal): static { $this->codePostal = $codePostal; return $this; }
     public function getDescription(): ?string { return $this->description; }

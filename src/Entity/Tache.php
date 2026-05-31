@@ -83,7 +83,7 @@ class Tache
 
     public function getId(): ?int { return $this->id; }
     public function getTitre(): ?string { return $this->titre; }
-    public function setTitre(string $titre): static { $this->titre = htmlspecialchars(strip_tags($titre), ENT_QUOTES, 'UTF-8'); return $this; }
+    public function setTitre(string $titre): static { $this->titre = strip_tags($titre); return $this; }
     public function getType(): string { return $this->type; }
     public function setType(string $type): static { $this->type = $type; return $this; }
     public function getStatut(): string { return $this->statut; }

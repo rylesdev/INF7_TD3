@@ -9,7 +9,16 @@
                 <h1 class="h4 fw-bold mb-1"><i class="bi bi-send text-primary"></i> Envoyer une candidature</h1>
                 <p class="text-muted small mb-4">{{ annonce.titre }} &mdash; {{ annonce.localisation }} &mdash; {{ annonce.prix }}€/mois</p>
 
-                {% if dejaCandidat %}
+                {% if chambreActuelle %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    Vous êtes déjà locataire dans la chambre <strong>{{ chambreActuelle.nom }}</strong>
+                    ({{ chambreActuelle.colocation.nom }}).
+                    Vous devez <a href="{{ path('app_locataire_resilier') }}" class="alert-link">résilier votre bail</a>
+                    avant de candidater à une nouvelle annonce.
+                </div>
+                <a href="{{ path('app_annonce_show', {id: annonce.id}) }}" class="btn btn-outline-secondary">Retour à l'annonce</a>
+                {% elseif dejaCandidat %}
                 <div class="alert alert-success">
                     <i class="bi bi-check-circle-fill"></i> Vous avez déjà envoyé une candidature pour cette annonce.
                 </div>

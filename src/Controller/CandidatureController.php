@@ -31,10 +31,13 @@ class CandidatureController extends AbstractController
         $annonce = $em->find(\App\Entity\Annonce::class, $id);
         if (!$annonce) throw $this->createNotFoundException();
 
-        $dejaCandidat = $candidatureRepo->findOneByLocataireAnnonce($this->getUser()->getId(), $id) !== null;
+        $user            = $this->getUser();
+        $dejaCandidat    = $candidatureRepo->findOneByLocataireAnnonce($user->getId(), $id) !== null;
+        $chambreActuelle = $user->getChambres()->first() ?: null;
         return $this->render('locataire/candidature_form.html.twig', [
-            'annonce'      => $annonce,
-            'dejaCandidat' => $dejaCandidat,
+            'annonce'         => $annonce,
+            'dejaCandidat'    => $dejaCandidat,
+            'chambreActuelle' => $chambreActuelle,
         ]);
     }
 
@@ -66,15 +69,22 @@ class CandidatureController extends AbstractController
             return $this->redirectToRoute('app_annonce_show', ['id' => $id]);
         }
 
-        $chambresLibres = $annonce->getColocation()->getChambres()
-            ->filter(fn($c) => $c->getLocataire() === null)
-            ->count();
+        $chambres       = $annonce->getColocation()->getChambres();
+        $chambresLibres = $chambres->filter(fn($c) => $c->getLocataire() === null)->count();
         if ($chambresLibres === 0) {
-            $this->addFlash('error', 'Cette colocation n\'a plus de chambre disponible.');
+            $msg = $chambres->count() === 0
+                ? 'Cette colocation n\'a pas encore de chambre configurée.'
+                : 'Cette colocation n\'a plus de chambre disponible.';
+            $this->addFlash('error', $msg);
             return $this->redirectToRoute('app_annonce_show', ['id' => $id]);
         }
 
         $user = $this->getUser();
+        if ($user->getChambres()->count() > 0) {
+            $this->addFlash('error', 'Vous êtes déjà locataire dans une colocation. Résiliez votre bail avant de candidater ailleurs.');
+            return $this->redirectToRoute('app_annonce_show', ['id' => $id]);
+        }
+
         if ($candidatureRepo->findOneByLocataireAnnonce($user->getId(), $id)) {
             $this->addFlash('warning', 'Vous avez déjà envoyé une candidature pour cette annonce.');
             return $this->redirectToRoute('app_annonce_show', ['id' => $id]);
@@ -212,6 +222,14 @@ class CandidatureController extends AbstractController
             }
 
             $locataire = $candidature->getLocataire();
+
+            // Retirer le locataire de son ancienne chambre si nécessaire
+            foreach ($locataire->getChambres() as $ancienneChambre) {
+                if ($ancienneChambre->getId() !== $chambre->getId()) {
+                    $ancienneChambre->setLocataire(null);
+                }
+            }
+
             $chambre->setLocataire($locataire);
 
             $loyer = new Loyer();
@@ -232,7 +250,7 @@ class CandidatureController extends AbstractController
             $msgAccept->setColocation($colocation);
             $msgAccept->setContenu('Votre candidature pour « ' . $candidature->getAnnonce()->getTitre() . ' » a été acceptée. Vous êtes assigné(e) à la chambre « ' . $chambre->getNom() . ' ». Bienvenue !');
             $msgAccept->setAutomatique(true);
-            $msgAccept->setLien($this->generateUrl('app_locataire_dashboard'));
+            $msgAccept->setLien($this->generateUrl('app_locataire_candidatures'));
             $em->persist($msgAccept);
 
             $notif = new Notification();

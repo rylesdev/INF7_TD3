@@ -74,7 +74,7 @@ class Chambre
 
     public function getId(): ?int { return $this->id; }
     public function getNom(): ?string { return $this->nom; }
-    public function setNom(string $nom): static { $this->nom = htmlspecialchars(strip_tags($nom), ENT_QUOTES, 'UTF-8'); return $this; }
+    public function setNom(string $nom): static { $this->nom = strip_tags($nom); return $this; }
     public function getSurface(): ?string { return $this->surface; }
     public function setSurface(string $surface): static { $this->surface = $surface; return $this; }
     public function getLoyerMensuel(): ?string { return $this->loyerMensuel; }

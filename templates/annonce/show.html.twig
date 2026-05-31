@@ -165,15 +165,24 @@
                 <hr>
                 {% if is_granted('ROLE_USER') and not is_granted('ROLE_PROPRIETAIRE') %}
                     {% if annonce.statut == 'disponible' %}
+                        {% set chambresLibres = annonce.colocation.chambres|filter(c => c.locataire is null)|length %}
                         {% if dejaCandidat %}
                             <div class="alert alert-success py-2 text-center small mb-2">
                                 <i class="bi bi-check-circle-fill"></i> Candidature envoyée, en attente de réponse
                             </div>
-                        {% else %}
+                        {% elseif aDejaUneChambre %}
+                            <div class="alert alert-warning py-2 text-center small mb-2">
+                                <i class="bi bi-house-fill"></i> Vous êtes déjà locataire. <a href="{{ path('app_locataire_resilier') }}" class="alert-link">Résiliez votre bail</a> pour candidater.
+                            </div>
+                        {% elseif chambresLibres > 0 %}
                             <a href="{{ path('app_locataire_candidature_form', {id: annonce.id}) }}"
                                class="btn btn-success w-100 mb-2">
                                 <i class="bi bi-send"></i> Candidater
                             </a>
+                        {% else %}
+                            <div class="alert alert-warning py-2 text-center small mb-2">
+                                <i class="bi bi-exclamation-circle"></i> Aucune chambre disponible pour le moment
+                            </div>
                         {% endif %}
                     {% endif %}
                     <a href="{{ path('app_locataire_messagerie_annonce', {id: annonce.id}) }}" class="btn btn-outline-primary w-100 mb-2">
