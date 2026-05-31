@@ -98,7 +98,7 @@ echo  Comptes de test :
 echo    Proprietaire : proprio@colocation.com / Proprio1234!
 echo    Locataire    : locataire@colocation.com / Locataire1234!
 echo.
-echo  Acces : http://localhost/htdocs/INF7_TD3/public/
+echo  Acces : http://localhost/INF7_TD3/public/
 echo  Comptes :
 echo    Proprietaire : proprio@colocation.com / Proprio1234!
 echo    Locataire    : locataire@colocation.com / Locataire1234!
