@@ -8,10 +8,29 @@ Application web de gestion de colocation : loyers, charges, messagerie et planni
 
 ### Prérequis
 
-- [WAMP](https://www.wampserver.com/), [XAMPP](https://www.apachefriends.org/) ou [MAMP](https://www.mamp.info/) (ou équivalent) installé et démarré avec Apache + MySQL actifs
-- **PHP 8.4** activé dans votre serveur local (PHP 8.2 et 8.3 sont incompatibles avec les dépendances du projet)
+- [XAMPP](https://www.apachefriends.org/), [WAMP](https://www.wampserver.com/) ou [MAMP](https://www.mamp.info/) installé et démarré avec Apache + MySQL actifs
+- **PHP 8.4** activé (PHP 8.2 et 8.3 sont incompatibles avec les dépendances du projet)
 - [Composer](https://getcomposer.org/) installé
 - [Git for Windows](https://git-scm.com/) installé (fournit `openssl`)
+
+### Emplacement du projet
+
+Placez le dossier `INF7_TD3` dans le répertoire web de votre serveur local :
+
+| Serveur | Dossier cible |
+|---|---|
+| XAMPP | `C:\xampp\htdocs\INF7_TD3\` |
+| WAMP | `C:\wamp64\www\INF7_TD3\` |
+| MAMP | `C:\MAMP\htdocs\INF7_TD3\` |
+
+### Vérifier que PHP 8.4 est dans le PATH
+
+`install.bat` utilise la commande `php` directement. Avant de le lancer, assurez-vous que PHP 8.4 est bien actif dans votre PATH :
+
+- **XAMPP** : dans le panneau de contrôle XAMPP, cliquez sur "Shell" pour ouvrir un terminal avec PHP dans le PATH, ou ajoutez `C:\xampp\php\` à vos variables d'environnement Windows
+- **WAMP** : faites un clic gauche sur l'icône WAMP dans la barre des tâches, puis choisissez la version PHP 8.4
+
+Pour vérifier : ouvrez un terminal et tapez `php -v`. Vous devez voir `PHP 8.4`.
 
 ### Lancer l'application
 
@@ -26,7 +45,7 @@ Le script fait tout automatiquement :
 
 Une fois terminé, ouvrez votre navigateur à l'adresse :
 
-**http://localhost/htdocs/INF7_TD3/public/**
+**http://localhost/INF7_TD3/public/**
 
 Pour consulter les emails envoyés par l'application (ex : réinitialisation de mot de passe) :
 

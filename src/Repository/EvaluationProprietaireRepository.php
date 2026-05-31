@@ -46,6 +46,22 @@ class EvaluationProprietaireRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findTopRated(int $limit = 3): array
+    {
+        $conn = $this->getEntityManager()->getConnection();
+        return $conn->executeQuery('
+            SELECT u.id, u.prenom, u.nom, u.photo_profil,
+                   ROUND(AVG(e.note), 1) AS moyenne,
+                   COUNT(e.id) AS nb_avis
+            FROM evaluation_proprietaire e
+            INNER JOIN user u ON u.id = e.proprietaire_id
+            GROUP BY e.proprietaire_id, u.id, u.prenom, u.nom, u.photo_profil
+            HAVING COUNT(e.id) >= 1
+            ORDER BY moyenne DESC, nb_avis DESC
+            LIMIT ' . (int) $limit
+        )->fetchAllAssociative();
+    }
+
     public function moyenneNoteProprietaire(int $proprietaireId): float
     {
         $result = $this->createQueryBuilder('e')

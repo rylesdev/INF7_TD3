@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Annonce;
+use App\Entity\EvaluationProprietaire;
 use App\Entity\Chambre;
 use App\Entity\Charge;
 use App\Entity\Colocation;
@@ -564,6 +565,23 @@ class AppFixtures extends Fixture
                 $manager->persist($t);
             }
         }
+
+        // Evaluations propriétaire
+        $evalPro1 = new EvaluationProprietaire();
+        $evalPro1->setLocataire($locataire);
+        $evalPro1->setProprietaire($proprio);
+        $evalPro1->setColocation($colocation);
+        $evalPro1->setNote(5);
+        $evalPro1->setCommentaire('Propriétaire très réactif, toujours disponible en cas de problème. Je recommande.');
+        $manager->persist($evalPro1);
+
+        $evalPro2 = new EvaluationProprietaire();
+        $evalPro2->setLocataire($locataire2);
+        $evalPro2->setProprietaire($proprio);
+        $evalPro2->setColocation($colocation);
+        $evalPro2->setNote(4);
+        $evalPro2->setCommentaire('Bon propriétaire, logement bien entretenu. Quelques délais de réponse mais globalement satisfait.');
+        $manager->persist($evalPro2);
 
         // Notifications
         $notif = new Notification();

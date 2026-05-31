@@ -150,41 +150,42 @@
     </div>
 </section>
 
-{# Témoignages #}
+{# Propriétaires bien notés #}
+{% if proprietaires_notes|length > 0 %}
 <section class="py-5 bg-white">
     <div class="container">
-        <h2 class="text-center fw-bold mb-5">Ce qu'ils en disent</h2>
-        <div class="row g-4">
+        <h2 class="text-center fw-bold mb-5"><i class="bi bi-star-fill text-warning me-2"></i>Propriétaires bien notés</h2>
+        <div class="row g-4 justify-content-center">
+            {% for p in proprietaires_notes %}
             <div class="col-md-4">
-                <div class="card p-4 h-100">
-                    <div class="d-flex mb-3">
-                        <i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning"></i>
+                <a href="{{ path('app_profil_proprietaire', {id: p.id}) }}" class="text-decoration-none text-dark">
+                    <div class="card p-4 h-100 text-center">
+                        {% if p.photo_profil %}
+                            <img src="{{ asset('uploads/profils/' ~ p.photo_profil) }}"
+                                 width="72" height="72" class="rounded-circle mx-auto mb-3"
+                                 style="object-fit:cover;" loading="lazy">
+                        {% else %}
+                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto mb-3 text-white fw-bold"
+                                 style="width:72px;height:72px;font-size:1.5rem;">
+                                {{ p.prenom|slice(0,1)|upper }}
+                            </div>
+                        {% endif %}
+                        <div class="fw-bold mb-1">{{ p.prenom }} {{ p.nom|slice(0,1) }}.</div>
+                        <div class="text-muted small mb-2">Propriétaire</div>
+                        <div class="mb-1">
+                            {% for i in 1..5 %}
+                                <i class="bi bi-star{{ i <= p.moyenne ? '-fill text-warning' : ' text-muted' }}"></i>
+                            {% endfor %}
+                        </div>
+                        <div class="text-muted small">{{ p.moyenne }}/5 ({{ p.nb_avis }} avis)</div>
                     </div>
-                    <p class="text-muted fst-italic mb-3">"Fini les tableurs Excel pour gérer mes loyers. Je génère les quittances en deux clics, mes locataires reçoivent tout automatiquement."</p>
-                    <div class="fw-bold">Sophie M. <span class="text-muted fw-normal small">, Propriétaire, Lyon</span></div>
-                </div>
+                </a>
             </div>
-            <div class="col-md-4">
-                <div class="card p-4 h-100">
-                    <div class="d-flex mb-3">
-                        <i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning"></i>
-                    </div>
-                    <p class="text-muted fst-italic mb-3">"Je sais exactement combien je dois payer chaque mois, ma quittance est toujours disponible. Pratique pour mon dossier APL."</p>
-                    <div class="fw-bold">Karim B. <span class="text-muted fw-normal small">, Locataire, Paris</span></div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card p-4 h-100">
-                    <div class="d-flex mb-3">
-                        <i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-fill text-warning me-1"></i><i class="bi bi-star-half text-warning"></i>
-                    </div>
-                    <p class="text-muted fst-italic mb-3">"La répartition automatique des charges nous a évité beaucoup de conflits entre colocataires. On voit tout, c'est transparent."</p>
-                    <div class="fw-bold">Léa & Tom <span class="text-muted fw-normal small">, Colocataires, Bordeaux</span></div>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
+{% endif %}
 
 {# Annonces récentes #}
 {% if annonces_recentes|length > 0 %}
@@ -230,14 +231,35 @@
     <div class="container">
         <h2 class="fw-bold text-center mb-5">Questions fréquentes</h2>
         <div class="accordion" id="faqAccordion">
-            {% for i, qa in [
-                {q: 'Est-ce gratuit de s\'inscrire ?', a: 'Oui, l\'inscription est entièrement gratuite pour les locataires comme pour les propriétaires. Créez votre compte en quelques minutes et accédez à toutes les fonctionnalités sans engagement.'},
-                {q: 'Comment contacter mon propriétaire via la plateforme ?', a: 'Une fois connecté à votre espace locataire, rendez-vous dans la rubrique "Messagerie". Vous pouvez y envoyer des messages directement à votre propriétaire et recevoir ses réponses en temps réel.'},
-                {q: 'Comment obtenir ma quittance de loyer ?', a: 'Connectez-vous à votre espace locataire, puis cliquez sur "Quittances". Vous trouverez la liste de toutes vos quittances disponibles. Cliquez sur "Télécharger PDF" pour obtenir votre justificatif (utile pour vos demandes d\'APL ou de logement social).'},
-                {q: 'Mon loyer a été payé mais il apparaît encore comme impayé, que faire ?', a: 'Si votre paiement n\'est pas encore reflété, contactez votre propriétaire via la messagerie intégrée pour qu\'il mette à jour votre statut de paiement. Votre propriétaire gère les statuts de loyers depuis son tableau de bord.'},
-                {q: 'Puis-je avoir plusieurs colocataires dans le même logement ?', a: 'Oui, la plateforme est conçue pour la colocation. Chaque locataire a son propre espace personnel, et les charges sont automatiquement réparties entre les chambres selon leur surface.'},
-                {q: 'Comment signaler un problème dans le logement ?', a: 'Utilisez la messagerie intégrée pour informer votre propriétaire de tout problème (fuite, panne, etc.). Vos messages sont horodatés, ce qui constitue une trace écrite utile en cas de litige.'}
+            {% if is_granted('ROLE_PROPRIETAIRE') %}
+            {% set faqs = [
+                {q: 'Comment publier une annonce ?', a: 'Depuis votre tableau de bord, cliquez sur "Annonces" puis "Nouvelle annonce". Renseignez le titre, la description, le prix et ajoutez des photos. L\'annonce sera visible immédiatement sur la plateforme.'},
+                {q: 'Comment accepter ou refuser une candidature ?', a: 'Dans le menu "Candidatures", vous voyez toutes les candidatures reçues avec les pièces justificatives. Cliquez sur "Accepter" pour choisir la chambre à attribuer au locataire, ou sur "Refuser" pour lui envoyer un message automatique de refus.'},
+                {q: 'Comment gérer les loyers impayés ?', a: 'Dans la rubrique "Loyers", les loyers en retard apparaissent en rouge. Vous pouvez contacter le locataire concerné via la messagerie intégrée ou marquer manuellement un loyer comme payé depuis son détail.'},
+                {q: 'Comment répartir les charges entre les colocataires ?', a: 'Créez une charge (électricité, internet...) depuis la rubrique "Charges". Les tantièmes sont calculés automatiquement selon la surface de chaque chambre. Chaque locataire voit sa part depuis son espace.'},
+                {q: 'Comment générer une quittance de loyer ?', a: 'Lorsqu\'un loyer est marqué comme payé, la quittance est générée automatiquement. Votre locataire peut la télécharger depuis son espace. Vous pouvez aussi la générer manuellement depuis la liste des loyers.'},
+                {q: 'Comment évaluer un locataire ?', a: 'Dans la rubrique "Evaluations", cliquez sur "Evaluer" en face du locataire concerné. Attribuez une note de 1 à 5 et ajoutez un commentaire. Cette évaluation sera visible sur le profil public du locataire.'}
             ] %}
+            {% elseif is_granted('ROLE_USER') %}
+            {% set faqs = [
+                {q: 'Comment candidater à une annonce ?', a: 'Sur la page d\'une annonce disponible, cliquez sur "Candidater". Vous devrez joindre une pièce d\'identité et un justificatif de revenus (PDF ou image, 5 Mo max). Le propriétaire recevra votre dossier et vous répondra via la messagerie.'},
+                {q: 'Comment contacter mon propriétaire ?', a: 'Rendez-vous dans la rubrique "Messagerie" de votre espace locataire. Vous pouvez y envoyer des messages et consulter l\'historique complet de votre échange. Appuyez sur Entrée pour envoyer (Shift+Entrée pour un saut de ligne).'},
+                {q: 'Comment obtenir ma quittance de loyer ?', a: 'Dans la rubrique "Quittances", vous trouverez toutes vos quittances disponibles. Cliquez sur "Télécharger PDF" pour obtenir votre justificatif, utile pour vos dossiers APL ou de relogement.'},
+                {q: 'Mon loyer est marqué impayé alors que je l\'ai réglé, que faire ?', a: 'Si votre paiement n\'est pas reflété, utilisez le bouton "Payer" depuis votre rubrique "Loyers" pour simuler le paiement en ligne. Une quittance sera générée automatiquement et votre propriétaire sera notifié.'},
+                {q: 'Comment résilier mon bail ?', a: 'Dans votre espace locataire, cliquez sur "Résilier mon bail" (accessible depuis le tableau de bord). Confirmez l\'action et votre propriétaire en sera informé automatiquement. Vos annonces de colocation repasseront en disponible.'},
+                {q: 'Comment évaluer mon propriétaire ?', a: 'Dans la rubrique "Evaluations", cliquez sur "Evaluer mon propriétaire" si vous avez payé au moins un loyer. Attribuez une note et un commentaire. Vous pouvez aussi accéder à son profil public depuis une annonce pour laisser votre avis.'}
+            ] %}
+            {% else %}
+            {% set faqs = [
+                {q: 'Est-ce gratuit de s\'inscrire ?', a: 'Oui, l\'inscription est entièrement gratuite pour les locataires comme pour les propriétaires. Créez votre compte en quelques minutes et accédez à toutes les fonctionnalités sans engagement.'},
+                {q: 'Quelle est la différence entre un compte locataire et propriétaire ?', a: 'Un compte locataire vous permet de candidater à des annonces, consulter vos loyers et quittances, et contacter votre propriétaire. Un compte propriétaire vous permet de gérer vos colocations, publier des annonces, suivre les loyers et traiter les candidatures.'},
+                {q: 'Comment trouver une colocation ?', a: 'Rendez-vous dans la rubrique "Annonces". Vous pouvez filtrer par ville et par budget. Cliquez sur une annonce pour voir les détails et le profil du propriétaire, puis candidatez directement en ligne.'},
+                {q: 'Mes données personnelles sont-elles sécurisées ?', a: 'Oui. Les mots de passe sont chiffrés et jamais stockés en clair. Les pièces jointes (candidatures) ne sont accessibles qu\'aux parties concernées. Toutes les communications transitent de manière sécurisée.'},
+                {q: 'Puis-je avoir plusieurs colocataires dans le même logement ?', a: 'Oui, la plateforme est conçue pour la colocation. Chaque locataire a son propre espace personnel et les charges sont automatiquement réparties entre les chambres selon leur surface.'},
+                {q: 'Comment signaler un problème dans le logement ?', a: 'Utilisez la messagerie intégrée pour informer votre propriétaire (fuite, panne...). Vos messages sont horodatés, ce qui constitue une trace écrite utile en cas de litige.'}
+            ] %}
+            {% endif %}
+            {% for i, qa in faqs %}
             <div class="accordion-item">
                 <h3 class="accordion-header">
                     <button class="accordion-button {{ i > 0 ? 'collapsed' : '' }}" type="button"
