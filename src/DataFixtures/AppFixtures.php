@@ -610,6 +610,14 @@ class AppFixtures extends Fixture
         $tache2->setAssigne($locataire2);
         $manager->persist($tache2);
 
+        // Message initial pour que Marie ait une conversation
+        $msg = new Message();
+        $msg->setExpediteur($locataire);
+        $msg->setDestinataire($proprio);
+        $msg->setColocation($colocation);
+        $msg->setContenu('Bonjour, je suis intéressée par votre colocation.');
+        $manager->persist($msg);
+
         $manager->flush();
     }
 }
