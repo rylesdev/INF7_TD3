@@ -50,21 +50,22 @@ Pour consulter les emails envoyés par l'application (ex : réinitialisation de 
 
 ### Côté propriétaire
 - Gérer ses colocations et les chambres
-- Suivre les loyers (payé / en retard)
+- Recevoir les candidatures des locataires (avec pièces jointes) et les accepter ou refuser
+- Suivre les loyers (payé / en retard) et générer des quittances PDF
 - Répartir les charges selon la surface de chaque chambre (tantièmes)
-- Générer des quittances PDF
 - Publier des annonces avec photos et carte interactive
-- Suivre les visites des annonces (histogramme)
+- Suivre les visites des annonces (histogramme par jour)
 - Communiquer avec les locataires via la messagerie
 - Évaluer les locataires (note + commentaire)
 
 ### Côté locataire
-- Consulter ses loyers et leur statut
-- Télécharger ses quittances en PDF
+- Parcourir les annonces avec filtres (ville, prix) et candidater avec pièces jointes
+- Consulter ses loyers, les payer en ligne et télécharger ses quittances en PDF
 - Voir sa part des charges mensuelles (tantièmes)
 - Gérer le planning ménager avec ses colocataires
-- Envoyer des messages au propriétaire
-- Consulter ses évaluations
+- Évaluer son propriétaire et laisser un avis sur une annonce
+- Résilier son bail en ligne
+- Communiquer avec le propriétaire via la messagerie
 - Réinitialiser son mot de passe par email
 
 ---
