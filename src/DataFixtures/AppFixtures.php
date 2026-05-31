@@ -102,6 +102,15 @@ class AppFixtures extends Fixture
         $proprio->setPassword($this->hasher->hashPassword($proprio, 'Proprio1234!'));
         $manager->persist($proprio);
 
+        $proprio2 = new User();
+        $proprio2->setPrenom('Sophie');
+        $proprio2->setNom('Bernard');
+        $proprio2->setEmail('proprio2@colocation.com');
+        $proprio2->setRoles(['ROLE_PROPRIETAIRE']);
+        $proprio2->setTelephone('0612131415');
+        $proprio2->setPassword($this->hasher->hashPassword($proprio2, 'Proprio1234!'));
+        $manager->persist($proprio2);
+
         $locataire = new User();
         $locataire->setPrenom('Marie');
         $locataire->setNom('Martin');
@@ -408,7 +417,7 @@ class AppFixtures extends Fixture
         $colocation6->setDescription('Belle colocation près du centre historique de Nantes.');
         $colocation6->setLatitude(47.2184);
         $colocation6->setLongitude(-1.5536);
-        $colocation6->setProprietaire($proprio);
+        $colocation6->setProprietaire($proprio2);
         $manager->persist($colocation6);
 
         $colocation7 = new Colocation();
@@ -420,7 +429,7 @@ class AppFixtures extends Fixture
         $colocation7->setDescription('Colocation ensoleillée à Montpellier, proche tram.');
         $colocation7->setLatitude(43.6119);
         $colocation7->setLongitude(3.8772);
-        $colocation7->setProprietaire($proprio);
+        $colocation7->setProprietaire($proprio2);
         $manager->persist($colocation7);
 
         $colocation8 = new Colocation();
@@ -432,7 +441,7 @@ class AppFixtures extends Fixture
         $colocation8->setDescription('Colocation au coeur de Strasbourg, à 5 min de la cathédrale.');
         $colocation8->setLatitude(48.5734);
         $colocation8->setLongitude(7.7521);
-        $colocation8->setProprietaire($proprio);
+        $colocation8->setProprietaire($proprio2);
         $manager->persist($colocation8);
 
         $colocation9 = new Colocation();
@@ -444,7 +453,7 @@ class AppFixtures extends Fixture
         $colocation9->setDescription('Colocation étudiante à Rennes, proche du campus.');
         $colocation9->setLatitude(48.1173);
         $colocation9->setLongitude(-1.6778);
-        $colocation9->setProprietaire($proprio);
+        $colocation9->setProprietaire($proprio2);
         $manager->persist($colocation9);
 
         // Chambres nouvelles colocations

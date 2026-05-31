@@ -40,7 +40,8 @@ Pour consulter les emails envoyés par l'application (ex : réinitialisation de 
 
 | Rôle | Email | Mot de passe |
 |---|---|---|
-| Propriétaire | `proprio@colocation.com` | `Proprio1234!` |
+| Propriétaire 1 (Jean Dupont) | `proprio@colocation.com` | `Proprio1234!` |
+| Propriétaire 2 (Sophie Bernard) | `proprio2@colocation.com` | `Proprio1234!` |
 | Locataire | `locataire@colocation.com` | `Locataire1234!` |
 | Locataire 2 | `locataire2@colocation.com` | `Locataire1234!` |
 

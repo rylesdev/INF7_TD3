@@ -31,7 +31,7 @@ class AnnonceController extends AbstractController
     #[Route('', name: 'app_annonces', methods: ['GET'])]
     public function index(AnnonceRepository $repo, Request $request): Response
     {
-        $perPage = 5;
+        $perPage = 6;
         $page    = max(1, (int) $request->query->get('page', 1));
         $filters = [
             'ville'    => $request->query->get('ville', ''),
