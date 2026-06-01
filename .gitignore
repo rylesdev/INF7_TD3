@@ -24,6 +24,8 @@
 /public/uploads/annonces/*
 /public/uploads/profils/*
 /public/uploads/quittances/*
+/public/uploads/candidatures/*
 !/public/uploads/annonces/.gitkeep
 !/public/uploads/profils/.gitkeep
 !/public/uploads/quittances/.gitkeep
+!/public/uploads/candidatures/.gitkeep
