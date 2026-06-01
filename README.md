@@ -73,10 +73,10 @@ install.bat   (idempotent, relançable à tout moment)
 
 | Rôle | Email | Mot de passe | Données |
 |---|---|---|---|
-| Propriétaire 1 | `proprio@colocation.com` | `Proprio1234!` | Jean Dupont — 5 colocations (Paris, Lyon, Bordeaux, Marseille, Toulouse) |
-| Propriétaire 2 | `proprio2@colocation.com` | `Proprio1234!` | Sophie Bernard — 4 colocations (Nantes, Montpellier, Strasbourg, Rennes) |
-| Locataire 1 | `locataire@colocation.com` | `Locataire1234!` | Marie Martin — Chambre A, Les Lilas (Paris) |
-| Locataire 2 | `locataire2@colocation.com` | `Locataire1234!` | Pierre Leroy — Chambre B, Les Lilas (Paris) |
+| Propriétaire 1 | `proprio@colocation.com` | `Proprio1234!` | Jean Dupont - 5 colocations (Paris, Lyon, Bordeaux, Marseille, Toulouse) |
+| Propriétaire 2 | `proprio2@colocation.com` | `Proprio1234!` | Sophie Bernard - 4 colocations (Nantes, Montpellier, Strasbourg, Rennes) |
+| Locataire 1 | `locataire@colocation.com` | `Locataire1234!` | Marie Martin - Chambre A, Les Lilas (Paris) |
+| Locataire 2 | `locataire2@colocation.com` | `Locataire1234!` | Pierre Leroy - Chambre B, Les Lilas (Paris) |
 
 ---
 
@@ -205,7 +205,7 @@ Content-Type: application/json
 {"email": "proprio@colocation.com", "password": "Proprio1234!"}
 ```
 
-Réponse : `{"token": "eyJ..."}` — à utiliser dans le header `Authorization: Bearer <token>`.
+Réponse : `{"token": "eyJ..."}` - à utiliser dans le header `Authorization: Bearer <token>`.
 
 ### Ressources disponibles
 
@@ -240,7 +240,7 @@ php vendor/bin/phpunit tests/Controller
 php vendor/bin/phpunit tests/Api
 ```
 
-**188 tests, 264 assertions** — tous verts.
+**188 tests, 264 assertions** - tous verts.
 
 | Dossier | Contenu |
 |---|---|
