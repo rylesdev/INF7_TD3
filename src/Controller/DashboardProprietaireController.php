@@ -110,6 +110,69 @@ class DashboardProprietaireController extends AbstractController
         ]);
     }
 
+    #[Route('/budget', name: 'app_proprietaire_budget')]
+    public function budget(
+        Request $request,
+        ColocationRepository $colocationRepo,
+        LoyerRepository $loyerRepo,
+        ChargeRepository $chargeRepo
+    ): Response {
+        $user        = $this->getUser();
+        $annee       = (int) ($request->query->get('annee', date('Y')));
+        $colocations = $colocationRepo->findByProprietaire($user->getId());
+
+        $recettesParMois  = array_fill(1, 12, 0.0);
+        $depensesParMois  = array_fill(1, 12, 0.0);
+        $depensesParType  = [];
+        $totalRecettes    = 0.0;
+        $totalDepenses    = 0.0;
+        $loyersAttendus   = 0.0;
+
+        foreach ($colocations as $col) {
+            foreach ($loyerRepo->findByColocationAndAnnee($col->getId(), $annee) as $loyer) {
+                $mois = (int) $loyer->getMois();
+                $montant = (float) $loyer->getMontant();
+                $loyersAttendus += $montant;
+                if ($loyer->isPaye()) {
+                    $recettesParMois[$mois] += $montant;
+                    $totalRecettes += $montant;
+                }
+            }
+            foreach ($chargeRepo->findByColocationAndAnnee($col->getId(), $annee) as $charge) {
+                $mois = (int) ($charge->getMois() ?? date('n', $charge->getDate()->getTimestamp()));
+                $montant = (float) $charge->getMontant();
+                $depensesParMois[$mois] += $montant;
+                $totalDepenses += $montant;
+                $type = $charge->getType();
+                $depensesParType[$type] = ($depensesParType[$type] ?? 0.0) + $montant;
+            }
+        }
+
+        $moisFr = ['', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+        $tableau = [];
+        for ($m = 1; $m <= 12; $m++) {
+            $tableau[] = [
+                'nom'      => $moisFr[$m],
+                'recettes' => $recettesParMois[$m],
+                'depenses' => $depensesParMois[$m],
+                'solde'    => $recettesParMois[$m] - $depensesParMois[$m],
+            ];
+        }
+
+        arsort($depensesParType);
+
+        return $this->render('proprietaire/budget.html.twig', [
+            'annee'          => $annee,
+            'annees'         => range((int) date('Y'), max((int) date('Y') - 4, 2024)),
+            'tableau'        => $tableau,
+            'totalRecettes'  => $totalRecettes,
+            'totalDepenses'  => $totalDepenses,
+            'solde'          => $totalRecettes - $totalDepenses,
+            'loyersAttendus' => $loyersAttendus,
+            'depensesParType' => $depensesParType,
+        ]);
+    }
+
     #[Route('/colocations', name: 'app_proprietaire_colocations')]
     public function colocations(ColocationRepository $repo): Response
     {

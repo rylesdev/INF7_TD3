@@ -23,6 +23,7 @@ nav:
     receipts: Receipts
     shares: Bill Shares
     charges: Charges
+    budget: Budget
     footer_faq: FAQ
     language: Language
     tasks: Tasks
@@ -126,6 +127,21 @@ owner:
         see_colocations: View my flatshares
         edit: Edit
         delete_confirm: Delete this review?
+    budget:
+        title: Income / Expense Budget
+        year: "Year:"
+        receipts: Income received
+        expenses: Expenses
+        balance: Net balance
+        unpaid: Unpaid rents
+        monthly_table: Monthly breakdown
+        col_month: Month
+        col_receipts: Income
+        col_expenses: Expenses
+        col_balance: Balance
+        total: Total
+        by_type: Charge breakdown
+        no_expenses: No charge recorded.
 
 annonce:
     all_cities: All cities

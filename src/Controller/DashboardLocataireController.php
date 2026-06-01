@@ -44,7 +44,7 @@ class DashboardLocataireController extends AbstractController
         $loyerRepo->marquerEnRetard($em);
         $user    = $this->getUser();
         $chambre = $user->getChambres()->first();
-        $loyers  = $chambre ? $loyerRepo->findByColocation($chambre->getColocation()->getId()) : [];
+        $loyers  = $chambre ? $chambre->getLoyers()->toArray() : [];
         $taches  = $chambre ? $tacheRepo->findByColocation($chambre->getColocation()->getId()) : [];
 
         $mois = (int) date('n');
@@ -73,11 +73,12 @@ class DashboardLocataireController extends AbstractController
     }
 
     #[Route('/loyers', name: 'app_locataire_loyers')]
-    public function loyers(LoyerRepository $loyerRepo): Response
+    public function loyers(): Response
     {
         $user    = $this->getUser();
         $chambre = $user->getChambres()->first();
-        $loyers  = $chambre ? $loyerRepo->findByColocation($chambre->getColocation()->getId()) : [];
+        $loyers  = $chambre ? $chambre->getLoyers()->toArray() : [];
+        usort($loyers, fn($a, $b) => $a->getAnnee() === $b->getAnnee() ? $b->getMois() - $a->getMois() : $b->getAnnee() - $a->getAnnee());
 
         return $this->render('locataire/loyers.html.twig', ['loyers' => $loyers, 'chambre' => $chambre]);
     }

@@ -56,6 +56,8 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="bi bi-cash-stack"></i> {{ 'nav.finances'|trans }}</a>
                         <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ path('app_proprietaire_budget') }}"><i class="bi bi-bar-chart-line me-2"></i>{{ 'nav.budget'|trans }}</a></li>
+                            <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ path('app_proprietaire_loyers') }}"><i class="bi bi-calendar-check me-2"></i>{{ 'nav.rents'|trans }}</a></li>
                             <li><a class="dropdown-item" href="{{ path('app_proprietaire_charges') }}"><i class="bi bi-receipt me-2"></i>{{ 'nav.charges'|trans }}</a></li>
                             <li><a class="dropdown-item" href="{{ path('app_proprietaire_tantiemes') }}"><i class="bi bi-pie-chart me-2"></i>{{ 'nav.shares'|trans }}</a></li>

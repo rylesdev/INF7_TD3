@@ -38,4 +38,15 @@ class LoyerRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByColocationAndAnnee(int $colocationId, int $annee): array
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.colocation = :colId')
+            ->andWhere('l.annee = :annee')
+            ->setParameter('colId', $colocationId)
+            ->setParameter('annee', $annee)
+            ->getQuery()
+            ->getResult();
+    }
 }

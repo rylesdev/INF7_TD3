@@ -23,6 +23,7 @@ nav:
     receipts: Quittances
     shares: "Tantièmes"
     charges: Charges
+    budget: Budget
     footer_faq: Questions fréquentes
     language: Langue
     tasks: Tâches
@@ -126,6 +127,21 @@ owner:
         see_colocations: Voir mes colocations
         edit: Modifier
         delete_confirm: Supprimer cette évaluation ?
+    budget:
+        title: Budget Recettes / Dépenses
+        year: "Année :"
+        receipts: Recettes perçues
+        expenses: Dépenses
+        balance: Solde net
+        unpaid: Loyers impayés
+        monthly_table: "Détail mensuel"
+        col_month: Mois
+        col_receipts: Recettes
+        col_expenses: Dépenses
+        col_balance: Solde
+        total: Total
+        by_type: Répartition des charges
+        no_expenses: Aucune charge enregistrée.
 
 annonce:
     all_cities: Toutes les villes
