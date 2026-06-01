@@ -28,7 +28,7 @@ Application web de gestion de colocation développée avec **Symfony 6.4** : loy
 
 | Serveur | Dossier cible |
 |---|---|
-| WAMP | `C:\wamp64\www\INF7_TD3\` |
+| WAMP | `C:\wamp64\www\htdocs\INF7_TD3\` |
 | XAMPP | `C:\xampp\htdocs\INF7_TD3\` |
 | MAMP | `C:\MAMP\htdocs\INF7_TD3\` |
 
@@ -56,7 +56,7 @@ Puis ouvrir :
 
 | Service | URL |
 |---|---|
-| Application | **http://localhost/INF7_TD3/public/** |
+| Application | **http://localhost/htdocs/INF7_TD3/public/** |
 | Mailpit (emails) | **http://localhost:8025** |
 
 > Si Mailpit n'est pas démarré, double-cliquer sur **`demarrer_mailpit.bat`**. Il se lance aussi automatiquement au démarrage Windows via le Planificateur de tâches.
@@ -116,6 +116,12 @@ install.bat   (idempotent, relançable à tout moment)
 - Recevoir les candidatures avec pièces jointes (pièce d'identité + justificatif de revenus)
 - **Accepter** une candidature : choisir la chambre à attribuer, un loyer du mois en cours est créé automatiquement
 - **Refuser** avec message automatique au candidat
+
+#### Budget Recette / Dépense
+- Vue consolidée recettes (loyers perçus) vs dépenses (charges) sur l'année choisie
+- Sélecteur d'année, 4 KPIs (recettes, dépenses, solde net, loyers impayés)
+- Tableau mensuel janvier–décembre avec solde coloré
+- Répartition des charges par type (eau, électricité, internet, taxes) avec barre de progression
 
 #### Loyers & Quittances
 - Saisir et gérer les loyers (colocation, chambre, montant, mois, échéance, statut)
@@ -240,7 +246,7 @@ php vendor/bin/phpunit tests/Controller
 php vendor/bin/phpunit tests/Api
 ```
 
-**188 tests, 264 assertions** - tous verts.
+**188 tests, 265 assertions** - tous verts.
 
 | Dossier | Contenu |
 |---|---|
