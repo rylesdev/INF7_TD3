@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
-{% block title %}Candidatures reçues{% endblock %}
+{% block title %}{{ 'owner.candidatures.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container py-5">
-    <h1 class="fw-bold mb-4"><i class="bi bi-people text-primary"></i> Candidatures reçues</h1>
+    <h1 class="fw-bold mb-4"><i class="bi bi-people text-primary"></i> {{ 'owner.candidatures.title'|trans }}</h1>
 
     {% if candidatures|length == 0 %}
         <div class="alert alert-info">
-            <i class="bi bi-info-circle"></i> Aucune candidature reçue pour le moment.
+            <i class="bi bi-info-circle"></i> {{ 'owner.candidatures.no_applications'|trans }}
         </div>
     {% else %}
     <div class="card">
@@ -15,12 +15,12 @@
             <table class="table table-hover mb-0 align-middle">
                 <thead class="table-light">
                     <tr>
-                        <th>Candidat</th>
-                        <th>Annonce</th>
-                        <th>Date</th>
-                        <th>Statut</th>
-                        <th>Documents</th>
-                        <th>Actions</th>
+                        <th>{{ 'owner.candidatures.col_applicant'|trans }}</th>
+                        <th>{{ 'owner.candidatures.col_listing'|trans }}</th>
+                        <th>{{ 'owner.candidatures.col_date'|trans }}</th>
+                        <th>{{ 'owner.candidatures.col_status'|trans }}</th>
+                        <th>{{ 'owner.candidatures.col_docs'|trans }}</th>
+                        <th>{{ 'owner.candidatures.col_actions'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -52,26 +52,26 @@
                         <td>{{ c.creeLe|date('d/m/Y') }}</td>
                         <td>
                             {% if c.statut == 'en_attente' %}
-                                <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split"></i> En attente</span>
+                                <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split"></i> {{ 'owner.candidatures.status_pending'|trans }}</span>
                             {% elseif c.statut == 'accepte' %}
-                                <span class="badge bg-success"><i class="bi bi-check-circle"></i> Acceptée</span>
+                                <span class="badge bg-success"><i class="bi bi-check-circle"></i> {{ 'owner.candidatures.status_accepted'|trans }}</span>
                             {% else %}
-                                <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Refusée</span>
+                                <span class="badge bg-danger"><i class="bi bi-x-circle"></i> {{ 'owner.candidatures.status_rejected'|trans }}</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if c.pieceIdentite %}
-                            <a href="{{ asset('uploads/candidatures/' ~ c.pieceIdentite) }}" target="_blank" class="btn btn-sm btn-outline-secondary me-1" title="Pièce d'identité">
+                            <a href="{{ asset('uploads/candidatures/' ~ c.pieceIdentite) }}" target="_blank" class="btn btn-sm btn-outline-secondary me-1">
                                 <i class="bi bi-card-heading"></i>
                             </a>
                             {% endif %}
                             {% if c.justificatifRevenu %}
-                            <a href="{{ asset('uploads/candidatures/' ~ c.justificatifRevenu) }}" target="_blank" class="btn btn-sm btn-outline-secondary" title="Justificatif de revenus">
+                            <a href="{{ asset('uploads/candidatures/' ~ c.justificatifRevenu) }}" target="_blank" class="btn btn-sm btn-outline-secondary">
                                 <i class="bi bi-file-earmark-text"></i>
                             </a>
                             {% endif %}
                             {% if not c.pieceIdentite and not c.justificatifRevenu %}
-                            <span class="text-muted small">Aucun</span>
+                            <span class="text-muted small">{{ 'owner.candidatures.no_docs'|trans }}</span>
                             {% endif %}
                         </td>
                         <td>
@@ -79,13 +79,13 @@
                             <div class="d-flex gap-2">
                                 <a href="{{ path('app_proprietaire_candidature_accepter', {id: c.id}) }}"
                                    class="btn btn-sm btn-success">
-                                    <i class="bi bi-check-lg"></i> Accepter
+                                    <i class="bi bi-check-lg"></i> {{ 'owner.candidatures.accept'|trans }}
                                 </a>
                                 <form method="POST" action="{{ path('app_proprietaire_candidature_refuser', {id: c.id}) }}"
-                                      onsubmit="return confirm('Refuser cette candidature ?')">
+                                      onsubmit="return confirm('{{ 'owner.candidatures.reject_confirm'|trans }}')">
                                     <input type="hidden" name="_token" value="{{ csrf_token('refuser_' ~ c.id) }}">
                                     <button type="submit" class="btn btn-sm btn-outline-danger">
-                                        <i class="bi bi-x-lg"></i> Refuser
+                                        <i class="bi bi-x-lg"></i> {{ 'owner.candidatures.reject'|trans }}
                                     </button>
                                 </form>
                             </div>

@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
-{% block title %}{{ colocation and colocation.id ? 'Modifier' : 'Nouvelle' }} colocation{% endblock %}
+{% block title %}{{ colocation and colocation.id ? 'forms.edit_colocation'|trans : 'forms.new_colocation'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container py-5">
     <h1 class="fw-bold mb-4">
         <i class="bi bi-building text-primary"></i>
-        {{ colocation and colocation.id ? 'Modifier la colocation' : 'Nouvelle colocation' }}
+        {{ colocation and colocation.id ? 'forms.edit_colocation'|trans : 'forms.new_colocation'|trans }}
     </h1>
     <div class="card p-4">
         {{ form_start(form) }}
@@ -19,14 +19,14 @@
             <div class="col-12">{{ form_label(form.description) }}{{ form_widget(form.description) }}{{ form_errors(form.description) }}</div>
 
             <div class="col-12 mt-2">
-                <label class="fw-bold mb-2 d-block">Chambres</label>
+                <label class="fw-bold mb-2 d-block">{{ 'forms.rooms_section'|trans }}</label>
                 <div class="table-responsive">
                     <table class="table table-bordered align-middle mb-2">
                         <thead class="table-light">
                             <tr>
-                                <th>Nom</th>
-                                <th style="width:150px">Surface (m²)</th>
-                                <th style="width:180px">Loyer mensuel (€)</th>
+                                <th>{{ 'forms.col_name'|trans }}</th>
+                                <th style="width:150px">{{ 'forms.col_surface'|trans }}</th>
+                                <th style="width:180px">{{ 'forms.col_rent'|trans }}</th>
                                 <th style="width:60px"></th>
                             </tr>
                         </thead>
@@ -49,11 +49,11 @@
                                     </td>
                                     <td class="text-center">
                                         {% if ch.locataire %}
-                                            <span class="badge bg-warning text-dark" title="Chambre occupée">
+                                            <span class="badge bg-warning text-dark" title="{{ 'forms.room_occupied'|trans }}">
                                                 <i class="bi bi-person-fill"></i>
                                             </span>
                                         {% else %}
-                                            <button type="button" class="btn btn-outline-danger btn-sm remove-row" title="Supprimer">
+                                            <button type="button" class="btn btn-outline-danger btn-sm remove-row">
                                                 <i class="bi bi-x"></i>
                                             </button>
                                         {% endif %}
@@ -76,7 +76,7 @@
                                            class="form-control form-control-sm" step="0.01" min="0" required>
                                 </td>
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-outline-danger btn-sm remove-row" title="Supprimer">
+                                    <button type="button" class="btn btn-outline-danger btn-sm remove-row">
                                         <i class="bi bi-x"></i>
                                     </button>
                                 </td>
@@ -86,14 +86,14 @@
                     </table>
                 </div>
                 <button type="button" class="btn btn-outline-primary btn-sm" id="addChambre">
-                    <i class="bi bi-plus-circle"></i> Ajouter une chambre
+                    <i class="bi bi-plus-circle"></i> {{ 'forms.add_room'|trans }}
                 </button>
             </div>
         </div>
 
         <div class="mt-4 d-flex gap-2">
-            <button type="submit" class="btn btn-primary">Enregistrer</button>
-            <a href="{{ path('app_proprietaire_colocations') }}" class="btn btn-outline-secondary">Annuler</a>
+            <button type="submit" class="btn btn-primary">{{ 'forms.save'|trans }}</button>
+            <a href="{{ path('app_proprietaire_colocations') }}" class="btn btn-outline-secondary">{{ 'forms.cancel'|trans }}</a>
         </div>
         {{ form_end(form) }}
     </div>
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </td>
             <td><input type="number" name="chambres[${count}][surface]" value="15" class="form-control form-control-sm" step="0.1" min="1" required></td>
             <td><input type="number" name="chambres[${count}][loyer]" value="500" class="form-control form-control-sm" step="0.01" min="0" required></td>
-            <td class="text-center"><button type="button" class="btn btn-outline-danger btn-sm remove-row" title="Supprimer"><i class="bi bi-x"></i></button></td>
+            <td class="text-center"><button type="button" class="btn btn-outline-danger btn-sm remove-row"><i class="bi bi-x"></i></button></td>
         `;
         body.appendChild(row);
     });

@@ -1,6 +1,17 @@
 # Colocation.com
 
-Application web de gestion de colocation : loyers, charges, messagerie et planning ménager en un seul endroit.
+Application web de gestion de colocation développée avec **Symfony 6.4** : loyers, charges, messagerie, tâches ménagères et planning en un seul endroit.
+
+---
+
+## Sommaire
+
+- [Prérequis & Installation](#installation)
+- [Comptes de test](#comptes-de-test)
+- [Fonctionnalités](#fonctionnalités)
+- [API REST](#api-rest)
+- [Tests](#tests)
+- [Docker](#docker)
 
 ---
 
@@ -8,100 +19,268 @@ Application web de gestion de colocation : loyers, charges, messagerie et planni
 
 ### Prérequis
 
-- [XAMPP](https://www.apachefriends.org/), [WAMP](https://www.wampserver.com/) ou [MAMP](https://www.mamp.info/) installé et démarré avec Apache + MySQL actifs
-- **PHP 8.4** activé (PHP 8.2 et 8.3 sont incompatibles avec les dépendances du projet)
+- [WAMP](https://www.wampserver.com/), [XAMPP](https://www.apachefriends.org/) ou [MAMP](https://www.mamp.info/) avec Apache + MySQL actifs
+- **PHP 8.4** activé (PHP 8.2/8.3 incompatibles avec les dépendances)
 - [Composer](https://getcomposer.org/) installé
 - [Git for Windows](https://git-scm.com/) installé (fournit `openssl`)
 
 ### Emplacement du projet
 
-Placez le dossier `INF7_TD3` dans le répertoire web de votre serveur local :
-
 | Serveur | Dossier cible |
 |---|---|
-| XAMPP | `C:\xampp\htdocs\INF7_TD3\` |
 | WAMP | `C:\wamp64\www\INF7_TD3\` |
+| XAMPP | `C:\xampp\htdocs\INF7_TD3\` |
 | MAMP | `C:\MAMP\htdocs\INF7_TD3\` |
 
-### Vérifier que PHP 8.4 est dans le PATH
+### Vérifier PHP 8.4 dans le PATH
 
-`install.bat` utilise la commande `php` directement. Avant de le lancer, assurez-vous que PHP 8.4 est bien actif dans votre PATH :
+```
+php -v   →   doit afficher PHP 8.4.x
+```
 
-- **XAMPP** : dans le panneau de contrôle XAMPP, cliquez sur "Shell" pour ouvrir un terminal avec PHP dans le PATH, ou ajoutez `C:\xampp\php\` à vos variables d'environnement Windows
-- **WAMP** : faites un clic gauche sur l'icône WAMP dans la barre des tâches, puis choisissez la version PHP 8.4
+- **WAMP** : clic gauche sur l'icône WAMP → choisir PHP 8.4
+- **XAMPP** : Shell XAMPP ou ajouter `C:\xampp\php\` aux variables d'environnement Windows
 
-Pour vérifier : ouvrez un terminal et tapez `php -v`. Vous devez voir `PHP 8.4`.
+### Lancer l'installation
 
-### Lancer l'application
-
-Faites un clic droit sur **`install.bat`** → **"Exécuter en tant qu'administrateur"**.
+Clic droit sur **`install.bat`** → **"Exécuter en tant qu'administrateur"**.
 
 Le script fait tout automatiquement :
-- installe les dépendances
-- crée la base de données
-- génère les données de test
-- configure l'authentification
-- télécharge et démarre Mailpit (serveur mail de test) en arrière-plan
+- installe les dépendances Composer
+- crée et migre la base de données
+- charge les données de démonstration
+- génère les clés JWT
+- démarre Mailpit (serveur mail de test) en arrière-plan
 
-Une fois terminé, ouvrez votre navigateur à l'adresse :
+Puis ouvrir :
 
-**http://localhost/INF7_TD3/public/**
+| Service | URL |
+|---|---|
+| Application | **http://localhost/INF7_TD3/public/** |
+| Mailpit (emails) | **http://localhost:8025** |
 
-Pour consulter les emails envoyés par l'application (ex : réinitialisation de mot de passe) :
+> Si Mailpit n'est pas démarré, double-cliquer sur **`demarrer_mailpit.bat`**. Il se lance aussi automatiquement au démarrage Windows via le Planificateur de tâches.
 
-**http://localhost:8025** (interface Mailpit)
+### Réinitialiser l'application
 
-> Si Mailpit n'est pas démarré, double-cliquez sur **`demarrer_mailpit.bat`** à la racine du projet. Il démarre aussi automatiquement à chaque ouverture de session Windows (via le Planificateur de tâches, configuré par `install.bat`).
+```
+install.bat   (idempotent, relançable à tout moment)
+```
 
 ---
 
 ## Comptes de test
 
-| Rôle | Email | Mot de passe |
-|---|---|---|
-| Propriétaire 1 (Jean Dupont) | `proprio@colocation.com` | `Proprio1234!` |
-| Propriétaire 2 (Sophie Bernard) | `proprio2@colocation.com` | `Proprio1234!` |
-| Locataire | `locataire@colocation.com` | `Locataire1234!` |
-| Locataire 2 | `locataire2@colocation.com` | `Locataire1234!` |
+| Rôle | Email | Mot de passe | Données |
+|---|---|---|---|
+| Propriétaire 1 | `proprio@colocation.com` | `Proprio1234!` | Jean Dupont — 5 colocations (Paris, Lyon, Bordeaux, Marseille, Toulouse) |
+| Propriétaire 2 | `proprio2@colocation.com` | `Proprio1234!` | Sophie Bernard — 4 colocations (Nantes, Montpellier, Strasbourg, Rennes) |
+| Locataire 1 | `locataire@colocation.com` | `Locataire1234!` | Marie Martin — Chambre A, Les Lilas (Paris) |
+| Locataire 2 | `locataire2@colocation.com` | `Locataire1234!` | Pierre Leroy — Chambre B, Les Lilas (Paris) |
 
 ---
 
 ## Fonctionnalités
 
-### Côté propriétaire
-- Gérer ses colocations et les chambres
-- Recevoir les candidatures des locataires (avec pièces jointes) et les accepter ou refuser
-- Suivre les loyers (payé / en retard) et générer des quittances PDF
-- Répartir les charges selon la surface de chaque chambre (tantièmes)
-- Publier des annonces avec photos et carte interactive
-- Suivre les visites des annonces (histogramme par jour)
-- Communiquer avec les locataires via la messagerie
-- Évaluer les locataires (note + commentaire)
+### Page d'accueil
 
-### Côté locataire
-- Parcourir les annonces avec filtres (ville, prix) et candidater avec pièces jointes
-- Consulter ses loyers, les payer en ligne et télécharger ses quittances en PDF
-- Voir sa part des charges mensuelles (tantièmes)
-- Gérer le planning ménager avec ses colocataires
-- Évaluer son propriétaire et laisser un avis sur une annonce
-- Résilier son bail en ligne
-- Communiquer avec le propriétaire via la messagerie
-- Réinitialiser son mot de passe par email
+- Présentation de la plateforme adaptée au rôle connecté (visiteur / locataire / propriétaire)
+- Statistiques de la plateforme, annonces récentes, propriétaires bien notés
+- FAQ dynamique selon le rôle (6 questions différentes)
+- Navigation claire avec menus par section
+
+### Authentification & Profil
+
+- **Inscription** avec choix du rôle (locataire / propriétaire), validation email et téléphone
+- **Connexion** avec "Se souvenir de moi" (7 jours)
+- **Mot de passe oublié** : lien de réinitialisation par email (Mailpit, token sécurisé 1h)
+- **Changement de mot de passe** depuis le profil (vérification de l'ancien mot de passe)
+- **Photo de profil** uploadable
+- **Profils publics** propriétaire (annonces actives + évaluations) et locataire
+
+### Côté Propriétaire
+
+#### Colocations & Chambres
+- Créer, modifier et supprimer des colocations
+- Gérer les chambres inline (nom, surface, loyer mensuel) dans le formulaire de colocation
+- Code postal validé côté serveur et navigateur
+- Suppression protégée si des locataires sont assignés
+
+#### Annonces
+- Créer des annonces avec photos multiples, description, localisation, carte Leaflet
+- Filtrer par statut disponible/indisponible
+- Suivre les **visites** avec histogramme par jour (30 jours) et liste des visiteurs
+- Les annonces passent automatiquement en indisponible quand toutes les chambres sont occupées
+
+#### Candidatures
+- Recevoir les candidatures avec pièces jointes (pièce d'identité + justificatif de revenus)
+- **Accepter** une candidature : choisir la chambre à attribuer, un loyer du mois en cours est créé automatiquement
+- **Refuser** avec message automatique au candidat
+
+#### Loyers & Quittances
+- Saisir et gérer les loyers (colocation, chambre, montant, mois, échéance, statut)
+- **Valider le paiement** d'un loyer → génère automatiquement la quittance PDF
+- Générer manuellement une quittance pour tout loyer payé
+- Alertes sur le dashboard pour les loyers en retard
+
+#### Charges & Tantièmes
+- Saisir les charges par type : **eau, électricité, internet, taxes**
+- **Calculer les tantièmes** : répartition automatique selon la surface de chaque chambre
+- Vue d'ensemble des tantièmes par colocation et par charge (avec barre de progression)
+
+#### Messagerie
+- Conversations par locataire/colocation
+- Messages automatiques pour candidatures, acceptations, refus, résiliations
+
+#### Évaluations
+- Évaluer les locataires (note 1-5 + commentaire)
+- Voir toutes les évaluations données sur une page dédiée
+
+#### Tâches ménagères
+- Créer des tâches (vaisselle, ménage, entretien, autre) et les assigner à n'importe quel membre de la colocation
+- **Semainier** : vue calendrier lundi→dimanche de la semaine en cours
+- Reconduite automatique des tâches terminées pour la semaine suivante
 
 ---
 
-## Réinitialiser l'application
+### Côté Locataire
 
-Si vous souhaitez repartir de zéro (base de données vide + données fraîches), relancez simplement `install.bat`.
+#### Candidatures & Logement
+- Parcourir les annonces avec filtres (ville, budget) et pagination
+- **Candidater** avec pièce d'identité et justificatif de revenus (PDF ou image)
+- Suivi des candidatures (en attente / acceptée / refusée)
+- Impossible de candidater si déjà locataire quelque part (résiliation requise)
+- **Résilier son bail** en ligne avec notification automatique au propriétaire
+
+#### Loyers & Quittances
+- Consulter tous ses loyers et leur statut (payé / impayé / en retard)
+- **Payer un loyer** en ligne → quittance générée automatiquement
+- **Télécharger ses quittances en PDF** (loyer + charges + total)
+
+#### Tantièmes (charges)
+- Visualiser sa part des charges mensuelles selon la surface de sa chambre
+- Tableau avec montant total de la charge, pourcentage et montant dû
+
+#### Messagerie
+- Contacter le propriétaire directement
+- Démarrer une conversation depuis une annonce
+- Appuyer sur Entrée pour envoyer (Shift+Entrée = saut de ligne)
+
+#### Tâches ménagères
+- Accéder au semainier et à la liste des tâches de sa colocation
+- Marquer les tâches terminées, en assigner à d'autres colocataires
+
+#### Évaluations & Avis
+- Évaluer son propriétaire (après avoir payé au moins un loyer)
+- Laisser un avis sur une annonce (star rating CSS)
+
+#### Notifications
+- Notifications temps réel pour loyers, messages, candidatures
+- Badge rouge sur la cloche et la messagerie (fetch JS)
 
 ---
 
-## API
+### Fonctionnalités transverses
 
-Une API REST est disponible à `/api` avec authentification par token JWT.
+| Fonctionnalité | Détail |
+|---|---|
+| **Internationalisation** | Français 🇫🇷 et Anglais 🇬🇧, sélecteur dans la navbar, locale persistée en cookie (survit au logout) |
+| **SEO** | `sitemap.xml` et `robots.txt` dynamiques, `<meta description>`, `<link rel="canonical">`, Open Graph |
+| **Green IT** | Bootstrap et Leaflet via CDN, `loading="lazy"` sur toutes les images, scripts en `defer` |
+| **Sécurité** | CSP, X-Frame-Options, CSRF sur tous les formulaires, `strip_tags()` sur les setters, JWT pour l'API |
+| **Reset mot de passe** | Token sécurisé 32 bytes, expiry 1h, email via Mailpit |
 
+---
+
+## API REST
+
+Documentation interactive Swagger disponible à **`/api/docs`**.
+
+### Authentification
+
+```http
+POST /api/login
+Content-Type: application/json
+
+{"email": "proprio@colocation.com", "password": "Proprio1234!"}
 ```
-POST /api/login   →  { "username": "email", "password": "motdepasse" }
+
+Réponse : `{"token": "eyJ..."}` — à utiliser dans le header `Authorization: Bearer <token>`.
+
+### Ressources disponibles
+
+| Endpoint | Méthodes | Accès |
+|---|---|---|
+| `/api/annonces` | GET, POST, PUT, DELETE | GET public, écriture → `ROLE_PROPRIETAIRE` |
+| `/api/colocations` | GET, POST, PUT, DELETE | GET public, écriture → `ROLE_PROPRIETAIRE` |
+| `/api/chambres` | GET, POST, PUT, DELETE | Lecture → `ROLE_USER`, écriture → `ROLE_PROPRIETAIRE` |
+| `/api/loyers` | GET, POST, PUT | `ROLE_USER` / `ROLE_PROPRIETAIRE` |
+| `/api/charges` | GET, POST, PUT, DELETE | `ROLE_USER` / `ROLE_PROPRIETAIRE` |
+| `/api/messages` | GET, POST | `ROLE_USER` |
+| `/api/notifications` | GET | `ROLE_USER` |
+| `/api/taches` | GET, POST, PUT, DELETE | `ROLE_USER` / `ROLE_PROPRIETAIRE` |
+| `/api/users` | GET | `ROLE_USER` |
+| `/api/annonces-custom` | GET, POST, PUT | Contrôleur manuel |
+| `/api/colocations-custom` | GET, POST | Contrôleur manuel |
+
+---
+
+## Tests
+
+```bash
+# Recharger les fixtures avant les tests (obligatoire)
+php bin/console doctrine:fixtures:load --no-interaction
+
+# Lancer tous les tests
+php vendor/bin/phpunit tests
+
+# Par dossier
+php vendor/bin/phpunit tests/Entity
+php vendor/bin/phpunit tests/Controller
+php vendor/bin/phpunit tests/Api
 ```
 
-Le token retourné s'utilise dans le header `Authorization: Bearer <token>`.
+**188 tests, 264 assertions** — tous verts.
+
+| Dossier | Contenu |
+|---|---|
+| `tests/Entity/` | UserTest, AnnonceTest, ChambreTest, LoyerTest, ChargeTest, EvaluationLocataireTest, VisiteAnnonceTest, ColocationTest |
+| `tests/Controller/` | SecurityControllerTest, ProtectedRoutesTest, LocataireControllerTest (16 tests), OwnerAccessTest (17 tests) |
+| `tests/Api/` | JwtAuthTest |
+
+> Les tests WebTestCase utilisent directement `colocation_db`. Ne pas modifier la base manuellement entre les tests.
+
+---
+
+## Docker
+
+```bash
+# Lancer l'application complète (app + MySQL)
+docker compose up -d
+
+# Accès : http://localhost:8080
+```
+
+Le `docker-compose.yml` inclut :
+- **app** : PHP 8.4 + Apache, port 8080
+- **db** : MySQL 8.0, port 3307
+- Volumes persistants pour les uploads et les clés JWT
+
+---
+
+## Stack technique
+
+| Composant | Version |
+|---|---|
+| Symfony | 6.4 LTS |
+| PHP | 8.4 |
+| Base de données | MySQL 8.0 |
+| ORM | Doctrine |
+| Templates | Twig 3 |
+| CSS | Bootstrap 5.3 |
+| Carte | Leaflet + CartoDB |
+| Charts | Chart.js 4 |
+| PDF | dompdf 3 |
+| API | API Platform 3 + JWT |
+| Tests | PHPUnit 13 |
+| Mail (dev) | Mailpit |

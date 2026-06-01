@@ -1,33 +1,31 @@
 {% extends 'base.html.twig' %}
-{% block title %}Mes tantièmes{% endblock %}
+{% block title %}{{ 'tenant.tantiemes.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container py-5">
-    <h1 class="fw-bold mb-4"><i class="bi bi-pie-chart text-primary"></i> Mes tantièmes</h1>
+    <h1 class="fw-bold mb-4"><i class="bi bi-pie-chart text-primary"></i> {{ 'tenant.tantiemes.title'|trans }}</h1>
 
     {% if chambre %}
     <div class="alert alert-info mb-4">
         <i class="bi bi-info-circle"></i>
-        Votre chambre <strong>{{ chambre.nom }}</strong> représente
-        <strong>{{ chambre.pourcentageSurface|number_format(2) }}%</strong>
-        de la surface totale ({{ chambre.surface }} m² / {{ chambre.colocation.surfaceTotale }} m²).
+        {{ 'tenant.tantiemes.room_info'|trans({'%room%': chambre.nom, '%pct%': chambre.pourcentageSurface|number_format(2), '%surface%': chambre.surface, '%total%': chambre.colocation.surfaceTotale})|raw }}
     </div>
     {% endif %}
 
     {% if tantiemes|length == 0 %}
-        <div class="alert alert-info">Aucun tantième calculé pour l'instant.</div>
+        <div class="alert alert-info">{{ 'tenant.tantiemes.no_shares'|trans }}</div>
     {% else %}
     <div class="card">
         <div class="table-responsive">
             <table class="table table-hover mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>Charge</th>
-                        <th>Type</th>
-                        <th>Montant total</th>
-                        <th>Votre part (%)</th>
-                        <th>Votre montant</th>
-                        <th>Calculé le</th>
+                        <th>{{ 'tenant.tantiemes.col_charge'|trans }}</th>
+                        <th>{{ 'tenant.tantiemes.col_type'|trans }}</th>
+                        <th>{{ 'tenant.tantiemes.col_total_amount'|trans }}</th>
+                        <th>{{ 'tenant.tantiemes.col_your_share'|trans }}</th>
+                        <th>{{ 'tenant.tantiemes.col_your_amount'|trans }}</th>
+                        <th>{{ 'tenant.tantiemes.col_calculated_on'|trans }}</th>
                     </tr>
                 </thead>
                 <tbody>

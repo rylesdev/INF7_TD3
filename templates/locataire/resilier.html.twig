@@ -1,29 +1,29 @@
 {% extends 'base.html.twig' %}
-{% block title %}Résilier mon bail{% endblock %}
+{% block title %}{{ 'profil.cancel_lease_title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-5">
             <div class="card p-4 border-danger">
-                <h1 class="h4 fw-bold mb-3 text-danger"><i class="bi bi-door-open"></i> Résilier mon bail</h1>
+                <h1 class="h4 fw-bold mb-3 text-danger"><i class="bi bi-door-open"></i> {{ 'profil.cancel_lease_title'|trans }}</h1>
 
                 <div class="alert alert-warning">
-                    <strong>Attention :</strong> Cette action est irréversible. Vous serez retiré(e) de la chambre et le propriétaire sera notifié.
+                    <strong>⚠</strong> {{ 'forms.resignation_warning'|trans }}
                 </div>
 
-                <p class="mb-1"><strong>Colocation :</strong> {{ chambre.colocation.nom }}</p>
-                <p class="mb-1"><strong>Chambre :</strong> {{ chambre.nom }}</p>
-                <p class="mb-3"><strong>Loyer :</strong> {{ chambre.loyerMensuel }}€/mois</p>
+                <p class="mb-1"><strong>{{ 'profil.colocation_label'|trans }}</strong> {{ chambre.colocation.nom }}</p>
+                <p class="mb-1"><strong>{{ 'profil.room_label'|trans }}</strong> {{ chambre.nom }}</p>
+                <p class="mb-3"><strong>{{ 'profil.rent_label'|trans }}</strong> {{ chambre.loyerMensuel }}€/mois</p>
 
                 <form method="POST">
                     <input type="hidden" name="_token" value="{{ csrf_token('resilier') }}">
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-danger flex-grow-1">
-                            <i class="bi bi-check-lg"></i> Confirmer la résiliation
+                            <i class="bi bi-check-lg"></i> {{ 'forms.confirm_resignation'|trans }}
                         </button>
                         <a href="{{ path('app_locataire_dashboard') }}" class="btn btn-outline-secondary">
-                            Annuler
+                            {{ 'forms.cancel'|trans }}
                         </a>
                     </div>
                 </form>

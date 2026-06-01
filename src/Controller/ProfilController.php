@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
@@ -69,6 +70,44 @@ class ProfilController extends AbstractController
             'moyenne'     => $moyenne,
             'isProprio'   => $isProprio,
         ]);
+    }
+
+    #[Route('/changer-mot-de-passe', name: 'app_profil_change_password', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function changePassword(
+        Request $request,
+        EntityManagerInterface $em,
+        UserPasswordHasherInterface $hasher
+    ): Response {
+        if (!$this->isCsrfTokenValid('change_password', $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $user            = $this->getUser();
+        $currentPassword = $request->request->get('current_password', '');
+        $newPassword     = $request->request->get('new_password', '');
+        $confirmPassword = $request->request->get('confirm_password', '');
+
+        if (!$hasher->isPasswordValid($user, $currentPassword)) {
+            $this->addFlash('error', 'Mot de passe actuel incorrect.');
+            return $this->redirectToRoute('app_profil');
+        }
+
+        if (strlen($newPassword) < 8) {
+            $this->addFlash('error', 'Le nouveau mot de passe doit contenir au moins 8 caractères.');
+            return $this->redirectToRoute('app_profil');
+        }
+
+        if ($newPassword !== $confirmPassword) {
+            $this->addFlash('error', 'Les mots de passe ne correspondent pas.');
+            return $this->redirectToRoute('app_profil');
+        }
+
+        $user->setPassword($hasher->hashPassword($user, $newPassword));
+        $em->flush();
+
+        $this->addFlash('success', 'Mot de passe modifié avec succès.');
+        return $this->redirectToRoute('app_profil');
     }
 
     #[Route('/proprietaire/{id}', name: 'app_profil_proprietaire', requirements: ['id' => '\d+'])]

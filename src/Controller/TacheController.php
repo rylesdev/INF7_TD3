@@ -65,8 +65,8 @@ class TacheController extends AbstractController
                 $semainier = new Semainier();
                 $semainier->setTache($tache);
                 $semainier->setJourSemaine((int) $tache->getDateEcheance()->format('N'));
-                $semainier->setDateDebut(new \DateTime('monday this week'));
-                $semainier->setDateFin(new \DateTime('sunday this week'));
+                $semainier->setDateDebut(new \DateTimeImmutable('monday this week'));
+                $semainier->setDateFin(new \DateTimeImmutable('sunday this week'));
                 $em->persist($semainier);
             }
 
@@ -93,10 +93,9 @@ class TacheController extends AbstractController
             $nouvelleTache->setColocation($tache->getColocation());
             $nouvelleTache->setAssigne($tache->getAssigne());
 
-            $debut    = new \DateTime('monday next week');
-            $fin      = new \DateTime('sunday next week');
-            $echeance = clone $debut;
-            $echeance->modify('+' . ($oldSemainier->getJourSemaine() - 1) . ' days');
+            $debut    = new \DateTimeImmutable('monday next week');
+            $fin      = new \DateTimeImmutable('sunday next week');
+            $echeance = $debut->modify('+' . ($oldSemainier->getJourSemaine() - 1) . ' days');
             $nouvelleTache->setDateEcheance($echeance);
             $em->persist($nouvelleTache);
 
@@ -105,6 +104,7 @@ class TacheController extends AbstractController
             $newSemainier->setJourSemaine($oldSemainier->getJourSemaine());
             $newSemainier->setDateDebut($debut);
             $newSemainier->setDateFin($fin);
+
             $em->persist($newSemainier);
             $em->flush();
         }

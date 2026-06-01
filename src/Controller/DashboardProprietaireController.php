@@ -19,6 +19,7 @@ use App\Form\MessageType;
 use App\Repository\AnnonceRepository;
 use App\Repository\ChargeRepository;
 use App\Repository\ColocationRepository;
+use App\Repository\TantiemeRepository;
 use App\Repository\EvaluationLocataireRepository;
 use App\Repository\LoyerRepository;
 use App\Repository\MessageRepository;
@@ -240,8 +241,12 @@ class DashboardProprietaireController extends AbstractController
     }
 
     #[Route('/loyers/{id}/payer', name: 'app_proprietaire_loyer_payer', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function payerLoyer(Loyer $loyer, EntityManagerInterface $em): Response
+    public function payerLoyer(Loyer $loyer, Request $request, EntityManagerInterface $em): Response
     {
+        if (!$this->isCsrfTokenValid('payer_loyer_proprio_' . $loyer->getId(), $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+
         $loyer->setStatut(Loyer::STATUT_PAYE);
         $loyer->setDatePaiement(new \DateTimeImmutable());
         $em->flush();
@@ -627,5 +632,32 @@ class DashboardProprietaireController extends AbstractController
             $this->addFlash('success', 'Charge supprimée.');
         }
         return $this->redirectToRoute('app_proprietaire_charges');
+    }
+
+    #[Route('/tantiemes', name: 'app_proprietaire_tantiemes')]
+    public function tantiemes(TantiemeRepository $tantiemeRepo): Response
+    {
+        $tantiemes = $tantiemeRepo->findByProprietaire($this->getUser()->getId());
+
+        // Grouper par colocation puis par charge
+        $grouped = [];
+        foreach ($tantiemes as $t) {
+            $colNom    = $t->getCharge()->getColocation()->getNom();
+            $chargeId  = $t->getCharge()->getId();
+            if (!isset($grouped[$colNom])) {
+                $grouped[$colNom] = [];
+            }
+            if (!isset($grouped[$colNom][$chargeId])) {
+                $grouped[$colNom][$chargeId] = [
+                    'charge'    => $t->getCharge(),
+                    'tantiemes' => [],
+                ];
+            }
+            $grouped[$colNom][$chargeId]['tantiemes'][] = $t;
+        }
+
+        return $this->render('proprietaire/tantiemes.html.twig', [
+            'grouped' => $grouped,
+        ]);
     }
 }

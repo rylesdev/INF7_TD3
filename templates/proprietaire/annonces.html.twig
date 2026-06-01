@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
-{% block title %}Mes annonces{% endblock %}
+{% block title %}{{ 'owner.annonces.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="fw-bold mb-0"><i class="bi bi-megaphone text-info"></i> Mes annonces</h1>
+        <h1 class="fw-bold mb-0"><i class="bi bi-megaphone text-info"></i> {{ 'owner.annonces.title'|trans }}</h1>
         <a href="{{ path('app_annonce_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-lg"></i> Nouvelle annonce
+            <i class="bi bi-plus-lg"></i> {{ 'owner.annonces.new'|trans }}
         </a>
     </div>
 
     {% if annonces|length == 0 %}
-        <div class="alert alert-info">Vous n'avez pas encore d'annonces.</div>
+        <div class="alert alert-info">{{ 'owner.annonces.no_listings'|trans }}</div>
     {% else %}
     <div class="row g-4">
         {% for annonce in annonces %}
@@ -30,12 +30,14 @@
                     <h2 class="h6 fw-bold card-title">{{ annonce.titre }}</h2>
                     <p class="text-muted small mb-1">{{ annonce.localisation }}</p>
                     <p class="fw-bold text-primary mb-1">{{ annonce.prix }}€/mois</p>
-                    <span class="badge bg-{{ annonce.statut == 'disponible' ? 'success' : 'secondary' }}">{{ annonce.statut }}</span>
+                    <span class="badge bg-{{ annonce.statut == 'disponible' ? 'success' : 'secondary' }}">
+                        {{ ('annonce.status.' ~ annonce.statut)|trans }}
+                    </span>
                 </div>
                 <div class="card-footer bg-transparent d-flex gap-2 flex-wrap">
                     <a href="{{ path('app_proprietaire_visites_annonce', {id: annonce.id}) }}"
                        class="btn btn-sm btn-outline-secondary"
-                       title="Voir les visites">
+                       title="{{ 'annonce.visits'|trans }}">
                         <i class="bi bi-eye"></i> {{ annonce.nbVisites }}
                     </a>
                     <a href="{{ path('app_annonce_show', {id: annonce.id}) }}" class="btn btn-sm btn-outline-info flex-grow-1">
@@ -44,7 +46,7 @@
                     <a href="{{ path('app_annonce_edit', {id: annonce.id}) }}" class="btn btn-sm btn-outline-primary flex-grow-1">
                         <i class="bi bi-pencil"></i>
                     </a>
-                    <form method="post" action="{{ path('app_annonce_delete', {id: annonce.id}) }}" onsubmit="return confirm('Supprimer cette annonce ?')">
+                    <form method="post" action="{{ path('app_annonce_delete', {id: annonce.id}) }}" onsubmit="return confirm('{{ 'owner.annonces.delete_confirm'|trans }}')">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete_annonce_' ~ annonce.id) }}">
                         <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
                     </form>

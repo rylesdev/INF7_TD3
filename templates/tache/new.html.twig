@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
-{% block title %}Nouvelle tâche{% endblock %}
+{% block title %}{{ 'forms.new_task'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container py-5">
-    <h1 class="fw-bold mb-4"><i class="bi bi-check2-circle text-primary"></i> Nouvelle tâche</h1>
+    <h1 class="fw-bold mb-4"><i class="bi bi-check2-circle text-primary"></i> {{ 'forms.new_task'|trans }}</h1>
     <div class="card p-4" style="max-width:600px;">
         {{ form_start(form) }}
         <div class="row g-3">
@@ -16,8 +16,8 @@
             {% endif %}
         </div>
         <div class="mt-4 d-flex gap-2">
-            <button type="submit" class="btn btn-primary">Créer la tâche</button>
-            <a href="{{ path('app_taches', {colocationId: colocation.id}) }}" class="btn btn-outline-secondary">Annuler</a>
+            <button type="submit" class="btn btn-primary">{{ 'forms.create_task'|trans }}</button>
+            <a href="{{ path('app_taches', {colocationId: colocation.id}) }}" class="btn btn-outline-secondary">{{ 'forms.cancel'|trans }}</a>
         </div>
         {{ form_end(form) }}
     </div>

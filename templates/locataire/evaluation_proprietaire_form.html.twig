@@ -1,36 +1,35 @@
 {% extends 'base.html.twig' %}
-{% block title %}Evaluer {{ proprietaire.nomComplet }}{% endblock %}
+{% block title %}{{ 'tenant.evaluations.evaluate_owner'|trans }} — {{ proprietaire.nomComplet }}{% endblock %}
 
 {% block body %}
 <div class="container py-5" style="max-width:600px;">
     <div class="d-flex align-items-center gap-3 mb-4">
         <a href="{{ path('app_locataire_evaluations') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left"></i> Retour
+            <i class="bi bi-arrow-left"></i> {{ 'forms.back'|trans }}
         </a>
         <h1 class="h3 fw-bold mb-0">
-            <i class="bi bi-star text-warning"></i> Evaluer {{ proprietaire.prenom }}
+            <i class="bi bi-star text-warning"></i> {{ 'tenant.evaluations.evaluate_owner'|trans }} — {{ proprietaire.prenom }}
         </h1>
     </div>
 
     <div class="card p-4">
         <p class="text-muted small mb-3">
-            Colocation : <strong>{{ colocation.nom }}</strong>
+            {{ 'owner.colocations.tenants'|trans }} : <strong>{{ colocation.nom }}</strong>
         </p>
-
         {{ form_start(form) }}
         <div class="mb-3">
             {{ form_label(form.note) }}
             <div class="star-rating-widget mt-1" id="evalStarWidget">
                 {% for choice in form.note %}
                     {{ form_widget(choice, {attr: {class: 'star-radio'}}) }}
-                    <label for="{{ choice.vars.id }}" class="star-label" title="{{ choice.vars.value }} etoile(s)">★</label>
+                    <label for="{{ choice.vars.id }}" class="star-label">★</label>
                 {% endfor %}
             </div>
         </div>
         <div class="mb-3">{{ form_row(form.commentaire) }}</div>
         <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-primary">Enregistrer</button>
-            <a href="{{ path('app_locataire_evaluations') }}" class="btn btn-outline-secondary">Annuler</a>
+            <button type="submit" class="btn btn-primary">{{ 'forms.save'|trans }}</button>
+            <a href="{{ path('app_locataire_evaluations') }}" class="btn btn-outline-secondary">{{ 'forms.cancel'|trans }}</a>
         </div>
         {{ form_end(form) }}
     </div>

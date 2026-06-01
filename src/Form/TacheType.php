@@ -43,6 +43,7 @@ class TacheType extends AbstractType
             ->add('dateEcheance', DateType::class, [
                 'label'    => 'Jour prévu',
                 'widget'   => 'single_text',
+                'input'    => 'datetime_immutable',
                 'required' => false,
                 'attr'     => ['class' => 'form-control'],
             ])

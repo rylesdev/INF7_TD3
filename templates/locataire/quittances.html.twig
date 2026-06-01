@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
-{% block title %}Mes quittances{% endblock %}
+{% block title %}{{ 'tenant.quittances.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container py-5">
-    <h1 class="fw-bold mb-4"><i class="bi bi-file-earmark-pdf text-danger"></i> Mes quittances</h1>
+    <h1 class="fw-bold mb-4"><i class="bi bi-file-earmark-pdf text-danger"></i> {{ 'tenant.quittances.title'|trans }}</h1>
 
     {% if quittances|length == 0 %}
-        <div class="alert alert-info">Aucune quittance disponible.</div>
+        <div class="alert alert-info">{{ 'tenant.quittances.no_receipts'|trans }}</div>
     {% else %}
     <div class="row g-3">
         {% set moisFr = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'] %}
@@ -18,13 +18,13 @@
                     Quittance {{ moisFr[quittance.periodeDebut|date('n') - 1]|capitalize }} {{ quittance.periodeDebut|date('Y') }}
                 </h2>
                 <ul class="list-unstyled small mb-3">
-                    <li class="mb-1"><strong>Période :</strong> {{ quittance.periodeDebut|date('d/m/Y') }} – {{ quittance.periodeFin|date('d/m/Y') }}</li>
-                    <li class="mb-1"><strong>Loyer :</strong> {{ quittance.montantLoyer }}€</li>
-                    <li class="mb-1"><strong>Charges :</strong> {{ quittance.montantCharges }}€</li>
-                    <li class="mb-1 fw-bold"><strong>Total :</strong> {{ quittance.montantTotal }}€</li>
+                    <li class="mb-1"><strong>{{ 'tenant.quittances.period'|trans }}</strong> {{ quittance.periodeDebut|date('d/m/Y') }} – {{ quittance.periodeFin|date('d/m/Y') }}</li>
+                    <li class="mb-1"><strong>{{ 'tenant.quittances.rent'|trans }}</strong> {{ quittance.montantLoyer }}€</li>
+                    <li class="mb-1"><strong>{{ 'tenant.quittances.charges'|trans }}</strong> {{ quittance.montantCharges }}€</li>
+                    <li class="mb-1 fw-bold"><strong>{{ 'tenant.quittances.total'|trans }}</strong> {{ quittance.montantTotal }}€</li>
                 </ul>
                 <a href="{{ path('app_locataire_quittance_pdf', {id: quittance.id}) }}" class="btn btn-danger btn-sm mt-auto" target="_blank">
-                    <i class="bi bi-download"></i> Télécharger PDF
+                    <i class="bi bi-download"></i> {{ 'tenant.quittances.download_pdf'|trans }}
                 </a>
             </div>
         </div>

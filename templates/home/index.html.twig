@@ -1,37 +1,37 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
-{% block meta_description %}Colocation.com – Gérez votre colocation facilement. Loyers, charges, tantièmes, messagerie, planning ménager.{% endblock %}
+{% block title %}{{ 'nav.home'|trans }}{% endblock %}
+{% block meta_description %}Colocation.com – {{ 'app.tagline'|trans }}{% endblock %}
 
 {% block body %}
 
 {# Hero Section #}
 <section class="hero-section text-center">
     <div class="container">
-        <h1 class="display-4 fw-bold mb-3"><i class="bi bi-house-heart-fill"></i> Colocation.com</h1>
+        <h1 class="display-4 fw-bold mb-3"><i class="bi bi-house-heart-fill"></i> {{ 'app.name'|trans }}</h1>
         {% if is_granted('ROLE_PROPRIETAIRE') %}
-            <p class="lead mb-4">Bienvenue, {{ app.user.prenom }}. Gérez vos colocations, suivez vos loyers et communiquez avec vos locataires.</p>
+            <p class="lead mb-4">{{ 'home.hero.welcome_proprio'|trans({'%name%': app.user.prenom}) }}</p>
             <a href="{{ path('app_proprietaire_dashboard') }}" class="btn btn-light btn-lg me-3">
-                <i class="bi bi-speedometer2"></i> Mon tableau de bord
+                <i class="bi bi-speedometer2"></i> {{ 'home.hero.btn_dashboard'|trans }}
             </a>
             <a href="{{ path('app_annonce_new') }}" class="btn btn-outline-light btn-lg">
-                <i class="bi bi-plus-circle"></i> Publier une annonce
+                <i class="bi bi-plus-circle"></i> {{ 'home.hero.btn_new_listing'|trans }}
             </a>
         {% elseif is_granted('ROLE_USER') %}
-            <p class="lead mb-4">Bienvenue, {{ app.user.prenom }}. Consultez vos loyers, téléchargez vos quittances et contactez votre propriétaire.</p>
+            <p class="lead mb-4">{{ 'home.hero.welcome_tenant'|trans({'%name%': app.user.prenom}) }}</p>
             <a href="{{ path('app_locataire_dashboard') }}" class="btn btn-light btn-lg me-3">
-                <i class="bi bi-speedometer2"></i> Mon espace locataire
+                <i class="bi bi-speedometer2"></i> {{ 'home.hero.btn_tenant_space'|trans }}
             </a>
             <a href="{{ path('app_annonces') }}" class="btn btn-outline-light btn-lg">
-                <i class="bi bi-search"></i> Voir les annonces
+                <i class="bi bi-search"></i> {{ 'home.hero.btn_see_listings'|trans }}
             </a>
         {% else %}
-            <p class="lead mb-4">La plateforme qui simplifie la gestion de votre colocation.<br>Loyers, charges, messagerie et planning en un seul endroit.</p>
+            <p class="lead mb-4">{{ 'home.hero.tagline'|trans|nl2br }}</p>
             <a href="{{ path('app_annonces') }}" class="btn btn-light btn-lg me-3">
-                <i class="bi bi-search"></i> Voir les annonces
+                <i class="bi bi-search"></i> {{ 'home.hero.btn_see_listings'|trans }}
             </a>
             <a href="{{ path('app_register') }}" class="btn btn-outline-light btn-lg">
-                <i class="bi bi-person-plus"></i> S'inscrire gratuitement
+                <i class="bi bi-person-plus"></i> {{ 'home.hero.btn_register_free'|trans }}
             </a>
         {% endif %}
     </div>
@@ -43,19 +43,19 @@
         <div class="row text-center g-4">
             <div class="col-6 col-md-3">
                 <div class="fw-bold display-6 text-primary">3 200+</div>
-                <div class="text-muted small">colocataires inscrits</div>
+                <div class="text-muted small">{{ 'home.stats.tenants'|trans }}</div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="fw-bold display-6 text-primary">850+</div>
-                <div class="text-muted small">propriétaires</div>
+                <div class="text-muted small">{{ 'home.stats.owners'|trans }}</div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="fw-bold display-6 text-primary">12 000+</div>
-                <div class="text-muted small">loyers gérés</div>
+                <div class="text-muted small">{{ 'home.stats.rents'|trans }}</div>
             </div>
             <div class="col-6 col-md-3">
                 <div class="fw-bold display-6 text-primary">4,8 / 5</div>
-                <div class="text-muted small">satisfaction moyenne</div>
+                <div class="text-muted small">{{ 'home.stats.satisfaction'|trans }}</div>
             </div>
         </div>
     </div>
@@ -65,84 +65,84 @@
 <section class="py-5">
     <div class="container">
         {% if is_granted('ROLE_PROPRIETAIRE') %}
-        <h2 class="text-center fw-bold mb-5">Votre espace propriétaire</h2>
+        <h2 class="text-center fw-bold mb-5">{{ 'home.features.your_owner_space'|trans }}</h2>
         <div class="row g-4 justify-content-center">
             <div class="col-md-8">
                 <div class="card h-100 p-4 border-primary" style="border-width:2px !important;">
                     <div class="d-flex align-items-center mb-3">
                         <i class="bi bi-building text-primary display-5 me-3"></i>
-                        <h3 class="fw-bold mb-0 h4">Ce que vous pouvez faire</h3>
+                        <h3 class="fw-bold mb-0 h4">{{ 'home.features.what_you_can_do'|trans }}</h3>
                     </div>
                     <ul class="list-unstyled mb-4">
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Gérez toutes vos colocations depuis un seul tableau de bord</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Suivez les loyers et relancez les impayés en un clic</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Répartissez les charges automatiquement selon la surface</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Générez les quittances PDF sans effort</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Publiez des annonces et suivez les visites</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.owner_1'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.owner_2'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.owner_3'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.owner_4'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.owner_5b'|trans }}</li>
                     </ul>
                     <div class="d-flex gap-2 mt-auto">
-                        <a href="{{ path('app_proprietaire_dashboard') }}" class="btn btn-primary">Mon tableau de bord</a>
-                        <a href="{{ path('app_proprietaire_colocations') }}" class="btn btn-outline-primary">Mes colocations</a>
+                        <a href="{{ path('app_proprietaire_dashboard') }}" class="btn btn-primary">{{ 'home.features.owner_btn_dashboard'|trans }}</a>
+                        <a href="{{ path('app_proprietaire_colocations') }}" class="btn btn-outline-primary">{{ 'home.features.owner_btn_colocations'|trans }}</a>
                     </div>
                 </div>
             </div>
         </div>
         {% elseif is_granted('ROLE_USER') %}
-        <h2 class="text-center fw-bold mb-5">Votre espace locataire</h2>
+        <h2 class="text-center fw-bold mb-5">{{ 'home.features.your_tenant_space'|trans }}</h2>
         <div class="row g-4 justify-content-center">
             <div class="col-md-8">
                 <div class="card h-100 p-4 border-success" style="border-width:2px !important;">
                     <div class="d-flex align-items-center mb-3">
                         <i class="bi bi-house-door text-success display-5 me-3"></i>
-                        <h3 class="fw-bold mb-0 h4">Ce que vous pouvez faire</h3>
+                        <h3 class="fw-bold mb-0 h4">{{ 'home.features.what_you_can_do'|trans }}</h3>
                     </div>
                     <ul class="list-unstyled mb-4">
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Consultez vos loyers et leur statut à tout moment</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Téléchargez vos quittances en PDF pour vos démarches</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Visualisez votre part des charges mensuelles</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Organisez les tâches ménagères avec vos colocataires</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Contactez votre propriétaire via la messagerie intégrée</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.tenant_1'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.tenant_2'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.tenant_3'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.tenant_4'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.tenant_5'|trans }}</li>
                     </ul>
                     <div class="d-flex gap-2 mt-auto">
-                        <a href="{{ path('app_locataire_dashboard') }}" class="btn btn-success">Mon espace</a>
-                        <a href="{{ path('app_annonces') }}" class="btn btn-outline-success">Voir les annonces</a>
+                        <a href="{{ path('app_locataire_dashboard') }}" class="btn btn-success">{{ 'home.features.tenant_btn_space'|trans }}</a>
+                        <a href="{{ path('app_annonces') }}" class="btn btn-outline-success">{{ 'home.features.tenant_btn_listings'|trans }}</a>
                     </div>
                 </div>
             </div>
         </div>
         {% else %}
-        <h2 class="text-center fw-bold mb-5">Une plateforme pour tout le monde</h2>
+        <h2 class="text-center fw-bold mb-5">{{ 'home.features.for_all'|trans }}</h2>
         <div class="row g-4">
             <div class="col-md-6">
                 <div class="card h-100 p-4 border-primary" style="border-width:2px !important;">
                     <div class="d-flex align-items-center mb-3">
                         <i class="bi bi-building text-primary display-5 me-3"></i>
-                        <h3 class="fw-bold mb-0 h4">Vous êtes propriétaire</h3>
+                        <h3 class="fw-bold mb-0 h4">{{ 'home.features.owner_title'|trans }}</h3>
                     </div>
                     <ul class="list-unstyled mb-4">
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Gérez toutes vos colocations depuis un seul tableau de bord</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Suivez les loyers et relancez les impayés en un clic</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Répartissez les charges automatiquement selon la surface</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Générez les quittances PDF sans effort</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Communiquez directement avec vos locataires</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.owner_1'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.owner_2'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.owner_3'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.owner_4'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.owner_5'|trans }}</li>
                     </ul>
-                    <a href="{{ path('app_register') }}" class="btn btn-primary mt-auto">Créer mon espace propriétaire</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-primary mt-auto">{{ 'home.features.owner_btn_register'|trans }}</a>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="card h-100 p-4 border-success" style="border-width:2px !important;">
                     <div class="d-flex align-items-center mb-3">
                         <i class="bi bi-house-door text-success display-5 me-3"></i>
-                        <h3 class="fw-bold mb-0 h4">Vous êtes locataire</h3>
+                        <h3 class="fw-bold mb-0 h4">{{ 'home.features.tenant_title'|trans }}</h3>
                     </div>
                     <ul class="list-unstyled mb-4">
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Consultez vos loyers et leur statut à tout moment</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Téléchargez vos quittances en PDF pour vos démarches</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Visualisez votre part des charges mensuelles</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Organisez les tâches ménagères avec vos colocataires</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Contactez votre propriétaire via la messagerie intégrée</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.tenant_1'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.tenant_2'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.tenant_3'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.tenant_4'|trans }}</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>{{ 'home.features.tenant_5'|trans }}</li>
                     </ul>
-                    <a href="{{ path('app_annonces') }}" class="btn btn-outline-primary mt-auto">Trouver une colocation</a>
+                    <a href="{{ path('app_annonces') }}" class="btn btn-outline-primary mt-auto">{{ 'home.features.tenant_btn_find'|trans }}</a>
                 </div>
             </div>
         </div>
@@ -154,7 +154,7 @@
 {% if proprietaires_notes|length > 0 %}
 <section class="py-5 bg-white">
     <div class="container">
-        <h2 class="text-center fw-bold mb-5"><i class="bi bi-star-fill text-warning me-2"></i>Propriétaires bien notés</h2>
+        <h2 class="text-center fw-bold mb-5"><i class="bi bi-star-fill text-warning me-2"></i>{{ 'home.owners.title'|trans }}</h2>
         <div class="row g-4 justify-content-center">
             {% for p in proprietaires_notes %}
             <div class="col-md-4">
@@ -171,13 +171,13 @@
                             </div>
                         {% endif %}
                         <div class="fw-bold mb-1">{{ p.prenom }} {{ p.nom|slice(0,1) }}.</div>
-                        <div class="text-muted small mb-2">Propriétaire</div>
+                        <div class="text-muted small mb-2">{{ 'home.owners.role'|trans }}</div>
                         <div class="mb-1">
                             {% for i in 1..5 %}
                                 <i class="bi bi-star{{ i <= p.moyenne ? '-fill text-warning' : ' text-muted' }}"></i>
                             {% endfor %}
                         </div>
-                        <div class="text-muted small">{{ p.moyenne }}/5 ({{ p.nb_avis }} avis)</div>
+                        <div class="text-muted small">{{ p.moyenne }}/5 ({{ p.nb_avis }} {{ 'home.owners.reviews'|trans }})</div>
                     </div>
                 </a>
             </div>
@@ -191,7 +191,7 @@
 {% if annonces_recentes|length > 0 %}
 <section class="py-5 bg-white">
     <div class="container">
-        <h2 class="fw-bold mb-4">Annonces récentes</h2>
+        <h2 class="fw-bold mb-4">{{ 'home.listings.title'|trans }}</h2>
         <div class="row g-4">
             {% for annonce in annonces_recentes %}
             <div class="col-md-4">
@@ -208,11 +208,11 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ annonce.titre }}</h5>
                         <p class="text-muted small"><i class="bi bi-geo-alt"></i> {{ annonce.localisation }}</p>
-                        <p class="fw-bold text-primary fs-5">{{ annonce.prix }}€ / mois</p>
+                        <p class="fw-bold text-primary fs-5">{{ annonce.prix }}{{ 'home.listings.per_month'|trans }}</p>
                     </div>
                     <div class="card-footer bg-transparent">
                         <a href="{{ path('app_annonce_show', {id: annonce.id}) }}" class="btn btn-primary w-100">
-                            Voir le détail
+                            {{ 'home.listings.btn_detail'|trans }}
                         </a>
                     </div>
                 </div>
@@ -220,7 +220,7 @@
             {% endfor %}
         </div>
         <div class="text-center mt-4">
-            <a href="{{ path('app_annonces') }}" class="btn btn-outline-primary">Toutes les annonces</a>
+            <a href="{{ path('app_annonces') }}" class="btn btn-outline-primary">{{ 'home.listings.btn_all'|trans }}</a>
         </div>
     </div>
 </section>
@@ -229,34 +229,34 @@
 {# FAQ #}
 <section class="py-5" id="faq">
     <div class="container">
-        <h2 class="fw-bold text-center mb-5">Questions fréquentes</h2>
+        <h2 class="fw-bold text-center mb-5">{{ 'home.faq.title'|trans }}</h2>
         <div class="accordion" id="faqAccordion">
             {% if is_granted('ROLE_PROPRIETAIRE') %}
             {% set faqs = [
-                {q: 'Comment publier une annonce ?', a: 'Depuis votre tableau de bord, cliquez sur "Annonces" puis "Nouvelle annonce". Renseignez le titre, la description, le prix et ajoutez des photos. L\'annonce sera visible immédiatement sur la plateforme.'},
-                {q: 'Comment accepter ou refuser une candidature ?', a: 'Dans le menu "Candidatures", vous voyez toutes les candidatures reçues avec les pièces justificatives. Cliquez sur "Accepter" pour choisir la chambre à attribuer au locataire, ou sur "Refuser" pour lui envoyer un message automatique de refus.'},
-                {q: 'Comment gérer les loyers impayés ?', a: 'Dans la rubrique "Loyers", les loyers en retard apparaissent en rouge. Vous pouvez contacter le locataire concerné via la messagerie intégrée ou marquer manuellement un loyer comme payé depuis son détail.'},
-                {q: 'Comment répartir les charges entre les colocataires ?', a: 'Créez une charge (électricité, internet...) depuis la rubrique "Charges". Les tantièmes sont calculés automatiquement selon la surface de chaque chambre. Chaque locataire voit sa part depuis son espace.'},
-                {q: 'Comment générer une quittance de loyer ?', a: 'Lorsqu\'un loyer est marqué comme payé, la quittance est générée automatiquement. Votre locataire peut la télécharger depuis son espace. Vous pouvez aussi la générer manuellement depuis la liste des loyers.'},
-                {q: 'Comment évaluer un locataire ?', a: 'Dans la rubrique "Evaluations", cliquez sur "Evaluer" en face du locataire concerné. Attribuez une note de 1 à 5 et ajoutez un commentaire. Cette évaluation sera visible sur le profil public du locataire.'}
+                {q: 'home.faq.owner_q1'|trans, a: 'home.faq.owner_a1'|trans},
+                {q: 'home.faq.owner_q2'|trans, a: 'home.faq.owner_a2'|trans},
+                {q: 'home.faq.owner_q3'|trans, a: 'home.faq.owner_a3'|trans},
+                {q: 'home.faq.owner_q4'|trans, a: 'home.faq.owner_a4'|trans},
+                {q: 'home.faq.owner_q5'|trans, a: 'home.faq.owner_a5'|trans},
+                {q: 'home.faq.owner_q6'|trans, a: 'home.faq.owner_a6'|trans}
             ] %}
             {% elseif is_granted('ROLE_USER') %}
             {% set faqs = [
-                {q: 'Comment candidater à une annonce ?', a: 'Sur la page d\'une annonce disponible, cliquez sur "Candidater". Vous devrez joindre une pièce d\'identité et un justificatif de revenus (PDF ou image, 5 Mo max). Le propriétaire recevra votre dossier et vous répondra via la messagerie.'},
-                {q: 'Comment contacter mon propriétaire ?', a: 'Rendez-vous dans la rubrique "Messagerie" de votre espace locataire. Vous pouvez y envoyer des messages et consulter l\'historique complet de votre échange. Appuyez sur Entrée pour envoyer (Shift+Entrée pour un saut de ligne).'},
-                {q: 'Comment obtenir ma quittance de loyer ?', a: 'Dans la rubrique "Quittances", vous trouverez toutes vos quittances disponibles. Cliquez sur "Télécharger PDF" pour obtenir votre justificatif, utile pour vos dossiers APL ou de relogement.'},
-                {q: 'Mon loyer est marqué impayé alors que je l\'ai réglé, que faire ?', a: 'Si votre paiement n\'est pas reflété, utilisez le bouton "Payer" depuis votre rubrique "Loyers" pour simuler le paiement en ligne. Une quittance sera générée automatiquement et votre propriétaire sera notifié.'},
-                {q: 'Comment résilier mon bail ?', a: 'Dans votre espace locataire, cliquez sur "Résilier mon bail" (accessible depuis le tableau de bord). Confirmez l\'action et votre propriétaire en sera informé automatiquement. Vos annonces de colocation repasseront en disponible.'},
-                {q: 'Comment évaluer mon propriétaire ?', a: 'Dans la rubrique "Evaluations", cliquez sur "Evaluer mon propriétaire" si vous avez payé au moins un loyer. Attribuez une note et un commentaire. Vous pouvez aussi accéder à son profil public depuis une annonce pour laisser votre avis.'}
+                {q: 'home.faq.tenant_q1'|trans, a: 'home.faq.tenant_a1'|trans},
+                {q: 'home.faq.tenant_q2'|trans, a: 'home.faq.tenant_a2'|trans},
+                {q: 'home.faq.tenant_q3'|trans, a: 'home.faq.tenant_a3'|trans},
+                {q: 'home.faq.tenant_q4'|trans, a: 'home.faq.tenant_a4'|trans},
+                {q: 'home.faq.tenant_q5'|trans, a: 'home.faq.tenant_a5'|trans},
+                {q: 'home.faq.tenant_q6'|trans, a: 'home.faq.tenant_a6'|trans}
             ] %}
             {% else %}
             {% set faqs = [
-                {q: 'Est-ce gratuit de s\'inscrire ?', a: 'Oui, l\'inscription est entièrement gratuite pour les locataires comme pour les propriétaires. Créez votre compte en quelques minutes et accédez à toutes les fonctionnalités sans engagement.'},
-                {q: 'Quelle est la différence entre un compte locataire et propriétaire ?', a: 'Un compte locataire vous permet de candidater à des annonces, consulter vos loyers et quittances, et contacter votre propriétaire. Un compte propriétaire vous permet de gérer vos colocations, publier des annonces, suivre les loyers et traiter les candidatures.'},
-                {q: 'Comment trouver une colocation ?', a: 'Rendez-vous dans la rubrique "Annonces". Vous pouvez filtrer par ville et par budget. Cliquez sur une annonce pour voir les détails et le profil du propriétaire, puis candidatez directement en ligne.'},
-                {q: 'Mes données personnelles sont-elles sécurisées ?', a: 'Oui. Les mots de passe sont chiffrés et jamais stockés en clair. Les pièces jointes (candidatures) ne sont accessibles qu\'aux parties concernées. Toutes les communications transitent de manière sécurisée.'},
-                {q: 'Puis-je avoir plusieurs colocataires dans le même logement ?', a: 'Oui, la plateforme est conçue pour la colocation. Chaque locataire a son propre espace personnel et les charges sont automatiquement réparties entre les chambres selon leur surface.'},
-                {q: 'Comment signaler un problème dans le logement ?', a: 'Utilisez la messagerie intégrée pour informer votre propriétaire (fuite, panne...). Vos messages sont horodatés, ce qui constitue une trace écrite utile en cas de litige.'}
+                {q: 'home.faq.guest_q1'|trans, a: 'home.faq.guest_a1'|trans},
+                {q: 'home.faq.guest_q2'|trans, a: 'home.faq.guest_a2'|trans},
+                {q: 'home.faq.guest_q3'|trans, a: 'home.faq.guest_a3'|trans},
+                {q: 'home.faq.guest_q4'|trans, a: 'home.faq.guest_a4'|trans},
+                {q: 'home.faq.guest_q5'|trans, a: 'home.faq.guest_a5'|trans},
+                {q: 'home.faq.guest_q6'|trans, a: 'home.faq.guest_a6'|trans}
             ] %}
             {% endif %}
             {% for i, qa in faqs %}

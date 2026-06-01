@@ -177,11 +177,11 @@
                         {% elseif chambresLibres > 0 %}
                             <a href="{{ path('app_locataire_candidature_form', {id: annonce.id}) }}"
                                class="btn btn-success w-100 mb-2">
-                                <i class="bi bi-send"></i> Candidater
+                                <i class="bi bi-send"></i> {{ 'annonce.apply'|trans }}
                             </a>
                         {% else %}
                             <div class="alert alert-warning py-2 text-center small mb-2">
-                                <i class="bi bi-exclamation-circle"></i> Aucune chambre disponible pour le moment
+                                <i class="bi bi-exclamation-circle"></i> {{ 'annonce.no_room'|trans }}
                             </div>
                         {% endif %}
                     {% endif %}
@@ -190,7 +190,7 @@
                     </a>
                 {% elseif not is_granted('ROLE_USER') %}
                     <a href="{{ path('app_login') }}" class="btn btn-primary w-100 mb-2">
-                        <i class="bi bi-box-arrow-in-right"></i> Se connecter pour candidater
+                        <i class="bi bi-box-arrow-in-right"></i> {{ 'annonce.login_to_apply'|trans }}
                     </a>
                 {% endif %}
                 <a href="{{ path('app_annonces') }}" class="btn btn-outline-secondary w-100">

@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
-{% block title %}{{ charge is defined and charge.id ? 'Modifier' : 'Nouvelle' }} charge{% endblock %}
+{% block title %}{{ charge is defined and charge.id ? 'forms.edit_charge'|trans : 'forms.new_charge'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container py-5">
     <h1 class="fw-bold mb-4">
         <i class="bi bi-lightning text-warning"></i>
-        {{ charge is defined and charge.id ? 'Modifier la charge' : 'Nouvelle charge' }}
+        {{ charge is defined and charge.id ? 'forms.edit_charge'|trans : 'forms.new_charge'|trans }}
     </h1>
     <div class="card p-4" style="max-width:600px;">
         {{ form_start(form) }}
@@ -17,8 +17,8 @@
             <div class="col-md-4">{{ form_label(form.date) }}{{ form_widget(form.date) }}{{ form_errors(form.date) }}</div>
         </div>
         <div class="mt-4 d-flex gap-2">
-            <button type="submit" class="btn btn-primary">Enregistrer</button>
-            <a href="{{ path('app_proprietaire_charges') }}" class="btn btn-outline-secondary">Annuler</a>
+            <button type="submit" class="btn btn-primary">{{ 'forms.save'|trans }}</button>
+            <a href="{{ path('app_proprietaire_charges') }}" class="btn btn-outline-secondary">{{ 'forms.cancel'|trans }}</a>
         </div>
         {{ form_end(form) }}
     </div>

@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
-{% block title %}Connexion{% endblock %}
+{% block title %}{{ 'security.login.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-5">
             <div class="card p-4">
-                <h1 class="h3 mb-4 text-center"><i class="bi bi-box-arrow-in-right text-primary"></i> Connexion</h1>
+                <h1 class="h3 mb-4 text-center"><i class="bi bi-box-arrow-in-right text-primary"></i> {{ 'security.login.title'|trans }}</h1>
 
                 {% if error %}
                     <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
@@ -14,30 +14,30 @@
 
                 <form method="post" action="{{ path('app_login') }}">
                     <div class="mb-3">
-                        <label for="username" class="form-label">Email</label>
+                        <label for="username" class="form-label">{{ 'security.login.email'|trans }}</label>
                         <input type="email" id="username" name="_username" value="{{ last_username }}"
                                class="form-control" autocomplete="email" required>
                     </div>
                     <div class="mb-3">
-                        <label for="password" class="form-label">Mot de passe</label>
+                        <label for="password" class="form-label">{{ 'security.login.password'|trans }}</label>
                         <input type="password" id="password" name="_password" class="form-control"
                                autocomplete="current-password" required>
                     </div>
                     <div class="form-check mb-3">
                         <input type="checkbox" class="form-check-input" id="remember" name="_remember_me">
-                        <label class="form-check-label" for="remember">Se souvenir de moi</label>
+                        <label class="form-check-label" for="remember">{{ 'security.login.remember_me'|trans }}</label>
                     </div>
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-                    <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                    <button type="submit" class="btn btn-primary w-100">{{ 'security.login.submit'|trans }}</button>
                 </form>
 
                 <hr>
                 <div class="text-center">
-                    <a href="{{ path('app_forgot_password') }}" class="text-muted small">Mot de passe oublié ?</a>
+                    <a href="{{ path('app_forgot_password') }}" class="text-muted small">{{ 'security.login.forgot'|trans }}</a>
                 </div>
                 <div class="text-center mt-2">
-                    <span class="text-muted small">Pas encore de compte ?</span>
-                    <a href="{{ path('app_register') }}" class="small">S'inscrire</a>
+                    <span class="text-muted small">{{ 'security.login.no_account'|trans }}</span>
+                    <a href="{{ path('app_register') }}" class="small">{{ 'nav.register'|trans }}</a>
                 </div>
             </div>
         </div>

@@ -1,0 +1,508 @@
+app:
+    name: Colocation.com
+    tagline: The flatshare management platform
+
+nav:
+    home: Home
+    annonces: Listings
+    login: Login
+    register: Register
+    logout: Logout
+    profil: My Profile
+    dashboard: Dashboard
+    messaging: Messaging
+    evaluations: Reviews
+    candidatures: Applications
+    management: Management
+    finances: Finances
+    my_apartment: My Apartment
+    colocations: Flatshares
+    listings: Listings
+    applications: Applications
+    rents: Rents
+    receipts: Receipts
+    shares: Bill Shares
+    charges: Charges
+    footer_faq: FAQ
+    language: Language
+    tasks: Tasks
+
+security:
+    login:
+        title: Login
+        email: Email address
+        password: Password
+        submit: Sign in
+        remember_me: Remember me
+        forgot: Forgot your password?
+        no_account: No account yet?
+    register:
+        title: Create an account
+        submit: Register
+        already_account: Already have an account?
+
+owner:
+    dashboard:
+        title: Dashboard
+        colocations: Flatshares
+        rents_received: "Rents received (%year%)"
+        unpaid_rents: Unpaid rents
+        active_listings: Active listings
+        occupancy: "Occupancy rate (%occupied%/%total% rooms)"
+        monthly_revenue: "Monthly revenue (%year%)"
+        alerts: Alerts
+        no_alerts: No alert.
+    colocations:
+        title: My flatshares
+        new: New flatshare
+        no_colocations: You have no flatshares yet.
+        rooms: room(s)
+        tenants: Tenants
+        review: Review
+        edit: Edit
+        delete_confirm: Delete this flatshare?
+    annonces:
+        title: My listings
+        new: New listing
+        no_listings: You have no listings yet.
+        delete_confirm: Delete this listing?
+    candidatures:
+        title: Received applications
+        no_applications: No application received yet.
+        col_applicant: Applicant
+        col_listing: Listing
+        col_date: Date
+        col_status: Status
+        col_docs: Documents
+        col_actions: Actions
+        status_pending: Pending
+        status_accepted: Accepted
+        status_rejected: Rejected
+        accept: Accept
+        reject: Reject
+        reject_confirm: Reject this application?
+        no_docs: None
+    loyers:
+        title: Rent management
+        new: New rent
+        no_rents: No rent recorded.
+        col_colocation: Flatshare
+        col_room: Room
+        col_tenant: Tenant
+        col_period: Period
+        col_amount: Amount
+        col_due_date: Due date
+        col_status: Status
+        col_actions: Actions
+        status_paid: Paid
+        status_unpaid: Unpaid
+        status_overdue: Overdue
+        delete_confirm: Delete this rent?
+        pay_btn: Validate payment
+        pay_confirm: Mark this rent as paid and generate the receipt?
+    charges:
+        title: Charge management
+        new: New charge
+        no_charges: No charge recorded.
+        col_colocation: Flatshare
+        col_type: Type
+        col_label: Label
+        col_amount: Amount
+        col_date: Date
+        col_shares: Shares
+        col_actions: Actions
+        calculated: Calculated
+        calculate: Calculate
+        delete_confirm: Delete this charge?
+    messagerie:
+        title: Messaging
+        conversations: Conversations
+        no_conversations: No conversation.
+        select_conv: Select a conversation to read messages.
+    evaluations:
+        title: Tenant reviews
+        no_reviews: You have not reviewed any tenant yet.
+        no_reviews_hint: To review a tenant, go to their flatshare and click Review.
+        see_colocations: View my flatshares
+        edit: Edit
+        delete_confirm: Delete this review?
+
+annonce:
+    all_cities: All cities
+    visits: Visits
+    status:
+        disponible: Available
+        indisponible: Unavailable
+    per_month: " / month"
+    views: "view(s)"
+    listings_title: Our listings
+    search: Search
+    filter_city: City
+    filter_price_min: Min price
+    filter_price_max: Max price
+    apply_filters: Filter
+    reset_filters: Reset
+    candidature_sent: Application sent, awaiting response
+    no_room: No room available at the moment
+    apply: Apply
+    contact_owner: Contact the owner
+    back_to_list: Back to listings
+    login_to_apply: Log in to apply
+
+loyer:
+    status:
+        paye: Paid
+        impaye: Unpaid
+        en_retard: Overdue
+
+tache:
+    type:
+        vaisselle: Dishes
+        menage: Cleaning
+        entretien: Maintenance
+        autre: Other
+    status:
+        a_faire: To do
+        en_cours: In progress
+        terminee: Done
+
+charge:
+    type:
+        eau: Water
+        electricite: Electricity
+        internet: Internet
+        taxes: Taxes
+        autre: Other
+
+home:
+    hero:
+        tagline: "The platform that simplifies flatshare management.\nRents, charges, messaging and scheduling in one place."
+        welcome_proprio: "Welcome, %name%. Manage your flatshares, track rents and communicate with your tenants."
+        welcome_tenant: "Welcome, %name%. Check your rents, download your receipts and contact your landlord."
+        btn_dashboard: My dashboard
+        btn_new_listing: Post a listing
+        btn_tenant_space: My tenant space
+        btn_see_listings: Browse listings
+        btn_register_free: Register for free
+    stats:
+        tenants: registered flatmates
+        owners: landlords
+        rents: rents managed
+        satisfaction: average satisfaction
+    features:
+        for_all: A platform for everyone
+        your_owner_space: Your landlord space
+        your_tenant_space: Your tenant space
+        what_you_can_do: What you can do
+        owner_title: You are a landlord
+        owner_1: Manage all your flatshares from a single dashboard
+        owner_2: Track rents and chase unpaid ones in one click
+        owner_3: Automatically split charges by room surface area
+        owner_4: Generate PDF receipts effortlessly
+        owner_5: Communicate directly with your tenants
+        owner_5b: Post listings and track visits
+        owner_btn_dashboard: My dashboard
+        owner_btn_colocations: My flatshares
+        owner_btn_register: Create my landlord account
+        tenant_title: You are a tenant
+        tenant_1: Check your rents and their status at any time
+        tenant_2: Download your PDF receipts for your applications
+        tenant_3: View your share of monthly charges
+        tenant_4: Organise household chores with your flatmates
+        tenant_5: Contact your landlord via the integrated messaging
+        tenant_btn_space: My space
+        tenant_btn_listings: Browse listings
+        tenant_btn_find: Find a flatshare
+    owners:
+        title: Top-rated landlords
+        role: Landlord
+        reviews: reviews
+    listings:
+        title: Recent listings
+        btn_detail: View details
+        btn_all: All listings
+        per_month: "€ / month"
+    faq:
+        title: Frequently asked questions
+        guest_q1: Is registration free?
+        guest_a1: "Yes, registration is completely free for both tenants and landlords. Create your account in a few minutes and access all features with no commitment."
+        guest_q2: What is the difference between a tenant and landlord account?
+        guest_a2: "A tenant account lets you apply for listings, view your rents and receipts, and contact your landlord. A landlord account lets you manage your flatshares, post listings, track rents and process applications."
+        guest_q3: How do I find a flatshare?
+        guest_a3: "Go to the Listings section. You can filter by city and budget. Click a listing to see the details and the landlord's profile, then apply directly online."
+        guest_q4: Is my personal data secure?
+        guest_a4: "Yes. Passwords are encrypted and never stored in plain text. Attachments are only accessible to the relevant parties. All communications are transmitted securely."
+        guest_q5: Can I have multiple flatmates in the same apartment?
+        guest_a5: "Yes, the platform is designed for flatsharing. Each tenant has their own personal space and charges are automatically split between rooms according to their surface area."
+        guest_q6: How do I report a problem in the property?
+        guest_a6: "Use the integrated messaging to notify your landlord (leak, breakdown...). Your messages are timestamped, providing a useful written record in case of a dispute."
+        owner_q1: How do I post a listing?
+        owner_a1: "From your dashboard, click Listings then New listing. Fill in the title, description, price and add photos. The listing will be visible immediately on the platform."
+        owner_q2: How do I accept or reject an application?
+        owner_a2: "In the Applications menu, you can see all received applications with their supporting documents. Click Accept to choose the room to assign to the tenant, or Reject to send an automatic rejection message."
+        owner_q3: How do I manage unpaid rents?
+        owner_a3: "In the Rents section, overdue rents appear in red. You can contact the tenant via the integrated messaging or manually mark a rent as paid from its details."
+        owner_q4: How do I split charges between flatmates?
+        owner_a4: "Create a charge (electricity, internet...) from the Charges section. Shares are automatically calculated based on each room's surface area. Each tenant sees their share from their space."
+        owner_q5: How do I generate a rent receipt?
+        owner_a5: "When a rent is marked as paid, the receipt is generated automatically. Your tenant can download it from their space. You can also generate it manually from the rent list."
+        owner_q6: How do I review a tenant?
+        owner_a6: "In the Reviews section, click Review next to the relevant tenant. Give a rating from 1 to 5 and add a comment. This review will be visible on the tenant's public profile."
+        tenant_q1: How do I apply for a listing?
+        tenant_a1: "On an available listing's page, click Apply. You will need to attach a proof of identity and proof of income. The landlord will receive your application and reply via messaging."
+        tenant_q2: How do I contact my landlord?
+        tenant_a2: "Go to the Messaging section of your tenant space. You can send messages and view the full history of your exchange. Press Enter to send (Shift+Enter for a line break)."
+        tenant_q3: How do I get my rent receipt?
+        tenant_a3: "In the Receipts section, you will find all your available receipts. Click Download PDF to get your document, useful for housing benefit or rehousing applications."
+        tenant_q4: My rent shows as unpaid but I have paid it, what should I do?
+        tenant_a4: "If your payment is not reflected, use the Pay button from your Rents section to record the payment. A receipt will be generated automatically and your landlord will be notified."
+        tenant_q5: How do I end my tenancy?
+        tenant_a5: "In your tenant space, click End my tenancy (accessible from the dashboard). Confirm the action and your landlord will be automatically notified."
+        tenant_q6: How do I review my landlord?
+        tenant_a6: "In the Reviews section, click Review my landlord if you have paid at least one rent. Give a rating and a comment. You can also access their public profile from a listing to leave your review."
+
+tenant:
+    dashboard:
+        title: Dashboard
+        monthly_rent: Monthly rent
+        rent_status: Rent status
+        overdue: Overdue
+        up_to_date: Up to date
+        tasks_todo: Tasks to do
+        unread_messages: Unread messages
+        my_room: My room
+        room_label: "Room:"
+        surface_label: "Surface:"
+        colocation_label: "Flatshare:"
+        address_label: "Address:"
+        rent_label: "Rent:"
+        cancel_lease: End my tenancy
+        last_rents: Latest rents
+        no_rents: No rent recorded.
+        see_all: See all
+        no_room: You have no room assigned yet. Contact your landlord.
+        my_applications: My applications
+        my_rents: My rents
+        my_receipts: My receipts
+        shares: Bill shares
+        messaging: Messaging
+        my_reviews: My reviews
+    loyers:
+        title: My rents
+        no_rents: No rent recorded.
+        col_colocation: Flatshare
+        col_room: Room
+        col_period: Period
+        col_amount: Amount
+        col_due_date: Due date
+        col_payment: Payment date
+        col_status: Status
+        col_receipt: Receipt
+        col_action: Action
+        status_paid: Paid
+        status_unpaid: Unpaid
+        status_overdue: Overdue
+        not_available: Not available
+        pay_btn: Pay
+        pay_confirm: Simulate payment of this rent?
+        paid_label: Paid
+    quittances:
+        title: My receipts
+        no_receipts: No receipt available.
+        period: "Period:"
+        rent: "Rent:"
+        charges: "Charges:"
+        total: "Total:"
+        download_pdf: Download PDF
+    tantiemes:
+        title: My bill shares
+        no_shares: No share calculated yet.
+        room_info: "Your room %room% accounts for %pct%% of the total surface area (%surface% m² / %total% m²)."
+        col_charge: Charge
+        col_type: Type
+        col_total_amount: Total amount
+        col_your_share: "Your share (%)"
+        col_your_amount: Your amount
+        col_calculated_on: Calculated on
+    candidatures:
+        title: My applications
+        no_applications: You have not submitted any application yet.
+        browse_listings: Browse listings
+        col_listing: Listing
+        col_colocation: Flatshare
+        col_price: Price
+        col_date: Application date
+        col_status: Status
+        status_pending: Pending
+        status_accepted: Accepted
+        status_rejected: Rejected
+    evaluations:
+        title: My reviews
+        evaluate_owner: Review my landlord
+        no_reviews: You have not received any review yet.
+        avg_label: "Average rating from %count% review(s)"
+        no_comment: No comment.
+        reviews_given: My reviews given to landlords
+    notifications:
+        title: Notifications
+        mark_all_read: Mark all as read
+        no_notifications: No notification.
+        new_badge: New
+    messagerie:
+        title: Messaging
+        conversations: Conversations
+        no_conversations: No conversation.
+        placeholder: Your message…
+        placeholder_new: Message to landlord…
+        select_conv: Select a conversation or start a new one.
+        send_btn: Send
+        auto_message: Automatic message
+        see_application: View my application
+        see_btn: View
+        view_profile: View profile
+
+profil:
+    new_password: New password
+    confirm_password: Confirm password
+    chars_min: "chars min."
+    change_password: Change password
+    current_password: Current password
+    save_profile: Save
+    cancel_lease_title: End my tenancy
+    confirm_lease_cancel: Confirm termination
+    colocation_label: "Flatshare:"
+    room_label: "Room:"
+    rent_label: "Rent:"
+    my_active_listings: My active listings
+    my_rating: My rating
+    no_rating: No review received yet.
+    reviews_from_tenants: Reviews from my tenants
+    reviews_from_owners: Reviews from my landlords
+
+forms:
+    save: Save
+    cancel: Cancel
+    back: Back
+    publish_listing: Publish listing
+    new_listing: Create a listing
+    confirm_resignation: Confirm termination
+    resignation_warning: "Warning: This action is irreversible. You will be removed from the room and your landlord will be notified."
+    send_link: Send link
+    back_to_login: Back to login
+    update_password: Update
+    save_review: Save review
+    update_review: Update
+    edit_review: Edit review
+    review_tenant: Review tenant
+    confirm_acceptance: Confirm acceptance
+    send: Send
+    anonymous: Anonymous
+    visit_history: Visit history
+    total_visits: "visit(s) total"
+    visits_30_days: Visits (last 30 days)
+    no_visits_period: No visits in the last 30 days.
+    no_visits: No visit recorded for this listing.
+    date_time: Date and time
+    visitor: Visitor
+    new_colocation: New flatshare
+    edit_colocation: Edit flatshare
+    rooms_section: Rooms
+    col_name: Name
+    col_surface: "Surface (m²)"
+    col_rent: "Monthly rent (€)"
+    add_room: Add a room
+    room_occupied: Occupied room
+    new_loyer: New rent
+    edit_loyer: Edit rent
+    all_rooms: All rooms
+    new_charge: New charge
+    edit_charge: Edit charge
+    new_task: New task
+    create_task: Create task
+
+tasks:
+    title: Tasks & Schedule
+    weekly: Weekly schedule
+    active: To do / In progress
+    all_done: All tasks are done!
+    done_section: Done
+    col_title: Title
+    col_type: Type
+    col_assigned: Assigned to
+    col_date: Scheduled day
+    col_status: Status
+    col_actions: Actions
+    mark_done: Done
+    no_tasks: No task recorded.
+    delete_confirm: Delete?
+
+tantiemes_prop:
+    title: Bill share breakdown
+    back: Back to charges
+    no_shares: "No share calculated. Create charges and click \"Calculate\" to split charges among your tenants."
+    manage_charges: Manage charges
+    col_room: Room
+    col_tenant: Tenant
+    col_surface: Surface
+    col_share: "Share (%)"
+    col_amount: Amount due
+    total: "Total split:"
+    free_room: Vacant room
+
+# Auto-translated form labels (Symfony translates these automatically)
+Titre: Title
+"Jour prévu": Scheduled day
+"Assigné à": Assigned to
+"Non assigné": Unassigned
+"Nom de la colocation": Flatshare name
+Adresse: Address
+"Code postal": Postcode
+Ville: City
+"Latitude (optionnel)": "Latitude (optional)"
+"Longitude (optionnel)": "Longitude (optional)"
+Description: Description
+"Montant (€)": "Amount (€)"
+"Date d'échéance": Due date
+"Date de paiement": Payment date
+Statut: Status
+Colocation: Flatshare
+Chambre: Room
+"Type de charge": Charge type
+"Loyer mensuel (€)": "Monthly rent (€)"
+Date: Date
+Mois: Month
+"Année": Year
+Janvier: January
+"Février": February
+Mars: March
+Avril: April
+Mai: May
+Juin: June
+Juillet: July
+"Août": August
+Septembre: September
+Octobre: October
+Novembre: November
+"Décembre": December
+"Impayé": Unpaid
+"Payé": Paid
+"En retard": Overdue
+Eau: Water
+"Électricité": Electricity
+Internet: Internet
+Taxes: Taxes
+Autre: Other
+Vaisselle: Dishes
+"Ménage": Cleaning
+Entretien: Maintenance
+
+flash:
+    success:
+        saved: Saved successfully.
+        deleted: Deleted successfully.
+        sent: Message sent.
+        quittance_generated: Receipt generated successfully.
+    error:
+        not_found: Resource not found.
+        access_denied: Access denied.
+        invalid_form: Invalid form.

@@ -1,23 +1,23 @@
 {% extends 'base.html.twig' %}
-{% block title %}Messagerie{% endblock %}
+{% block title %}{{ 'tenant.messagerie.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container py-5">
-    <h1 class="fw-bold mb-4"><i class="bi bi-chat-dots text-primary"></i> Messagerie</h1>
+    <h1 class="fw-bold mb-4"><i class="bi bi-chat-dots text-primary"></i> {{ 'tenant.messagerie.title'|trans }}</h1>
 
     <div class="row g-4">
         <div class="col-md-4">
             <div class="card p-3">
-                <h2 class="h6 fw-bold mb-3">Conversations</h2>
+                <h2 class="h6 fw-bold mb-3">{{ 'tenant.messagerie.conversations'|trans }}</h2>
                 {% if conversations|length == 0 %}
-                    <p class="text-muted small">Aucune conversation.</p>
+                    <p class="text-muted small">{{ 'tenant.messagerie.no_conversations'|trans }}</p>
                 {% else %}
                 <div class="list-group list-group-flush">
                     {% for conv in conversations %}
                     {% set isActive = activeUserId is defined and activeUserId == conv.user.id %}
                     <div class="list-group-item px-2 py-2 {{ isActive ? 'bg-primary bg-opacity-10 border-start border-primary border-3' : '' }}">
                         <div class="d-flex align-items-center gap-2">
-                            <a href="{{ path('app_profil_proprietaire', {id: conv.user.id}) }}" class="text-decoration-none flex-shrink-0" title="Voir le profil">
+                            <a href="{{ path('app_profil_proprietaire', {id: conv.user.id}) }}" class="text-decoration-none flex-shrink-0" title="{{ 'tenant.messagerie.view_profile'|trans }}">
                                 {% if conv.user.photoProfil %}
                                     <img src="{{ asset('uploads/profils/' ~ conv.user.photoProfil) }}" width="36" height="36" class="rounded-circle" style="object-fit:cover;" loading="lazy">
                                 {% else %}
@@ -55,7 +55,7 @@
                     {% endif %}
                     <div>
                         <span class="fw-bold">{{ proprietaire.nomComplet }}</span>
-                        <span class="text-muted small ms-1"><i class="bi bi-box-arrow-up-right"></i> Voir le profil</span>
+                        <span class="text-muted small ms-1"><i class="bi bi-box-arrow-up-right"></i> {{ 'tenant.messagerie.view_profile'|trans }}</span>
                     </div>
                 </a>
             </div>
@@ -66,16 +66,16 @@
                     {% if message.automatique %}
                     <div class="d-flex justify-content-center mb-3">
                         <div class="border border-info rounded p-3 text-center" style="background:#e8f4fd;max-width:85%;">
-                            <div class="small fw-bold text-info mb-1"><i class="bi bi-robot"></i> Message automatique</div>
+                            <div class="small fw-bold text-info mb-1"><i class="bi bi-robot"></i> {{ 'tenant.messagerie.auto_message'|trans }}</div>
                             <p class="small mb-2">{{ message.contenu|nl2br }}</p>
                             {% if message.lien and message.destinataire.id == app.user.id %}
                             {% if '/proprietaire/' in message.lien %}
                             <a href="{{ path('app_locataire_candidatures') }}" class="btn btn-info btn-sm text-white">
-                                <i class="bi bi-arrow-right-circle"></i> Voir ma candidature
+                                <i class="bi bi-arrow-right-circle"></i> {{ 'tenant.messagerie.see_application'|trans }}
                             </a>
                             {% else %}
                             <a href="{{ message.lien }}" class="btn btn-info btn-sm text-white">
-                                <i class="bi bi-arrow-right-circle"></i> Voir
+                                <i class="bi bi-arrow-right-circle"></i> {{ 'tenant.messagerie.see_btn'|trans }}
                             </a>
                             {% endif %}
                             {% endif %}
@@ -94,7 +94,7 @@
                 </div>
                 {{ form_start(form) }}
                 <div class="input-group">
-                    {{ form_widget(form.contenu, {attr: {placeholder: 'Votre message…', class: 'form-control', rows: 2}}) }}
+                    {{ form_widget(form.contenu, {attr: {placeholder: 'tenant.messagerie.placeholder'|trans, class: 'form-control', rows: 2}}) }}
                     <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i></button>
                 </div>
                 {{ form_end(form) }}
@@ -102,12 +102,12 @@
             {% else %}
             <div class="card p-5 text-center text-muted">
                 <i class="bi bi-chat-dots display-3 mb-3"></i>
-                <p>Sélectionnez une conversation ou démarrez-en une nouvelle.</p>
+                <p>{{ 'tenant.messagerie.select_conv'|trans }}</p>
                 {% if proprietaire is defined %}
                 {{ form_start(form) }}
                 <div class="input-group mt-3">
-                    {{ form_widget(form.contenu, {attr: {placeholder: 'Message au propriétaire…', class: 'form-control'}}) }}
-                    <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i> Envoyer</button>
+                    {{ form_widget(form.contenu, {attr: {placeholder: 'tenant.messagerie.placeholder_new'|trans, class: 'form-control'}}) }}
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-send"></i> {{ 'tenant.messagerie.send_btn'|trans }}</button>
                 </div>
                 {{ form_end(form) }}
                 {% endif %}

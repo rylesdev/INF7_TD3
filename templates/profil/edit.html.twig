@@ -40,6 +40,26 @@
             </div>
 
             <div class="card p-4 mb-4">
+                <h2 class="h5 fw-bold mb-3"><i class="bi bi-lock text-warning"></i> Changer de mot de passe</h2>
+                <form method="POST" action="{{ path('app_profil_change_password') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('change_password') }}">
+                    <div class="mb-3">
+                        <label class="form-label">Mot de passe actuel</label>
+                        <input type="password" name="current_password" class="form-control" required autocomplete="current-password">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nouveau mot de passe <small class="text-muted">(8 caractères min.)</small></label>
+                        <input type="password" name="new_password" class="form-control" required minlength="8" autocomplete="new-password">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Confirmer le nouveau mot de passe</label>
+                        <input type="password" name="confirm_password" class="form-control" required minlength="8" autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="btn btn-warning"><i class="bi bi-lock"></i> Changer le mot de passe</button>
+                </form>
+            </div>
+
+            <div class="card p-4 mb-4">
                 <h2 class="h5 fw-bold mb-3"><i class="bi bi-star-half text-warning"></i> Ma note</h2>
                 {% if moyenne > 0 %}
                 <div class="d-flex align-items-center gap-2">

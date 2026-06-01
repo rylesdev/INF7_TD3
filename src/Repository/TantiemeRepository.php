@@ -12,4 +12,19 @@ class TantiemeRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Tantieme::class);
     }
+
+    public function findByProprietaire(int $proprietaireId): array
+    {
+        return $this->createQueryBuilder('t')
+            ->join('t.charge', 'ch')
+            ->join('ch.colocation', 'col')
+            ->join('t.chambre', 'cam')
+            ->where('col.proprietaire = :id')
+            ->setParameter('id', $proprietaireId)
+            ->orderBy('col.nom', 'ASC')
+            ->addOrderBy('ch.date', 'DESC')
+            ->addOrderBy('cam.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

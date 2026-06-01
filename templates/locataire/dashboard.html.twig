@@ -1,36 +1,36 @@
 {% extends 'base.html.twig' %}
-{% block title %}Mon tableau de bord{% endblock %}
+{% block title %}{{ 'tenant.dashboard.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container py-5">
-    <h1 class="fw-bold mb-4"><i class="bi bi-speedometer2 text-primary"></i> Tableau de bord</h1>
+    <h1 class="fw-bold mb-4"><i class="bi bi-speedometer2 text-primary"></i> {{ 'tenant.dashboard.title'|trans }}</h1>
 
     {% if chambre %}
     <div class="row g-4 mb-4">
         <div class="col-md-3">
             <div class="card text-center p-3 border-primary">
                 <div class="display-6 fw-bold text-primary">{{ chambre.loyerMensuel }}€</div>
-                <div class="text-muted small">Loyer mensuel</div>
+                <div class="text-muted small">{{ 'tenant.dashboard.monthly_rent'|trans }}</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card text-center p-3 border-{{ loyerEnRetard ? 'danger' : 'success' }}">
                 <div class="display-6 fw-bold text-{{ loyerEnRetard ? 'danger' : 'success' }}">
-                    {{ loyerEnRetard ? 'En retard' : 'À jour' }}
+                    {{ loyerEnRetard ? 'tenant.dashboard.overdue'|trans : 'tenant.dashboard.up_to_date'|trans }}
                 </div>
-                <div class="text-muted small">Statut loyer</div>
+                <div class="text-muted small">{{ 'tenant.dashboard.rent_status'|trans }}</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card text-center p-3">
                 <div class="display-6 fw-bold text-info">{{ tachesAFaire }}</div>
-                <div class="text-muted small">Tâches à faire</div>
+                <div class="text-muted small">{{ 'tenant.dashboard.tasks_todo'|trans }}</div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card text-center p-3">
                 <div class="display-6 fw-bold text-warning">{{ messagesNonLus }}</div>
-                <div class="text-muted small">Messages non lus</div>
+                <div class="text-muted small">{{ 'tenant.dashboard.unread_messages'|trans }}</div>
             </div>
         </div>
     </div>
@@ -38,44 +38,49 @@
     <div class="row g-4">
         <div class="col-md-6">
             <div class="card p-4 h-100">
-                <h2 class="h5 fw-bold mb-3"><i class="bi bi-house-door text-primary"></i> Ma chambre</h2>
+                <h2 class="h5 fw-bold mb-3"><i class="bi bi-house-door text-primary"></i> {{ 'tenant.dashboard.my_room'|trans }}</h2>
                 <ul class="list-unstyled mb-0">
-                    <li class="mb-2"><strong>Chambre :</strong> {{ chambre.nom }}</li>
-                    <li class="mb-2"><strong>Surface :</strong> {{ chambre.surface }} m²</li>
-                    <li class="mb-2"><strong>Colocation :</strong> {{ chambre.colocation.nom }}</li>
-                    <li class="mb-2"><strong>Adresse :</strong> {{ chambre.colocation.adresse }}, {{ chambre.colocation.ville }}</li>
-                    <li class="mb-2"><strong>Loyer :</strong> <span class="fw-bold text-primary">{{ chambre.loyerMensuel }}€/mois</span></li>
+                    <li class="mb-2"><strong>{{ 'tenant.dashboard.room_label'|trans }}</strong> {{ chambre.nom }}</li>
+                    <li class="mb-2"><strong>{{ 'tenant.dashboard.surface_label'|trans }}</strong> {{ chambre.surface }} m²</li>
+                    <li class="mb-2"><strong>{{ 'tenant.dashboard.colocation_label'|trans }}</strong> {{ chambre.colocation.nom }}</li>
+                    <li class="mb-2"><strong>{{ 'tenant.dashboard.address_label'|trans }}</strong> {{ chambre.colocation.adresse }}, {{ chambre.colocation.ville }}</li>
+                    <li class="mb-2"><strong>{{ 'tenant.dashboard.rent_label'|trans }}</strong> <span class="fw-bold text-primary">{{ chambre.loyerMensuel }}€/mois</span></li>
                 </ul>
                 <a href="{{ path('app_locataire_resilier') }}" class="btn btn-outline-danger btn-sm mt-2">
-                    <i class="bi bi-door-open"></i> Résilier mon bail
+                    <i class="bi bi-door-open"></i> {{ 'tenant.dashboard.cancel_lease'|trans }}
                 </a>
             </div>
         </div>
         <div class="col-md-6">
             <div class="card p-4 h-100">
-                <h2 class="h5 fw-bold mb-3"><i class="bi bi-cash-stack text-success"></i> Derniers loyers</h2>
+                <h2 class="h5 fw-bold mb-3"><i class="bi bi-cash-stack text-success"></i> {{ 'tenant.dashboard.last_rents'|trans }}</h2>
                 {% if derniersLoyers|length > 0 %}
                 <div class="list-group list-group-flush">
+                    {% set statutLabels = {
+                        'payé': 'tenant.loyers.status_paid'|trans,
+                        'impayé': 'tenant.loyers.status_unpaid'|trans,
+                        'en_retard': 'tenant.loyers.status_overdue'|trans
+                    } %}
                     {% for loyer in derniersLoyers %}
                     <div class="list-group-item px-0 d-flex justify-content-between align-items-center">
                         <span>{{ loyer.mois }}/{{ loyer.annee }}</span>
                         <span class="badge bg-{{ loyer.statut == 'payé' ? 'success' : (loyer.statut == 'en_retard' ? 'danger' : 'warning') }}">
-                            {{ loyer.statut }}
+                            {{ statutLabels[loyer.statut] ?? loyer.statut }}
                         </span>
                         <span class="fw-bold">{{ loyer.montant }}€</span>
                     </div>
                     {% endfor %}
                 </div>
                 {% else %}
-                <p class="text-muted">Aucun loyer enregistré.</p>
+                <p class="text-muted">{{ 'tenant.dashboard.no_rents'|trans }}</p>
                 {% endif %}
-                <a href="{{ path('app_locataire_loyers') }}" class="btn btn-outline-primary btn-sm mt-3">Voir tout</a>
+                <a href="{{ path('app_locataire_loyers') }}" class="btn btn-outline-primary btn-sm mt-3">{{ 'tenant.dashboard.see_all'|trans }}</a>
             </div>
         </div>
     </div>
     {% else %}
     <div class="alert alert-info">
-        <i class="bi bi-info-circle"></i> Vous n'avez pas encore de chambre assignée. Contactez votre propriétaire.
+        <i class="bi bi-info-circle"></i> {{ 'tenant.dashboard.no_room'|trans }}
     </div>
     {% endif %}
 
@@ -83,37 +88,45 @@
         <div class="col-md-4">
             <a href="{{ path('app_locataire_candidatures') }}" class="card p-4 text-decoration-none text-dark h-100 d-flex flex-column align-items-center justify-content-center">
                 <i class="bi bi-send display-4 text-primary mb-2"></i>
-                <span class="fw-bold">Mes candidatures</span>
+                <span class="fw-bold">{{ 'tenant.dashboard.my_applications'|trans }}</span>
             </a>
         </div>
         <div class="col-md-4">
             <a href="{{ path('app_locataire_loyers') }}" class="card p-4 text-decoration-none text-dark h-100 d-flex flex-column align-items-center justify-content-center">
                 <i class="bi bi-receipt display-4 text-primary mb-2"></i>
-                <span class="fw-bold">Mes loyers</span>
+                <span class="fw-bold">{{ 'tenant.dashboard.my_rents'|trans }}</span>
             </a>
         </div>
         <div class="col-md-4">
             <a href="{{ path('app_locataire_quittances') }}" class="card p-4 text-decoration-none text-dark h-100 d-flex flex-column align-items-center justify-content-center">
                 <i class="bi bi-file-earmark-pdf display-4 text-danger mb-2"></i>
-                <span class="fw-bold">Mes quittances</span>
+                <span class="fw-bold">{{ 'tenant.dashboard.my_receipts'|trans }}</span>
             </a>
         </div>
         <div class="col-md-4">
             <a href="{{ path('app_locataire_tantiemes') }}" class="card p-4 text-decoration-none text-dark h-100 d-flex flex-column align-items-center justify-content-center">
                 <i class="bi bi-percent display-4 text-info mb-2"></i>
-                <span class="fw-bold">Tantièmes</span>
+                <span class="fw-bold">{{ 'tenant.dashboard.shares'|trans }}</span>
             </a>
         </div>
         <div class="col-md-4">
             <a href="{{ path('app_locataire_messagerie') }}" class="card p-4 text-decoration-none text-dark h-100 d-flex flex-column align-items-center justify-content-center">
                 <i class="bi bi-chat-dots display-4 text-success mb-2"></i>
-                <span class="fw-bold">Messagerie</span>
+                <span class="fw-bold">{{ 'tenant.dashboard.messaging'|trans }}</span>
             </a>
         </div>
+        {% if chambre %}
+        <div class="col-md-4">
+            <a href="{{ path('app_taches', {colocationId: chambre.colocation.id}) }}" class="card p-4 text-decoration-none text-dark h-100 d-flex flex-column align-items-center justify-content-center">
+                <i class="bi bi-check2-circle display-4 text-primary mb-2"></i>
+                <span class="fw-bold">{{ 'nav.tasks'|trans }}</span>
+            </a>
+        </div>
+        {% endif %}
         <div class="col-md-4">
             <a href="{{ path('app_locataire_evaluations') }}" class="card p-4 text-decoration-none text-dark h-100 d-flex flex-column align-items-center justify-content-center">
                 <i class="bi bi-star-half display-4 text-warning mb-2"></i>
-                <span class="fw-bold">Mes évaluations</span>
+                <span class="fw-bold">{{ 'tenant.dashboard.my_reviews'|trans }}</span>
             </a>
         </div>
     </div>
