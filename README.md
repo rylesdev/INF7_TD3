@@ -1,5 +1,4 @@
 19/20
-Supplémente major de promo en INF7 :D
 
 # Colocation.com
 
