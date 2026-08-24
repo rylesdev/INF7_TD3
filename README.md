@@ -1,3 +1,6 @@
+19/20
+Supplémente major de promo en INF7 :D
+
 # Colocation.com
 
 Application web de gestion de colocation développée avec **Symfony 6.4** : loyers, charges, messagerie, tâches ménagères et planning en un seul endroit.
